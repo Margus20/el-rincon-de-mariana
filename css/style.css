@@ -1,0 +1,468 @@
+/* ========================================
+   ESTILOS GENERALES - El Rincón de Mariana
+   ======================================== */
+
+/* Variables de colores (basados en el logo) */
+:root {
+    --naranja: #E67E22;
+    --naranja-oscuro: #D35400;
+    --marron: #5D4037;
+    --marron-oscuro: #3E2723;
+    --crema: #FFF8E7;
+    --crema-oscuro: #F5E6D3;
+    --negro: #1a1a1a;
+    --blanco: #ffffff;
+    --verde-whatsapp: #25D366;
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--crema);
+    color: var(--negro);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: 'Fredoka One', cursive;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ========================================
+   HEADER / NAVEGACIÓN
+   ======================================== */
+.header {
+    background: linear-gradient(135deg, var(--marron-oscuro) 0%, var(--marron) 100%);
+    color: var(--crema);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logo-nav {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: var(--naranja);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-nav span {
+    color: var(--crema);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    color: var(--crema);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--naranja);
+}
+
+.btn-pedir {
+    background: var(--naranja);
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+}
+
+.btn-pedir:hover {
+    background: var(--naranja-oscuro) !important;
+    color: var(--blanco) !important;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--crema);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* ========================================
+   HERO / PORTADA
+   ======================================== */
+.hero {
+    background: linear-gradient(rgba(62, 39, 35, 0.85), rgba(93, 64, 55, 0.85)),
+                url('../img/hero.jpg') center/cover;
+    color: var(--crema);
+    text-align: center;
+    padding: 4rem 1rem;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-logo {
+    width: 200px;
+    height: 200px;
+    background: var(--negro);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    border: 8px solid var(--marron);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    font-size: 5rem;
+    color: var(--naranja);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    color: var(--naranja);
+    margin-bottom: 0.5rem;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+}
+
+.hero h1 span {
+    color: var(--crema);
+    display: block;
+    font-size: 2rem;
+}
+
+.lema {
+    font-size: 1.5rem;
+    color: var(--naranja);
+    font-weight: 800;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+.horario-badge {
+    background: var(--naranja);
+    color: var(--blanco);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.btn-primary {
+    background: var(--naranja);
+    color: var(--blanco);
+}
+
+.btn-primary:hover {
+    background: var(--naranja-oscuro);
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background: var(--verde-whatsapp);
+    color: var(--blanco);
+}
+
+.btn-secondary:hover {
+    background: #128C7E;
+    transform: translateY(-3px);
+}
+
+/* ========================================
+   SECCIONES GENERALES
+   ======================================== */
+.seccion {
+    padding: 4rem 1rem;
+}
+
+.titulo-seccion {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--marron-oscuro);
+    margin-bottom: 1rem;
+}
+
+.subtitulo-seccion {
+    text-align: center;
+    color: var(--naranja);
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    font-weight: 700;
+}
+
+.cargando {
+    text-align: center;
+    color: var(--marron);
+    font-size: 1.2rem;
+    padding: 2rem;
+}
+
+/* ========================================
+   HORARIOS
+   ======================================== */
+.horarios-box {
+    background: var(--marron-oscuro);
+    color: var(--crema);
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.horarios-box h3 {
+    color: var(--naranja);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.dia {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    font-size: 1.1rem;
+}
+
+.dia.abierto {
+    background: rgba(230, 126, 34, 0.2);
+    border-left: 4px solid var(--naranja);
+}
+
+.cerrado {
+    color: #999;
+}
+
+.horario {
+    color: #4CAF50;
+    font-weight: 800;
+}
+
+/* ========================================
+   UBICACIÓN
+   ======================================== */
+.ubicacion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.ubicacion-info {
+    background: var(--blanco);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.ubicacion-info h3 {
+    color: var(--marron-oscuro);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    font-size: 1.1rem;
+}
+
+.info-item i {
+    color: var(--naranja);
+    font-size: 1.5rem;
+    width: 30px;
+}
+
+.mapa {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    height: 350px;
+}
+
+.mapa iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* ========================================
+   CONTACTO
+   ======================================== */
+.seccion-contacto {
+    background: var(--marron);
+    color: var(--crema);
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.seccion-contacto .titulo-seccion {
+    color: var(--naranja);
+}
+
+.seccion-contacto .subtitulo-seccion {
+    color: var(--crema);
+}
+
+.contacto-opciones {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.btn-whatsapp {
+    background: var(--verde-whatsapp);
+    color: var(--blanco);
+}
+
+.btn-whatsapp:hover {
+    background: #128C7E;
+    transform: translateY(-3px);
+}
+
+.btn-llamar {
+    background: var(--naranja);
+    color: var(--blanco);
+}
+
+.btn-llamar:hover {
+    background: var(--naranja-oscuro);
+    transform: translateY(-3px);
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.footer {
+    background: var(--marron-oscuro);
+    color: var(--crema);
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.footer-logo {
+    color: var(--naranja);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-lema {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.redes {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1rem 0;
+}
+
+.redes a {
+    color: var(--crema);
+    font-size: 1.8rem;
+    transition: color 0.3s;
+}
+
+.redes a:hover {
+    color: var(--naranja);
+}
+
+.footer-copy {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.footer-hecho {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+}
+
+/* ========================================
+   BOTÓN WHATSAPP FLOTANTE
+   ======================================== */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--verde-whatsapp);
+    color: white;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    z-index: 1000;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
