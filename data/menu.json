@@ -1,64 +1,22 @@
 {
   "categorias": [
     {
-      "nombre": "Parrillas",
-      "icono": "🔥",
-      "items": [
-        {
-          "nombre": "Parrilla Mixta",
-          "descripcion": "Carne + Pollo + Acompañantes",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Parrilla de Res",
-          "descripcion": "Corte especial a la parrilla",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Parrilla de Pollo",
-          "descripcion": "Pechuga jugosa con salsa",
-          "precio": "$0.00"
-        }
-      ]
-    },
-    {
       "nombre": "Hamburguesas",
       "icono": "🍔",
       "items": [
         {
-          "nombre": "Sencilla",
-          "descripcion": "Carne, queso, vegetales",
+          "nombre": "La Tragona",
+          "descripcion": "Nuestra hamburguesa estrella, grande y poderosa",
           "precio": "$0.00"
         },
         {
-          "nombre": "Doble Carne",
-          "descripcion": "Doble carne y doble queso",
+          "nombre": "Resuelve",
+          "descripcion": "La hamburguesa que te saca del apuro",
           "precio": "$0.00"
         },
         {
-          "nombre": "Especial Mariana",
-          "descripcion": "Con tocineta y salsa secreta",
-          "precio": "$0.00"
-        }
-      ]
-    },
-    {
-      "nombre": "Perros Calientes",
-      "icono": "🌭",
-      "items": [
-        {
-          "nombre": "Sencillo",
-          "descripcion": "Salchicha + salsas",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Especial",
-          "descripcion": "Con queso y tocineta",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Americano",
-          "descripcion": "Con papitas y cebolla crispy",
+          "nombre": "Chiqui",
+          "descripcion": "Pequeña pero matona, ideal para un antojo",
           "precio": "$0.00"
         }
       ]
@@ -68,70 +26,82 @@
       "icono": "🥖",
       "items": [
         {
-          "nombre": "De Carne",
-          "descripcion": "Carne mechada + vegetales",
+          "nombre": "Pepito Llanero - Canilla Completa",
+          "descripcion": "Pepito relleno con canilla completa de carne",
           "precio": "$0.00"
         },
         {
-          "nombre": "De Pollo",
-          "descripcion": "Pollo desmechado + queso",
+          "nombre": "Pepito Llanero - ½ Canilla",
+          "descripcion": "Pepito con media canilla de carne",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Perros Calientes",
+      "icono": "🌭",
+      "items": [
+        {
+          "nombre": "Perro con Queso",
+          "descripcion": "Perro caliente con queso fundido",
           "precio": "$0.00"
         },
         {
-          "nombre": "De Chuleta",
-          "descripcion": "Chuleta ahumada + salsas",
+          "nombre": "Perro Sencillo",
+          "descripcion": "Perro caliente clásico con salsas",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Enrollados",
+      "icono": "🌯",
+      "items": [
+        {
+          "nombre": "Enrollado Especial",
+          "descripcion": "Tortilla enrollada con carne, vegetales y salsas",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Parrillas",
+      "icono": "🔥",
+      "items": [
+        {
+          "nombre": "Parrilla Grande",
+          "descripcion": "Parrilla completa para los más hambrientos",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Parrilla Mediana",
+          "descripcion": "Parrilla balanceada para compartir",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Parrilla Pequeña",
+          "descripcion": "Parrilla individual perfecta",
           "precio": "$0.00"
         }
       ]
     },
     {
       "nombre": "Bebidas",
-      "icono": "🍺",
+      "icono": "🥤",
       "items": [
         {
-          "nombre": "Cerveza Nacional",
-          "descripcion": "",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Cerveza Importada",
-          "descripcion": "",
-          "precio": "$0.00"
-        },
-        {
           "nombre": "Refresco",
-          "descripcion": "",
+          "descripcion": "Coca-Cola, Pepsi, Sprite, Fanta",
           "precio": "$0.00"
         },
         {
           "nombre": "Jugo Natural",
-          "descripcion": "",
-          "precio": "$0.00"
-        }
-      ]
-    },
-    {
-      "nombre": "Acompañantes",
-      "icono": "🍟",
-      "items": [
-        {
-          "nombre": "Papas Fritas",
-          "descripcion": "",
+          "descripcion": "Jugo del día, pregunta por el sabor",
           "precio": "$0.00"
         },
         {
-          "nombre": "Tostones",
-          "descripcion": "",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Yuca Frita",
-          "descripcion": "",
-          "precio": "$0.00"
-        },
-        {
-          "nombre": "Ensalada",
-          "descripcion": "",
+          "nombre": "Agua",
+          "descripcion": "Agua mineral sin gas",
           "precio": "$0.00"
         }
       ]
