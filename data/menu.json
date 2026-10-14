@@ -1,0 +1,140 @@
+{
+  "categorias": [
+    {
+      "nombre": "Parrillas",
+      "icono": "🔥",
+      "items": [
+        {
+          "nombre": "Parrilla Mixta",
+          "descripcion": "Carne + Pollo + Acompañantes",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Parrilla de Res",
+          "descripcion": "Corte especial a la parrilla",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Parrilla de Pollo",
+          "descripcion": "Pechuga jugosa con salsa",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Hamburguesas",
+      "icono": "🍔",
+      "items": [
+        {
+          "nombre": "Sencilla",
+          "descripcion": "Carne, queso, vegetales",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Doble Carne",
+          "descripcion": "Doble carne y doble queso",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Especial Mariana",
+          "descripcion": "Con tocineta y salsa secreta",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Perros Calientes",
+      "icono": "🌭",
+      "items": [
+        {
+          "nombre": "Sencillo",
+          "descripcion": "Salchicha + salsas",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Especial",
+          "descripcion": "Con queso y tocineta",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Americano",
+          "descripcion": "Con papitas y cebolla crispy",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Pepitos",
+      "icono": "🥖",
+      "items": [
+        {
+          "nombre": "De Carne",
+          "descripcion": "Carne mechada + vegetales",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "De Pollo",
+          "descripcion": "Pollo desmechado + queso",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "De Chuleta",
+          "descripcion": "Chuleta ahumada + salsas",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Bebidas",
+      "icono": "🍺",
+      "items": [
+        {
+          "nombre": "Cerveza Nacional",
+          "descripcion": "",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Cerveza Importada",
+          "descripcion": "",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Refresco",
+          "descripcion": "",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Jugo Natural",
+          "descripcion": "",
+          "precio": "$0.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Acompañantes",
+      "icono": "🍟",
+      "items": [
+        {
+          "nombre": "Papas Fritas",
+          "descripcion": "",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Tostones",
+          "descripcion": "",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Yuca Frita",
+          "descripcion": "",
+          "precio": "$0.00"
+        },
+        {
+          "nombre": "Ensalada",
+          "descripcion": "",
+          "precio": "$0.00"
+        }
+      ]
+    }
+  ]
+}
