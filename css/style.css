@@ -1,8 +1,3 @@
-/* ========================================
-   ESTILOS GENERALES - El Rincón de Mariana
-   ======================================== */
-
-/* Variables de colores (basados en el logo) */
 :root {
     --naranja: #E67E22;
     --naranja-oscuro: #D35400;
@@ -13,9 +8,9 @@
     --negro: #1a1a1a;
     --blanco: #ffffff;
     --verde-whatsapp: #25D366;
+    --amarillo: #F1C40F;
 }
 
-/* Reset básico */
 * {
     margin: 0;
     padding: 0;
@@ -43,9 +38,6 @@ h1, h2, h3 {
     padding: 0 1rem;
 }
 
-/* ========================================
-   HEADER / NAVEGACIÓN
-   ======================================== */
 .header {
     background: linear-gradient(135deg, var(--marron-oscuro) 0%, var(--marron) 100%);
     color: var(--crema);
@@ -116,12 +108,9 @@ h1, h2, h3 {
     cursor: pointer;
 }
 
-/* ========================================
-   HERO / PORTADA
-   ======================================== */
 .hero {
     background: linear-gradient(rgba(62, 39, 35, 0.85), rgba(93, 64, 55, 0.85)),
-                url('../img/hero.jpg') center/cover;
+                url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200') center/cover;
     color: var(--crema);
     text-align: center;
     padding: 4rem 1rem;
@@ -132,19 +121,18 @@ h1, h2, h3 {
     align-items: center;
 }
 
-.hero-logo {
-    width: 200px;
-    height: 200px;
-    background: var(--negro);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 2rem;
-    border: 8px solid var(--marron);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    font-size: 5rem;
-    color: var(--naranja);
+.hero-logo-img {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    margin: 0 auto 2rem auto;
+    display: block;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
+    transition: transform 0.3s ease;
+}
+
+.hero-logo-img:hover {
+    transform: scale(1.05);
 }
 
 .hero h1 {
@@ -164,8 +152,23 @@ h1, h2, h3 {
     font-size: 1.5rem;
     color: var(--naranja);
     font-weight: 800;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     font-style: italic;
+}
+
+.calidad-badge {
+    background: var(--amarillo);
+    color: var(--negro);
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 3px solid var(--negro);
 }
 
 .horario-badge {
@@ -222,9 +225,6 @@ h1, h2, h3 {
     transform: translateY(-3px);
 }
 
-/* ========================================
-   SECCIONES GENERALES
-   ======================================== */
 .seccion {
     padding: 4rem 1rem;
 }
@@ -251,9 +251,6 @@ h1, h2, h3 {
     padding: 2rem;
 }
 
-/* ========================================
-   HORARIOS
-   ======================================== */
 .horarios-box {
     background: var(--marron-oscuro);
     color: var(--crema);
@@ -294,9 +291,6 @@ h1, h2, h3 {
     font-weight: 800;
 }
 
-/* ========================================
-   UBICACIÓN
-   ======================================== */
 .ubicacion-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -344,9 +338,6 @@ h1, h2, h3 {
     border: 0;
 }
 
-/* ========================================
-   CONTACTO
-   ======================================== */
 .seccion-contacto {
     background: var(--marron);
     color: var(--crema);
@@ -390,9 +381,10 @@ h1, h2, h3 {
     transform: translateY(-3px);
 }
 
-/* ========================================
-   FOOTER
-   ======================================== */
+.redes-contacto {
+    margin-top: 2rem;
+}
+
 .footer {
     background: var(--marron-oscuro);
     color: var(--crema);
@@ -439,9 +431,6 @@ h1, h2, h3 {
     opacity: 0.7;
 }
 
-/* ========================================
-   BOTÓN WHATSAPP FLOTANTE
-   ======================================== */
 .whatsapp-float {
     position: fixed;
     bottom: 30px;
