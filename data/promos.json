@@ -1,0 +1,22 @@
+{
+  "promociones": [
+    {
+      "icono": "🍔",
+      "titulo": "Viernes de Hamburguesas",
+      "descripcion": "2x1 en hamburguesas sencillas",
+      "precio": "¡Solo $X!"
+    },
+    {
+      "icono": "‍👩‍👧‍👦",
+      "titulo": "Combo Familiar",
+      "descripcion": "Parrilla + 4 refrescos con descuento especial",
+      "precio": "¡Ahorra $X!"
+    },
+    {
+      "icono": "",
+      "titulo": "Happy Hour",
+      "descripcion": "Cervezas a precio especial de 5 a 7 PM",
+      "precio": "50% OFF"
+    }
+  ]
+}
