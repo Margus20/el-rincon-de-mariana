@@ -2,8 +2,12 @@
    INTEGRACIÓN WHATSAPP - El Rincón de Mariana
    ======================================== */
 
-// ️ CAMBIA ESTE NÚMERO POR EL TUYO (con código de país, sin + ni 0 inicial)
-const NUMERO_WHATSAPP = '584123456789';
+// NÚMEROS REALES DEL NEGOCIO
+const NUMERO_WHATSAPP_1 = '584129354244';
+const NUMERO_WHATSAPP_2 = '584167017155';
+
+// Usamos el primero como principal
+const NUMERO_WHATSAPP = NUMERO_WHATSAPP_1;
 
 // Mensaje predeterminado
 const MENSAJE_DEFAULT = '¡Hola! Quiero hacer un pedido en El Rincón de Mariana 🍔';
@@ -14,17 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function configurarWhatsApp() {
-    // Crear el enlace de WhatsApp
     const mensaje = encodeURIComponent(MENSAJE_DEFAULT);
     const enlace = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
     
-    // Actualizar botón del footer
     const btnWhatsapp = document.getElementById('btn-whatsapp');
     if (btnWhatsapp) {
         btnWhatsapp.href = enlace;
     }
     
-    // Actualizar botón flotante
     const floatWhatsapp = document.getElementById('whatsapp-float');
     if (floatWhatsapp) {
         floatWhatsapp.href = enlace;
@@ -33,7 +34,6 @@ function configurarWhatsApp() {
     console.log('✅ WhatsApp configurado: ' + NUMERO_WHATSAPP);
 }
 
-// Cargar promociones desde data/promos.json
 async function cargarPromos() {
     const contenedor = document.getElementById('promos-container');
     if (!contenedor) return;
@@ -41,7 +41,7 @@ async function cargarPromos() {
     const datos = await cargarDatos('data/promos.json');
     
     if (!datos || !datos.promociones) {
-        contenedor.innerHTML = '<p class="cargando">️ No hay promociones disponibles.</p>';
+        contenedor.innerHTML = '<p class="cargando">⚠️ No hay promociones disponibles.</p>';
         return;
     }
     
