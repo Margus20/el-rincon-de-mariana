@@ -1,0 +1,73 @@
+/* ========================================
+   ESTILOS DEL MENÚ - El Rincón de Mariana
+   ======================================== */
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.categoria {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(93, 64, 55, 0.15);
+    border-top: 5px solid var(--naranja);
+    transition: transform 0.3s;
+}
+
+.categoria:hover {
+    transform: translateY(-10px);
+}
+
+.categoria-icono {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.categoria h3 {
+    color: var(--marron-oscuro);
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed var(--crema-oscuro);
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-nombre {
+    font-weight: 700;
+    color: var(--marron);
+    font-size: 1.05rem;
+}
+
+.item-desc {
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 0.2rem;
+}
+
+.item-precio {
+    background: var(--naranja);
+    color: var(--blanco);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 800;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
