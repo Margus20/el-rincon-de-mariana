@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Rincón de Mariana - ¡El sabor que provoca!</title>
+    <meta name="description" content="Las mejores parrillas, hamburguesas, perros calientes y pepitos. Abierto viernes, sábado y domingo.">
+    
+    <!-- Fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Iconos Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Nuestros estilos CSS (separados en carpetas) -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/promos.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <!-- HEADER / NAVEGACIÓN -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo-nav">
+                <i class="fas fa-utensils"></i>
+                El Rincón de <span>Mariana</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#menu">Menú</a></li>
+                <li><a href="#promos">Promos</a></li>
+                <li><a href="#horarios">Horarios</a></li>
+                <li><a href="#ubicacion">Ubicación</a></li>
+                <li><a href="#contacto" class="btn-pedir">Pedir</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- HERO / PORTADA -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <div class="hero-logo">
+                <i class="fas fa-hat-chef"></i>
+            </div>
+            <h1>El Rincón de <span>Mariana</span></h1>
+            <p class="lema">¡El sabor que provoca!</p>
+            <div class="horario-badge">
+                <i class="fas fa-clock"></i>
+                <span>Abierto: Viernes, Sábado y Domingo</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#menu" class="btn btn-primary">
+                    <i class="fas fa-utensils"></i> Ver Menú
+                </a>
+                <a href="#contacto" class="btn btn-secondary">
+                    <i class="fab fa-whatsapp"></i> Pedir Ahora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MENÚ -->
+    <section id="menu" class="seccion">
+        <div class="container">
+            <h2 class="titulo-seccion">Nuestro Menú</h2>
+            <p class="subtitulo-seccion">Todo hecho con amor y los mejores ingredientes</p>
+            
+            <!-- Las categorías se cargan desde data/menu.json vía JavaScript -->
+            <div id="menu-container" class="menu-grid">
+                <p class="cargando">Cargando menú...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROMOCIONES -->
+    <section id="promos" class="seccion-promos">
+        <div class="container">
+            <h2 class="titulo-seccion">🔥 Promociones de la Semana 🔥</h2>
+            
+            <!-- Las promos se cargan desde data/promos.json -->
+            <div id="promos-container" class="promos-grid">
+                <p class="cargando">Cargando promociones...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HORARIOS -->
+    <section id="horarios" class="seccion">
+        <div class="container">
+            <h2 class="titulo-seccion">Horarios de Atención</h2>
+            <p class="subtitulo-seccion">Te esperamos con los brazos abiertos</p>
+            
+            <div class="horarios-box">
+                <h3><i class="fas fa-calendar-alt"></i> Esta Semana</h3>
+                <div class="dia">
+                    <span>Lunes</span>
+                    <span class="cerrado">Cerrado</span>
+                </div>
+                <div class="dia">
+                    <span>Martes</span>
+                    <span class="cerrado">Cerrado</span>
+                </div>
+                <div class="dia">
+                    <span>Miércoles</span>
+                    <span class="cerrado">Cerrado</span>
+                </div>
+                <div class="dia">
+                    <span>Jueves</span>
+                    <span class="cerrado">Cerrado</span>
+                </div>
+                <div class="dia abierto">
+                    <span>Viernes</span>
+                    <span class="horario">5:00 PM - 11:00 PM</span>
+                </div>
+                <div class="dia abierto">
+                    <span>Sábado</span>
+                    <span class="horario">12:00 PM - 11:00 PM</span>
+                </div>
+                <div class="dia abierto">
+                    <span>Domingo</span>
+                    <span class="horario">12:00 PM - 9:00 PM</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UBICACIÓN -->
+    <section id="ubicacion" class="seccion">
+        <div class="container">
+            <h2 class="titulo-seccion">¿Dónde Estamos?</h2>
+            <p class="subtitulo-seccion">Ven a visitarnos o pide delivery</p>
+            
+            <div class="ubicacion-grid">
+                <div class="ubicacion-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>[Tu dirección aquí]</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <span>[Tu teléfono aquí]</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>[Tu WhatsApp aquí]</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-motorcycle"></i>
+                        <span>Delivery disponible</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-parking"></i>
+                        <span>Estacionamiento gratuito</span>
+                    </div>
+                </div>
+                <div class="mapa">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d123456!2d-66.9036!3d10.4806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDI4JzUwLjIiTiA2NsKwNTQnMTMuMCJX!5e0!3m2!1ses!2sve!4v1234567890" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        title="Ubicación del negocio">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO / PEDIDOS -->
+    <section id="contacto" class="seccion-contacto">
+        <div class="container">
+            <h2 class="titulo-seccion">¿Listo para ordenar?</h2>
+            <p class="subtitulo-seccion">Haz tu pedido por WhatsApp o llámanos</p>
+            
+            <div class="contacto-opciones">
+                <a href="#" class="btn btn-whatsapp" id="btn-whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                </a>
+                <a href="tel:+584123456789" class="btn btn-llamar">
+                    <i class="fas fa-phone"></i> Llamar Ahora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <h3 class="footer-logo">El Rincón de Mariana</h3>
+            <p class="footer-lema">¡El sabor que provoca!</p>
+            <div class="redes">
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <p class="footer-copy">© 2026 El Rincón de Mariana. Todos los derechos reservados.</p>
+            <p class="footer-hecho">Hecho con ❤️ en Venezuela</p>
+        </div>
+    </footer>
+
+    <!-- BOTÓN WHATSAPP FLOTANTE -->
+    <a href="#" class="whatsapp-float" id="whatsapp-float" target="_blank" aria-label="Pedir por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Nuestros scripts JavaScript (separados en carpetas) -->
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/whatsapp.js"></script>
+</body>
+</html>
