@@ -1,6 +1,6 @@
 /* ========================================
    SISTEMA DE REGISTRO - El Rincón de Mariana
-   CERTIFICADO OFICIAL TIPO DIPLOMA
+   CERTIFICADO OFICIAL - SIN DISTORSIÓN
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -28,7 +28,6 @@ async function registrarCliente(evento) {
     btnSubmit.disabled = true;
     
     try {
-        // Buscar si existe
         const { data: clientesEncontrados } = await supabaseClient
             .from('clientes')
             .select('codigo_qr, puntos')
@@ -36,11 +35,9 @@ async function registrarCliente(evento) {
             .limit(1);
         
         let codigoQR;
-        let puntosActuales = 0;
         
         if (clientesEncontrados && clientesEncontrados.length > 0) {
             codigoQR = clientesEncontrados[0].codigo_qr;
-            puntosActuales = clientesEncontrados[0].puntos || 0;
         } else {
             codigoQR = 'ERM-' + cedula + '-' + Date.now().toString(36).toUpperCase();
             await supabaseClient.from('clientes').insert([{
@@ -49,10 +46,8 @@ async function registrarCliente(evento) {
             }]);
         }
         
-        // Generar Certificado Oficial
         await generarCertificadoOficial(nombre, cedula, codigoQR);
         
-        // Mostrar resultado en web
         document.getElementById('formulario-registro').style.display = 'none';
         const resultado = document.getElementById('resultado-registro');
         resultado.style.display = 'block';
@@ -65,7 +60,7 @@ async function registrarCliente(evento) {
         document.getElementById('qr-imagen').innerHTML = `<img src="${qrURL}" style="width: 200px; height: 200px;">`;
 
     } catch (error) {
-        alert('❌ Error: ' + error.message);
+        alert(' Error: ' + error.message);
         btnSubmit.innerHTML = textoOriginal;
         btnSubmit.disabled = false;
     }
@@ -74,84 +69,94 @@ async function registrarCliente(evento) {
 async function generarCertificadoOficial(nombre, cedula, codigoQR) {
     const pdfDiv = document.createElement('div');
     pdfDiv.id = 'certificado-oficial';
+    
+    // CLAVE: Usar dimensiones exactas en PÍXELES (no mm) para evitar distorsión
+    // Hoja carta: 216mm x 279mm = 816px x 1056px (a 96 DPI)
+    // Usamos scale 2, así que multiplicamos por 2
+    const anchoPx = 1632;  // 816 * 2
+    const altoPx = 2112;   // 1056 * 2
+    
     pdfDiv.style.cssText = `
-        position: fixed; left: -9999px; top: 0;
-        width: 210mm; min-height: 297mm; padding: 15mm;
-        background: white; color: #333;
+        position: fixed; 
+        left: -9999px; 
+        top: 0;
+        width: ${anchoPx}px;
+        height: ${altoPx}px;
+        padding: 60px;
+        background: white; 
+        color: #333;
         font-family: 'Georgia', 'Times New Roman', serif;
+        box-sizing: border-box;
     `;
 
     const fechaHoy = new Date().toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' });
     const numeroCertificado = 'ERM-' + cedula + '-' + Date.now().toString(36).toUpperCase().substring(0, 6);
 
     pdfDiv.innerHTML = `
-        <!-- MARCO EXTERIOR DECORATIVO -->
-        <div style="border: 8px double #E67E22; padding: 10mm; min-height: 277mm; position: relative;">
+        <!-- MARCO EXTERIOR -->
+        <div style="border: 12px double #E67E22; padding: 40px; height: 100%; box-sizing: border-box; position: relative;">
             
             <!-- MARCO INTERIOR -->
-            <div style="border: 3px solid #5D4037; padding: 8mm; height: 100%;">
+            <div style="border: 4px solid #5D4037; padding: 30px; height: 100%; box-sizing: border-box; position: relative;">
                 
                 <!-- ESQUINAS DECORATIVAS -->
-                <div style="position: absolute; top: 15mm; left: 15mm; width: 15mm; height: 15mm; border-top: 3px solid #E67E22; border-left: 3px solid #E67E22;"></div>
-                <div style="position: absolute; top: 15mm; right: 15mm; width: 15mm; height: 15mm; border-top: 3px solid #E67E22; border-right: 3px solid #E67E22;"></div>
-                <div style="position: absolute; bottom: 15mm; left: 15mm; width: 15mm; height: 15mm; border-bottom: 3px solid #E67E22; border-left: 3px solid #E67E22;"></div>
-                <div style="position: absolute; bottom: 15mm; right: 15mm; width: 15mm; height: 15mm; border-bottom: 3px solid #E67E22; border-right: 3px solid #E67E22;"></div>
+                <div style="position: absolute; top: 20px; left: 20px; width: 60px; height: 60px; border-top: 5px solid #E67E22; border-left: 5px solid #E67E22;"></div>
+                <div style="position: absolute; top: 20px; right: 20px; width: 60px; height: 60px; border-top: 5px solid #E67E22; border-right: 5px solid #E67E22;"></div>
+                <div style="position: absolute; bottom: 20px; left: 20px; width: 60px; height: 60px; border-bottom: 5px solid #E67E22; border-left: 5px solid #E67E22;"></div>
+                <div style="position: absolute; bottom: 20px; right: 20px; width: 60px; height: 60px; border-bottom: 5px solid #E67E22; border-right: 5px solid #E67E22;"></div>
 
-                <!-- ENCABEZADO CON LOGO -->
-                <div style="text-align: center; border-bottom: 4px double #E67E22; padding-bottom: 15px; margin-bottom: 25px;">
+                <!-- ENCABEZADO -->
+                <div style="text-align: center; border-bottom: 4px double #E67E22; padding-bottom: 30px; margin-bottom: 40px;">
                     <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" 
-                         style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px;">
-                    <h1 style="color: #E67E22; font-family: 'Georgia', serif; font-size: 32pt; margin: 10px 0; letter-spacing: 3px; text-transform: uppercase;">
+                         style="width: 180px; height: 180px; object-fit: contain; margin-bottom: 20px;">
+                    <h1 style="color: #E67E22; font-family: 'Georgia', serif; font-size: 72px; margin: 20px 0; letter-spacing: 8px; text-transform: uppercase; font-weight: bold;">
                         El Rincón de Mariana
                     </h1>
-                    <p style="font-style: italic; color: #666; font-size: 14pt; margin: 5px 0; border-top: 1px solid #E67E22; border-bottom: 1px solid #E67E22; display: inline-block; padding: 5px 20px;">
+                    <p style="font-style: italic; color: #666; font-size: 32px; margin: 10px 0; border-top: 2px solid #E67E22; border-bottom: 2px solid #E67E22; display: inline-block; padding: 10px 40px;">
                         ¡El sabor que provoca!
                     </p>
                 </div>
 
-                <!-- TÍTULO DEL CERTIFICADO -->
-                <div style="text-align: center; margin: 30px 0;">
-                    <h2 style="color: #5D4037; font-size: 26pt; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; font-weight: bold;">
+                <!-- TÍTULO -->
+                <div style="text-align: center; margin: 50px 0;">
+                    <h2 style="color: #5D4037; font-size: 56px; letter-spacing: 10px; text-transform: uppercase; margin-bottom: 20px; font-weight: bold;">
                         Certificado de Membresía
                     </h2>
-                    <div style="width: 200px; height: 3px; background: linear-gradient(to right, transparent, #E67E22, transparent); margin: 15px auto;"></div>
-                    <p style="color: #999; font-size: 11pt; margin-top: 10px;">N° ${numeroCertificado}</p>
+                    <div style="width: 400px; height: 4px; background: linear-gradient(to right, transparent, #E67E22, transparent); margin: 20px auto;"></div>
+                    <p style="color: #999; font-size: 24px; margin-top: 20px; letter-spacing: 3px;">N° ${numeroCertificado}</p>
                 </div>
 
-                <!-- CUERPO DEL CERTIFICADO -->
-                <div style="text-align: justify; font-size: 12pt; line-height: 1.8; margin: 30px 40px;">
-                    <p style="margin-bottom: 20px; text-indent: 50px;">
+                <!-- CUERPO -->
+                <div style="text-align: justify; font-size: 26px; line-height: 1.8; margin: 40px 80px;">
+                    <p style="margin-bottom: 30px; text-indent: 80px;">
                         Por medio del presente documento oficial, <strong style="color: #E67E22;">El Rincón de Mariana</strong>, 
                         establecimiento dedicado a la gastronomía, hace constar que el ciudadano(a):
                     </p>
                     
-                    <!-- CAJA DEL TITULAR -->
                     <div style="background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%); 
-                                border: 2px solid #E67E22; 
-                                border-radius: 8px; 
-                                padding: 20px; 
-                                margin: 25px 0;
-                                text-align: center;
-                                box-shadow: 0 4px 8px rgba(230, 126, 34, 0.2);">
-                        <h3 style="color: #5D4037; font-size: 24pt; margin: 0 0 10px 0; font-family: 'Georgia', serif;">
+                                border: 3px solid #E67E22; 
+                                border-radius: 15px; 
+                                padding: 40px; 
+                                margin: 40px 0;
+                                text-align: center;">
+                        <h3 style="color: #5D4037; font-size: 48px; margin: 0 0 20px 0; font-family: 'Georgia', serif; letter-spacing: 3px;">
                             ${nombre.toUpperCase()}
                         </h3>
-                        <p style="margin: 5px 0; font-size: 12pt; color: #666;">
-                            <strong>Cédula de Identidad:</strong> <span style="color: #E67E22; font-size: 14pt;">${cedula}</span>
+                        <p style="margin: 10px 0; font-size: 26px; color: #666;">
+                            <strong>Cédula de Identidad:</strong> <span style="color: #E67E22; font-size: 30px; font-weight: bold;">${cedula}</span>
                         </p>
                     </div>
 
-                    <p style="margin-bottom: 20px;">
+                    <p style="margin-bottom: 30px;">
                         Ha sido registrado(a) exitosamente en nuestro <strong style="color: #E67E22;">Programa de Fidelización Digital</strong>, 
                         quedando acreditado(a) como miembro oficial de nuestro club de beneficios.
                     </p>
 
-                    <!-- BENEFICIOS -->
-                    <div style="background: #f9f9f9; border-left: 5px solid #E67E22; padding: 15px; margin: 25px 0;">
-                        <h4 style="color: #5D4037; margin: 0 0 15px 0; font-size: 14pt; border-bottom: 2px solid #E67E22; padding-bottom: 8px;">
+                    <div style="background: #f9f9f9; border-left: 8px solid #E67E22; padding: 30px; margin: 40px 0;">
+                        <h4 style="color: #5D4037; margin: 0 0 25px 0; font-size: 30px; border-bottom: 3px solid #E67E22; padding-bottom: 15px;">
                             📋 Beneficios del Programa:
                         </h4>
-                        <ul style="margin: 0; padding-left: 25px; line-height: 2;">
+                        <ul style="margin: 0; padding-left: 40px; line-height: 2.2; font-size: 24px;">
                             <li>Acumule puntos por cada compra de <strong style="color: #E67E22;">$10 o más</strong></li>
                             <li>Al completar <strong style="color: #E67E22;">5 visitas válidas</strong>, su <strong style="color: #E67E22;">6ta visita es GRATIS</strong></li>
                             <li>Consumo máximo del beneficio: hasta <strong style="color: #E67E22;">$10</strong></li>
@@ -160,25 +165,25 @@ async function generarCertificadoOficial(nombre, cedula, codigoQR) {
                         </ul>
                     </div>
 
-                    <p style="margin-bottom: 20px;">
+                    <p style="margin-bottom: 30px;">
                         Este certificado debe ser impreso, recortado por la línea punteada inferior y plastificado. 
                         El código QR es <strong>único, personal e intransferible</strong>, y está permanentemente 
                         asociado a su número de cédula de identidad.
                     </p>
                 </div>
 
-                <!-- FECHA Y AUTORIZACIÓN -->
-                <div style="margin-top: 40px; margin-bottom: 50px;">
-                    <div style="display: flex; justify-content: space-between; padding: 0 40px;">
-                        <div style="text-align: center; width: 200px;">
-                            <p style="border-top: 2px solid #5D4037; padding-top: 8px; font-size: 10pt; color: #666;">
+                <!-- FECHA Y FIRMA -->
+                <div style="margin-top: 60px; margin-bottom: 80px;">
+                    <div style="display: flex; justify-content: space-between; padding: 0 80px;">
+                        <div style="text-align: center; width: 400px;">
+                            <p style="border-top: 3px solid #5D4037; padding-top: 15px; font-size: 22px; color: #666;">
                                 Guatire, ${fechaHoy}
                             </p>
                         </div>
-                        <div style="text-align: center; width: 200px;">
+                        <div style="text-align: center; width: 400px;">
                             <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" 
-                                 style="width: 50px; height: 50px; object-fit: contain; opacity: 0.3;">
-                            <p style="border-top: 2px solid #5D4037; padding-top: 8px; font-size: 10pt; color: #666; margin-top: 5px;">
+                                 style="width: 80px; height: 80px; object-fit: contain; opacity: 0.3;">
+                            <p style="border-top: 3px solid #5D4037; padding-top: 15px; font-size: 22px; color: #666; margin-top: 10px;">
                                 El Rincón de Mariana<br>Autorizado
                             </p>
                         </div>
@@ -186,70 +191,68 @@ async function generarCertificadoOficial(nombre, cedula, codigoQR) {
                 </div>
 
                 <!-- LÍNEA DE CORTE -->
-                <div style="border-top: 3px dashed #999; margin: 50px 0 30px 0; position: relative;">
-                    <span style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); 
-                                 background: white; padding: 0 15px; color: #999; font-size: 9pt; font-weight: bold;">
+                <div style="border-top: 4px dashed #999; margin: 60px 0 40px 0; position: relative;">
+                    <span style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); 
+                                 background: white; padding: 0 30px; color: #999; font-size: 20px; font-weight: bold; letter-spacing: 2px;">
                         ✂ RECORTAR POR LA LÍNEA PUNTEADA ✂
                     </span>
                 </div>
 
-                <!-- CARNET DE MEMBRESÍA -->
-                <div style="display: flex; justify-content: center; margin-top: 30px;">
-                    <div style="width: 95mm; height: 60mm; border: 3px solid #E67E22; border-radius: 12px; 
+                <!-- CARNET -->
+                <div style="display: flex; justify-content: center; margin-top: 40px;">
+                    <div style="width: 600px; height: 380px; border: 4px solid #E67E22; border-radius: 20px; 
                                 display: flex; overflow: hidden; 
                                 background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 50%, #fff 100%); 
-                                box-shadow: 0 6px 15px rgba(230, 126, 34, 0.3);">
+                                box-shadow: 0 10px 30px rgba(230, 126, 34, 0.3);">
                         
-                        <!-- Lado Izquierdo - Logo -->
                         <div style="flex: 0 0 40%; background: linear-gradient(135deg, #E67E22 0%, #D35400 100%); 
                                     display: flex; flex-direction: column; align-items: center; justify-content: center; 
-                                    padding: 10px; border-right: 2px solid rgba(255,255,255,0.3);">
+                                    padding: 20px; border-right: 3px solid rgba(255,255,255,0.3);">
                             <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" 
-                                 style="width: 38mm; height: 38mm; object-fit: contain; filter: brightness(0) invert(1);">
-                            <h4 style="color: white; font-family: 'Georgia', serif; font-size: 11pt; 
-                                       text-align: center; margin-top: 5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                                 style="width: 200px; height: 200px; object-fit: contain; filter: brightness(0) invert(1);">
+                            <h4 style="color: white; font-family: 'Georgia', serif; font-size: 28px; 
+                                       text-align: center; margin-top: 15px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
                                 El Rincón<br>de Mariana
                             </h4>
                         </div>
 
-                        <!-- Lado Derecho - Datos y QR -->
-                        <div style="flex: 1; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div style="font-size: 9pt; color: #333; line-height: 1.5;">
-                                <p style="margin: 3px 0;">
-                                    <strong style="color: #E67E22; font-size: 8pt;">TITULAR:</strong><br>
-                                    <span style="font-size: 10pt; font-weight: bold;">${nombre}</span>
+                        <div style="flex: 1; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div style="font-size: 22px; color: #333; line-height: 1.6;">
+                                <p style="margin: 8px 0;">
+                                    <strong style="color: #E67E22; font-size: 18px;">TITULAR:</strong><br>
+                                    <span style="font-size: 26px; font-weight: bold;">${nombre}</span>
                                 </p>
-                                <p style="margin: 3px 0;">
-                                    <strong style="color: #E67E22; font-size: 8pt;">CÉDULA:</strong> ${cedula}
+                                <p style="margin: 8px 0;">
+                                    <strong style="color: #E67E22; font-size: 18px;">CÉDULA:</strong> <span style="font-size: 24px;">${cedula}</span>
                                 </p>
-                                <p style="margin: 3px 0; font-family: monospace; font-size: 7pt;">
+                                <p style="margin: 8px 0; font-family: monospace; font-size: 16px;">
                                     <strong style="color: #E67E22;">ID:</strong> ${codigoQR}
                                 </p>
                             </div>
                             
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
                                 <div style="background: linear-gradient(135deg, #E67E22 0%, #D35400 100%); 
-                                            color: white; padding: 5px 10px; border-radius: 5px; 
-                                            font-size: 8pt; font-weight: bold; text-align: center;">
+                                            color: white; padding: 12px 20px; border-radius: 10px; 
+                                            font-size: 20px; font-weight: bold; text-align: center;">
                                     5 VISITAS<br>=<br>6ta GRATIS
                                 </div>
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${codigoQR}" 
-                                     style="width: 38mm; height: 38mm; border: 1px solid #ddd; border-radius: 3px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${codigoQR}" 
+                                     style="width: 180px; height: 180px; border: 2px solid #ddd; border-radius: 8px;">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- FOOTER -->
-                <div style="text-align: center; font-size: 8pt; color: #999; margin-top: 20px; 
-                            border-top: 1px solid #ddd; padding-top: 10px;">
-                    <p style="margin: 3px 0;">
+                <div style="text-align: center; font-size: 18px; color: #999; margin-top: 40px; 
+                            border-top: 2px solid #ddd; padding-top: 20px;">
+                    <p style="margin: 8px 0;">
                         <strong>El Rincón de Mariana</strong> | WhatsApp: 0412-9354244 / 0416-7017155
                     </p>
-                    <p style="margin: 3px 0;">
+                    <p style="margin: 8px 0;">
                         Instagram: @elrincondemariana.ve | Guatire, Edo. Miranda, Venezuela
                     </p>
-                    <p style="margin: 10px 0 0 0; font-style: italic;">
+                    <p style="margin: 15px 0 0 0; font-style: italic; font-size: 16px;">
                         Documento generado electrónicamente - Válido sin enmiendas ni tachaduras
                     </p>
                 </div>
@@ -263,15 +266,19 @@ async function generarCertificadoOficial(nombre, cedula, codigoQR) {
 
     try {
         const canvas = await html2canvas(pdfDiv, { 
-            scale: 2, 
+            scale: 1,  // CLAVE: scale 1 porque ya usamos píxeles grandes
             useCORS: true, 
             logging: false,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            width: anchoPx,
+            height: altoPx
         });
         
         const imgData = canvas.toDataURL('image/png');
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'letter');
+        
+        // Agregar imagen manteniendo proporciones exactas
         pdf.addImage(imgData, 'PNG', 0, 0, 216, 279);
         pdf.save(`Certificado-Oficial-${cedula}.pdf`);
         
@@ -279,7 +286,7 @@ async function generarCertificadoOficial(nombre, cedula, codigoQR) {
         
     } catch (e) {
         console.error('Error:', e);
-        alert('❌ Error al generar certificado');
+        alert(' Error al generar certificado');
     } finally {
         document.body.removeChild(pdfDiv);
     }
