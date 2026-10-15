@@ -77,12 +77,72 @@
             cursor: pointer;
             width: 100%;
             margin-top: 1rem;
+            margin-bottom: 0.5rem;
             transition: all 0.3s;
         }
         
         .btn-generar:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #3498db;
+        }
+        
+        .btn-secondary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-whatsapp {
+            background: #25D366;
+        }
+        
+        .btn-whatsapp:hover {
+            background: #128C7E;
+        }
+        
+        .btn-email {
+            background: #9b59b6;
+        }
+        
+        .btn-email:hover {
+            background: #8e44ad;
+        }
+        
+        .opciones-entrega {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
+            border-radius: 15px;
+            border: 2px solid #E67E22;
+        }
+        
+        .opciones-entrega h3 {
+            color: #3E2723;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .instrucciones-envio {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #5D4037;
+            border-left: 4px solid #E67E22;
+            display: none;
+        }
+        
+        .instrucciones-envio.visible {
+            display: block;
+        }
+        
+        .instrucciones-envio strong {
+            color: #E67E22;
         }
         
         /* Estilos del PDF (ocultos en pantalla) */
@@ -230,7 +290,7 @@
     <div class="container">
         <h1>🎉 Genera tu Tarjeta de Fidelidad</h1>
         <p style="text-align: center; color: #666; margin-bottom: 2rem;">
-            Ingresa tus datos y descarga tu tarjeta en PDF para imprimir
+            Ingresa tus datos y elige cómo recibir tu tarjeta
         </p>
         
         <form id="form-tarjeta">
@@ -245,8 +305,13 @@
             </div>
             
             <div class="form-group">
-                <label for="telefono"><i class="fab fa-whatsapp"></i> Teléfono</label>
+                <label for="telefono"><i class="fab fa-whatsapp"></i> Teléfono / WhatsApp</label>
                 <input type="tel" id="telefono" placeholder="Ej: 04121234567" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico (opcional)</label>
+                <input type="email" id="email" placeholder="Ej: juan@email.com">
             </div>
             
             <div class="form-group">
@@ -255,15 +320,36 @@
             </div>
             
             <button type="submit" class="btn-generar">
-                <i class="fas fa-file-pdf"></i> Generar y Descargar PDF
+                <i class="fas fa-file-pdf"></i> Generar mi Tarjeta
             </button>
         </form>
+
+        <!-- Opciones de entrega (aparecen después de generar) -->
+        <div id="opciones-entrega" class="opciones-entrega">
+            <h3>📥 ¿Cómo quieres recibir tu tarjeta?</h3>
+            <div class="botones-entrega">
+                <button onclick="descargarPDF()" class="btn-generar">
+                    <i class="fas fa-download"></i> Descargar al Teléfono/PC
+                </button>
+                <button onclick="enviarWhatsApp()" class="btn-generar btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i> Enviar a mi WhatsApp
+                </button>
+                <button onclick="enviarEmail()" class="btn-generar btn-email">
+                    <i class="fas fa-envelope"></i> Enviar por Correo
+                </button>
+                <button onclick="compartir()" class="btn-generar btn-secondary">
+                    <i class="fas fa-share-alt"></i> Compartir (otras apps)
+                </button>
+            </div>
+            
+            <div id="instrucciones-envio" class="instrucciones-envio"></div>
+        </div>
     </div>
 
     <!-- Contenido del PDF (oculto) -->
     <div id="pdf-content">
         <div class="instrucciones">
-            <h2> Instrucciones para tu Tarjeta de Fidelidad</h2>
+            <h2>📋 Instrucciones para tu Tarjeta de Fidelidad</h2>
             
             <h3>🖨️ Cómo imprimir tu tarjeta:</h3>
             <ul>
@@ -296,7 +382,7 @@
                 <li>Solo se aceptan tarjetas <strong>originales plastificadas</strong> (no fotocopias)</li>
             </ul>
             
-            <h3>📞 Contacto:</h3>
+            <h3> Contacto:</h3>
             <ul>
                 <li><strong>WhatsApp:</strong> 0412-9354244 / 0416-7017155</li>
                 <li><strong>Instagram:</strong> @elrincondemariana.ve</li>
@@ -332,28 +418,44 @@
     </div>
 
     <script>
+        let pdfBlob = null;
+        let datosCliente = {};
+
         document.getElementById('form-tarjeta').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const nombre = document.getElementById('nombre').value.trim();
-            const cedula = document.getElementById('cedula').value.trim();
-            const telefono = document.getElementById('telefono').value.trim();
-            const codigoQR = document.getElementById('codigo-qr').value.trim();
+            datosCliente = {
+                nombre: document.getElementById('nombre').value.trim(),
+                cedula: document.getElementById('cedula').value.trim(),
+                telefono: document.getElementById('telefono').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                codigoQR: document.getElementById('codigo-qr').value.trim()
+            };
             
-            if (!nombre || !cedula || !telefono || !codigoQR) {
-                alert('️ Por favor completa todos los campos');
+            if (!datosCliente.nombre || !datosCliente.cedula || !datosCliente.telefono || !datosCliente.codigoQR) {
+                alert('⚠️ Por favor completa todos los campos obligatorios');
                 return;
             }
             
+            await generarPDF();
+            
+            // Mostrar opciones de entrega
+            document.getElementById('opciones-entrega').style.display = 'block';
+            
+            // Scroll suave a las opciones
+            document.getElementById('opciones-entrega').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        async function generarPDF() {
             // Generar la imagen del QR
-            const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${codigoQR}`;
+            const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${datosCliente.codigoQR}`;
             document.getElementById('qr-img').src = qrURL;
             
             // Llenar los datos
-            document.getElementById('pdf-nombre').textContent = nombre;
-            document.getElementById('pdf-cedula').textContent = cedula;
+            document.getElementById('pdf-nombre').textContent = datosCliente.nombre;
+            document.getElementById('pdf-cedula').textContent = datosCliente.cedula;
             
-            // Fecha de emisión (hoy)
+            // Fecha de emisión
             const hoy = new Date();
             const fechaFormateada = hoy.toLocaleDateString('es-VE', {
                 year: 'numeric',
@@ -369,7 +471,6 @@
             // Esperar a que las imágenes carguen
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Generar el PDF
             try {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'letter');
@@ -381,23 +482,66 @@
                 });
                 
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210; // Ancho de carta en mm
+                const imgWidth = 210;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
                 pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                pdf.save(`Tarjeta-Fidelidad-${cedula}.pdf`);
                 
-                alert('✅ ¡PDF generado exitosamente! Revisa tu carpeta de descargas.');
+                // Guardar como blob para poder compartir
+                pdfBlob = pdf.output('blob');
+                
+                // Ocultar el contenido
+                pdfContent.style.display = 'none';
+                
+                alert('✅ Tarjeta generada. Elige cómo quieres recibirla:');
                 
             } catch (error) {
                 console.error('Error al generar PDF:', error);
                 alert('❌ Error al generar el PDF: ' + error.message);
-            } finally {
-                // Ocultar el contenido del PDF
                 pdfContent.style.display = 'none';
             }
-        });
-    </script>
+        }
 
-</body>
-</html>
+        function descargarPDF() {
+            if (!pdfBlob) return;
+            
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Tarjeta-Fidelidad-${datosCliente.cedula}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            mostrarInstrucciones('📥 <strong>PDF descargado exitosamente.</strong><br>Revisa tu carpeta de Descargas (Downloads). Guárdalo en tu teléfono y llévalo a imprimir cuando puedas.');
+        }
+
+        function enviarWhatsApp() {
+            if (!pdfBlob) return;
+            
+            // Convertir el número de teléfono a formato internacional para WhatsApp
+            // Ejemplo: 04121234567 → 584121234567
+            let telefonoLimpio = datosCliente.telefono.replace(/\D/g, ''); // Quitar todo lo que no sea número
+            
+            // Si empieza con 58, dejarlo así. Si empieza con 0, quitarlo y agregar 58
+            if (telefonoLimpio.startsWith('0')) {
+                telefonoLimpio = '58' + telefonoLimpio.substring(1);
+            } else if (!telefonoLimpio.startsWith('58')) {
+                telefonoLimpio = '58' + telefonoLimpio;
+            }
+            
+            const mensaje = `¡Hola ${datosCliente.nombre}! 🎉\n\nAcabas de generar tu tarjeta de fidelidad de *El Rincón de Mariana*.\n\n Datos:\n• Nombre: ${datosCliente.nombre}\n• Cédula: ${datosCliente.cedula}\n• Código QR: ${datosCliente.codigoQR}\n\n📥 El archivo PDF está en tu carpeta de Descargas con el nombre:\n*Tarjeta-Fidelidad-${datosCliente.cedula}.pdf*\n\n️ Imprímelo, plastifícalo y recórtalo.\n Presenta esta tarjeta en cada visita para acumular puntos.\n\n¡Te esperamos! `;
+            
+            const url = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`;
+            
+            // Primero descargar el PDF automáticamente
+            const urlDescarga = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = urlDescarga;
+            a.download = `Tarjeta-Fidelidad-${datosCliente.cedula}.pdf`;
+            a.click();
+            URL.revokeObjectURL(urlDescarga);
+            
+            // Luego abrir WhatsApp
+            window.open(url, '_blank');
+            
+            mostrarInstrucciones(`📱 <strong>Se abrió WhatsApp al número ${datosCliente.telefono}.</strong><br><br>⚠️ <strong>IMPORTANTE:</strong> El PDF se descargó automáticamente a tu carpeta de Descargas.<br><br>📎 <strong>Debes adjuntarlo manualmente:</strong><br>1. Toca el ícono del clip 📎 en WhatsApp<br>2. Selecciona
