@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Tarjeta de Fidelidad - El Rincón de Mariana</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Librerías para generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #f5f5f5;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #E67E22;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #3E2723;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #E67E22;
+        }
+        
+        .btn-generar {
+            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-generar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+        }
+        
+        /* Estilos del PDF (ocultos en pantalla) */
+        #pdf-content {
+            display: none;
+            width: 210mm;
+            padding: 10mm;
+            background: white;
+        }
+        
+        .instrucciones {
+            margin-bottom: 20mm;
+        }
+        
+        .instrucciones h2 {
+            color: #E67E22;
+            font-size: 18pt;
+            margin-bottom: 10pt;
+            border-bottom: 2px solid #E67E22;
+            padding-bottom: 5pt;
+        }
+        
+        .instrucciones h3 {
+            color: #5D4037;
+            font-size: 12pt;
+            margin-top: 10pt;
+            margin-bottom: 5pt;
+        }
+        
+        .instrucciones ul {
+            margin-left: 20pt;
+            margin-bottom: 10pt;
+        }
+        
+        .instrucciones li {
+            font-size: 10pt;
+            margin-bottom: 5pt;
+            line-height: 1.5;
+        }
+        
+        .tarjeta-container {
+            border: 2px dashed #999;
+            padding: 10mm;
+            position: relative;
+        }
+        
+        .tarjeta-container::before {
+            content: '✂ RECORTAR POR LÍNEA PUNTEADA ✂';
+            position: absolute;
+            top: -8pt;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 10pt;
+            font-size: 9pt;
+            color: #999;
+        }
+        
+        .tarjeta {
+            width: 90mm;
+            height: 50mm;
+            border: 1px solid #3E2723;
+            border-radius: 3mm;
+            padding: 5mm;
+            display: flex;
+            gap: 5mm;
+            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tarjeta-logo {
+            flex: 0 0 35mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tarjeta-logo img {
+            width: 25mm;
+            height: 25mm;
+            object-fit: contain;
+        }
+        
+        .tarjeta-logo h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 9pt;
+            color: #E67E22;
+            text-align: center;
+            margin-top: 2mm;
+        }
+        
+        .tarjeta-logo p {
+            font-size: 7pt;
+            color: #5D4037;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .tarjeta-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .tarjeta-qr {
+            width: 25mm;
+            height: 25mm;
+            background: white;
+            padding: 2mm;
+            border-radius: 2mm;
+            align-self: center;
+        }
+        
+        .tarjeta-qr img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .tarjeta-datos {
+            font-size: 8pt;
+            color: #3E2723;
+        }
+        
+        .tarjeta-datos strong {
+            color: #E67E22;
+        }
+        
+        .tarjeta-datos p {
+            margin: 2pt 0;
+        }
+        
+        .tarjeta-programa {
+            font-size: 7pt;
+            color: #5D4037;
+            text-align: center;
+            margin-top: 2mm;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎉 Genera tu Tarjeta de Fidelidad</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 2rem;">
+            Ingresa tus datos y descarga tu tarjeta en PDF para imprimir
+        </p>
+        
+        <form id="form-tarjeta">
+            <div class="form-group">
+                <label for="nombre"><i class="fas fa-user"></i> Nombre y Apellido</label>
+                <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="cedula"><i class="fas fa-id-card"></i> Cédula de Identidad</label>
+                <input type="text" id="cedula" placeholder="Ej: 12345678" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefono"><i class="fab fa-whatsapp"></i> Teléfono</label>
+                <input type="tel" id="telefono" placeholder="Ej: 04121234567" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="codigo-qr"><i class="fas fa-qrcode"></i> Código QR (te lo dieron al registrarte)</label>
+                <input type="text" id="codigo-qr" placeholder="Ej: ERM-12345678-ABC123" required>
+            </div>
+            
+            <button type="submit" class="btn-generar">
+                <i class="fas fa-file-pdf"></i> Generar y Descargar PDF
+            </button>
+        </form>
+    </div>
+
+    <!-- Contenido del PDF (oculto) -->
+    <div id="pdf-content">
+        <div class="instrucciones">
+            <h2> Instrucciones para tu Tarjeta de Fidelidad</h2>
+            
+            <h3>🖨️ Cómo imprimir tu tarjeta:</h3>
+            <ul>
+                <li>Imprime esta hoja en papel <strong>cartulina o papel bond grueso (180-200g)</strong> para mejor durabilidad</li>
+                <li>Usa configuración de impresión: <strong>Tamaño carta (Letter) o A4</strong>, orientación vertical</li>
+                <li>Imprime a <strong>color</strong> para mejor presentación</li>
+            </ul>
+            
+            <h3>✂️ Cómo preparar tu tarjeta:</h3>
+            <ul>
+                <li>Recorta la tarjeta por las <strong>líneas punteadas</strong> con tijeras</li>
+                <li><strong>Plastifica la tarjeta</strong> (lamina fría o caliente) para protegerla del desgaste y manchas</li>
+                <li>Guarda tu tarjeta en tu billetera o lugar seguro</li>
+            </ul>
+            
+            <h3>🎯 Cómo funciona el programa:</h3>
+            <ul>
+                <li><strong>Presenta esta tarjeta</strong> cada vez que visites El Rincón de Mariana</li>
+                <li>El personal escaneará tu código QR para registrar tu visita</li>
+                <li>Debes consumir <strong>$10 o más</strong> por visita para que cuente como válida</li>
+                <li>Al completar <strong>5 visitas válidas</strong>, tu <strong>6ta visita es GRATIS</strong> (hasta $10 de consumo)</li>
+                <li>Si tu consumo es mayor a $10, solo pagas la diferencia</li>
+            </ul>
+            
+            <h3>⚠️ Importante:</h3>
+            <ul>
+                <li>Esta tarjeta es <strong>personal e intransferible</strong></li>
+                <li>El premio <strong>no es acumulable</strong> con otras promociones</li>
+                <li>Si pierdes tu tarjeta, escríbenos al WhatsApp <strong>0412-9354244</strong> con tu cédula para reponerla</li>
+                <li>Solo se aceptan tarjetas <strong>originales plastificadas</strong> (no fotocopias)</li>
+            </ul>
+            
+            <h3>📞 Contacto:</h3>
+            <ul>
+                <li><strong>WhatsApp:</strong> 0412-9354244 / 0416-7017155</li>
+                <li><strong>Instagram:</strong> @elrincondemariana.ve</li>
+                <li><strong>Ubicación:</strong> Guatire, Edo. Miranda, Venezuela</li>
+            </ul>
+        </div>
+        
+        <div class="tarjeta-container">
+            <div class="tarjeta">
+                <div class="tarjeta-logo">
+                    <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo">
+                    <h3>El Rincón de Mariana</h3>
+                    <p>¡El sabor que provoca!</p>
+                </div>
+                
+                <div class="tarjeta-info">
+                    <div class="tarjeta-qr">
+                        <img id="qr-img" src="" alt="QR">
+                    </div>
+                    
+                    <div class="tarjeta-datos">
+                        <p><strong>Cliente:</strong> <span id="pdf-nombre"></span></p>
+                        <p><strong>Cédula:</strong> <span id="pdf-cedula"></span></p>
+                        <p><strong>Emitida:</strong> <span id="pdf-fecha"></span></p>
+                    </div>
+                    
+                    <div class="tarjeta-programa">
+                        5 visitas = 6ta GRATIS (hasta $10)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('form-tarjeta').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value.trim();
+            const cedula = document.getElementById('cedula').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const codigoQR = document.getElementById('codigo-qr').value.trim();
+            
+            if (!nombre || !cedula || !telefono || !codigoQR) {
+                alert('️ Por favor completa todos los campos');
+                return;
+            }
+            
+            // Generar la imagen del QR
+            const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${codigoQR}`;
+            document.getElementById('qr-img').src = qrURL;
+            
+            // Llenar los datos
+            document.getElementById('pdf-nombre').textContent = nombre;
+            document.getElementById('pdf-cedula').textContent = cedula;
+            
+            // Fecha de emisión (hoy)
+            const hoy = new Date();
+            const fechaFormateada = hoy.toLocaleDateString('es-VE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('pdf-fecha').textContent = fechaFormateada;
+            
+            // Mostrar el contenido del PDF temporalmente
+            const pdfContent = document.getElementById('pdf-content');
+            pdfContent.style.display = 'block';
+            
+            // Esperar a que las imágenes carguen
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Generar el PDF
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'letter');
+                
+                const canvas = await html2canvas(pdfContent, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // Ancho de carta en mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.save(`Tarjeta-Fidelidad-${cedula}.pdf`);
+                
+                alert('✅ ¡PDF generado exitosamente! Revisa tu carpeta de descargas.');
+                
+            } catch (error) {
+                console.error('Error al generar PDF:', error);
+                alert('❌ Error al generar el PDF: ' + error.message);
+            } finally {
+                // Ocultar el contenido del PDF
+                pdfContent.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>
