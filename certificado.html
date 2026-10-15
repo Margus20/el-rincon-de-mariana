@@ -94,7 +94,7 @@
         }
         .texto-inferior strong { color: #E67E22; }
         
-        /* CARNET - LOGO GRANDE */
+        /* CARNET - LOGO GRANDE CON MARGEN NEGATIVO */
         .carnet-box {
             margin-top: 25px;
             border: 3px dashed #999;
@@ -115,7 +115,7 @@
         }
         .carnet {
             display: flex;
-            height: 150px;
+            height: 200px;
             border: 2px solid #333;
             border-radius: 8px;
             overflow: hidden;
@@ -128,20 +128,20 @@
             align-items: center;
             justify-content: center;
             border-right: 2px solid #ddd;
-            padding: 5px;
+            overflow: hidden;
         }
         .carnet-left img {
-            width: 130px;
-            height: 130px;
+            width: 200px;
+            height: 200px;
             object-fit: contain;
-            margin-bottom: 5px;
+            margin: -20px;
         }
         .carnet-left p {
             font-size: 11px;
             color: #E67E22;
             font-weight: bold;
             text-align: center;
-            line-height: 1.2;
+            margin-top: 0;
         }
         .carnet-right {
             flex: 1;
@@ -154,8 +154,8 @@
             position: relative;
         }
         .qr {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border: 1px solid #333;
             margin-bottom: 8px;
         }
@@ -220,18 +220,12 @@
             .acciones { display: none !important; }
             @page { size: letter; margin: 10mm; }
         }
-        @media (max-width: 600px) {
-            .contenido { flex-direction: column; gap: 10px; }
-            .carnet { height: 130px; }
-            .carnet-left img { width: 110px; height: 110px; }
-            .qr { width: 80px; height: 80px; }
-        }
     </style>
 </head>
 <body>
 
     <div class="acciones">
-        <button onclick="window.print()" class="btn">🖨️ Imprimir / Guardar PDF</button>
+        <button onclick="window.print()" class="btn">️ Imprimir / Guardar PDF</button>
         <a href="index.html#registro" class="btn secundario">← Volver</a>
     </div>
 
@@ -255,8 +249,8 @@
             <div class="columna">
                 <p><strong>El Rincón de Mariana</strong> certifica que:</p>
                 <p style="text-align: center; font-size: 16px; font-weight: bold; color: #5D4037; margin: 15px 0;">
-                    MARCOS VARGAS<br>
-                    <span style="font-size: 13px; color: #E67E22;">Cédula: 17642323</span>
+                    <span id="nombre-titulo"></span><br>
+                    <span style="font-size: 13px; color: #E67E22;">Cédula: <span id="cedula-titulo"></span></span>
                 </p>
                 <p>Es miembro oficial de nuestro <strong>Programa de Fidelización</strong>.</p>
             </div>
@@ -306,11 +300,8 @@
         const telefono = params.get('telefono') || '0000-0000000';
         const qr = params.get('qr') || 'ERM-00000000-XXXXXX';
         
-        const textoCentrado = document.querySelector('.columna p:nth-child(2)');
-        if (textoCentrado) {
-            textoCentrado.innerHTML = `${nombre.toUpperCase()}<br><span style="font-size: 13px; color: #E67E22;">Cédula: ${cedula}</span>`;
-        }
-        
+        document.getElementById('nombre-titulo').textContent = nombre.toUpperCase();
+        document.getElementById('cedula-titulo').textContent = cedula;
         document.getElementById('carnet-nombre').textContent = nombre;
         document.getElementById('carnet-telefono').textContent = telefono;
         document.getElementById('num-cert').textContent = qr;
