@@ -3,77 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Rincón de Mariana</title>
+    <title>El Rincón de Mariana - ¡El sabor que provoca!</title>
+    <meta name="description" content="Las mejores parrillas, hamburguesas, perros calientes. 100% carne de primera.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/promos.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/registro.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
     <header class="header">
         <nav class="nav">
-            <div class="logo-nav"><i class="fas fa-utensils"></i> El Rincón de <span>Mariana</span></div>
+            <div class="logo-nav">
+                <i class="fas fa-utensils"></i>
+                El Rincón de <span>Mariana</span>
+            </div>
             <ul class="nav-links">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#menu">Menú</a></li>
-                <li><a href="#registro" class="btn-pedir">Registrarme</a></li>
+                <li><a href="#promos">Promos</a></li>
+                <li><a href="#registro">Registrarme</a></li>
+                <li><a href="#horarios">Horarios</a></li>
+                <li><a href="#ubicacion">Ubicación</a></li>
+                <li><a href="#contacto" class="btn-pedir">Pedir</a></li>
             </ul>
+            <button class="menu-toggle" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
     </header>
 
     <section id="inicio" class="hero">
         <div class="hero-content">
+            <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo" class="hero-logo-img">
             <h1>El Rincón de <span>Mariana</span></h1>
             <p class="lema">¡El sabor que provoca!</p>
-            <a href="#registro" class="btn btn-primary"><i class="fas fa-qrcode"></i> Unirme al Club</a>
+            <div class="calidad-badge">
+                <i class="fas fa-award"></i>
+                <span>100% Carne de 1ra</span>
+            </div>
+            <div class="horario-badge">
+                <i class="fas fa-clock"></i>
+                <span>Abierto: Viernes, Sábado y Domingo</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#menu" class="btn btn-primary">
+                    <i class="fas fa-utensils"></i> Ver Menú
+                </a>
+                <a href="#registro" class="btn btn-secondary">
+                    <i class="fas fa-qrcode"></i> Registrarme
+                </a>
+            </div>
         </div>
     </section>
 
     <section id="menu" class="seccion">
         <div class="container">
             <h2 class="titulo-seccion">Nuestro Menú</h2>
-            <div id="menu-container" class="menu-grid"><p>Cargando...</p></div>
+            <p class="subtitulo-seccion">Todo hecho con amor y los mejores ingredientes</p>
+            <div id="menu-container" class="menu-grid">
+                <p class="cargando">Cargando menú...</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="promos" class="seccion-promos">
+        <div class="container">
+            <h2 class="titulo-seccion">🔥 Promociones de la Semana 🔥</h2>
+            <div id="promos-container" class="promos-grid">
+                <p class="cargando">Cargando promociones...</p>
+            </div>
         </div>
     </section>
 
     <!-- SECCIÓN REGISTRO -->
     <section id="registro" class="seccion-registro">
         <div class="container">
-            <h2 class="titulo-seccion">🎉 Club de Fidelidad 🎉</h2>
+            <h2 class="titulo-seccion">🎉 Regístrate y Acumula Puntos 🎉</h2>
             <p class="subtitulo-seccion">¡Compra 5 veces y la 6ta es GRATIS!</p>
             
             <div class="registro-container">
                 <form id="formulario-registro" class="formulario-registro">
                     <div class="campo-form">
-                        <label><i class="fas fa-id-card"></i> Cédula</label>
-                        <input type="text" id="cedula" required>
+                        <label for="cedula"><i class="fas fa-id-card"></i> Cédula de Identidad</label>
+                        <input type="text" id="cedula" placeholder="Ej: 12345678" required>
                     </div>
+                    
                     <div class="campo-form">
-                        <label><i class="fas fa-user"></i> Nombre y Apellido</label>
-                        <input type="text" id="nombre" required>
+                        <label for="nombre"><i class="fas fa-user"></i> Nombre y Apellido</label>
+                        <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
                     </div>
+                    
                     <div class="campo-form">
-                        <label><i class="fab fa-whatsapp"></i> Teléfono</label>
-                        <input type="tel" id="telefono" required>
+                        <label for="telefono"><i class="fab fa-whatsapp"></i> Teléfono / WhatsApp</label>
+                        <input type="tel" id="telefono" placeholder="Ej: 04121234567" required>
                     </div>
-                    <button type="submit" id="btn-registrar" class="btn-registrar">Generar mi Código QR</button>
+                    
+                    <button type="submit" id="btn-registrar" class="btn-registrar">
+                        <i class="fas fa-qrcode"></i> Generar mi Código QR
+                    </button>
+                    
+                    <p class="nota-registro">
+                        <i class="fas fa-info-circle"></i> 
+                        Al registrarte, recibirás un código QR único. Preséntalo en cada visita para acumular puntos.
+                    </p>
                 </form>
                 
+                <!-- Resultado después del registro -->
                 <div id="resultado-registro" class="resultado-registro" style="display: none;">
                     <div class="qr-card">
-                        <h3>¡Registro Exitoso! </h3>
+                        <h3>¡Registro Exitoso! 🎉</h3>
                         <p class="cliente-nombre" id="qr-cliente-nombre"></p>
+                        
                         <div id="qr-imagen" class="qr-imagen"></div>
-                        <p class="codigo-texto">Código: <strong id="qr-cliente-codigo"></strong></p>
+                        
+                        <p class="codigo-texto">Tu código: <strong id="qr-cliente-codigo"></strong></p>
+                        <p class="cedula-texto">Cédula: <span id="qr-cliente-cedula"></span></p>
                         
                         <div class="botones-resultado">
-                            <a href="#" id="btn-descargar-tarjeta" class="btn-descargar" style="background: #E67E22;">
+                            <a href="#" id="btn-descargar-tarjeta" class="btn-descargar" target="_blank" style="background: #E67E22;">
                                 <i class="fas fa-file-pdf"></i> Descargar Tarjeta PDF
                             </a>
-                            <a href="#" id="btn-descargar-qr" class="btn-descargar">
-                                <i class="fas fa-download"></i> Solo QR
+                            <a href="#" id="btn-descargar-qr" class="btn-descargar" download>
+                                <i class="fas fa-download"></i> Descargar QR
                             </a>
                             <a href="#" id="btn-whatsapp-qr" class="btn-whatsapp-qr" target="_blank">
                                 <i class="fab fa-whatsapp"></i> Avisar a Mariana
@@ -81,10 +141,12 @@
                         </div>
                         
                         <p class="instrucciones">
+                            <i class="fas fa-lightbulb"></i> 
                             <strong>¿Qué hacer ahora?</strong><br>
-                            1. Toca "Descargar Tarjeta PDF".<br>
-                            2. Imprime la hoja, recorta la tarjeta y plastifícala.<br>
-                            3. Preséntala cada vez que vengas.
+                            1. Toca "Descargar Tarjeta PDF" (botón naranja)<br>
+                            2. Imprime la hoja, recorta la tarjeta y plastifícala<br>
+                            3. Preséntala en cada visita<br>
+                            4. Acumula 5 compras y la 6ta es GRATIS
                         </p>
                     </div>
                 </div>
@@ -92,9 +154,98 @@
         </div>
     </section>
 
+    <section id="horarios" class="seccion">
+        <div class="container">
+            <h2 class="titulo-seccion">Horarios de Atención</h2>
+            <p class="subtitulo-seccion">Te esperamos con los brazos abiertos</p>
+            
+            <div class="horarios-box">
+                <h3><i class="fas fa-calendar-alt"></i> Esta Semana</h3>
+                <div class="dia"><span>Lunes</span><span class="cerrado">Cerrado</span></div>
+                <div class="dia"><span>Martes</span><span class="cerrado">Cerrado</span></div>
+                <div class="dia"><span>Miércoles</span><span class="cerrado">Cerrado</span></div>
+                <div class="dia"><span>Jueves</span><span class="cerrado">Cerrado</span></div>
+                <div class="dia abierto"><span>Viernes</span><span class="horario">5:00 PM - 11:00 PM</span></div>
+                <div class="dia abierto"><span>Sábado</span><span class="horario">12:00 PM - 11:00 PM</span></div>
+                <div class="dia abierto"><span>Domingo</span><span class="horario">12:00 PM - 9:00 PM</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ubicacion" class="seccion">
+        <div class="container">
+            <h2 class="titulo-seccion">¿Dónde Estamos?</h2>
+            <p class="subtitulo-seccion">Ven a visitarnos o pide delivery</p>
+            
+            <div class="ubicacion-grid">
+                <div class="ubicacion-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>[Dirección pendiente]</span></div>
+                    <div class="info-item"><i class="fas fa-phone"></i><span>0412-9354244</span></div>
+                    <div class="info-item"><i class="fas fa-phone"></i><span>0416-7017155</span></div>
+                    <div class="info-item"><i class="fab fa-whatsapp"></i><span>WhatsApp: 0412-9354244</span></div>
+                    <div class="info-item"><i class="fas fa-motorcycle"></i><span>Delivery disponible</span></div>
+                    <div class="info-item"><i class="fas fa-award"></i><span>100% Carne de 1ra</span></div>
+                </div>
+                <div class="mapa">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d123456!2d-66.9036!3d10.4806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDI4JzUwLjIiTiA2NsKwNTQnMTMuMCJX!5e0!3m2!1ses!2sve!4v1234567890" allowfullscreen="" loading="lazy" title="Ubicación"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="seccion-contacto">
+        <div class="container">
+            <h2 class="titulo-seccion">¿Listo para ordenar?</h2>
+            <p class="subtitulo-seccion">Haz tu pedido por WhatsApp o llámanos</p>
+            <div class="contacto-opciones">
+                <a href="#" class="btn btn-whatsapp" id="btn-whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                </a>
+                <a href="tel:+584129354244" class="btn btn-llamar">
+                    <i class="fas fa-phone"></i> Llamar al 0412-9354244
+                </a>
+                <a href="tel:+584167017155" class="btn btn-llamar">
+                    <i class="fas fa-phone"></i> Llamar al 0416-7017155
+                </a>
+            </div>
+            <div class="redes-contacto">
+                <p style="margin-top: 2rem; font-size: 1.2rem;">Síguenos en redes sociales:</p>
+                <div class="redes" style="margin-top: 1rem;">
+                    <a href="https://x.com/elrincondemariana.ve" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://instagram.com/elrincondemariana.ve" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://facebook.com/elrincondemariana.ve" target="_blank"><i class="fab fa-facebook"></i></a>
+                </div>
+                <p style="margin-top: 1rem; font-size: 1.3rem; font-weight: 800;">@elrincondemariana.ve</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <h3 class="footer-logo">El Rincón de Mariana</h3>
+            <p class="footer-lema">¡El sabor que provoca!</p>
+            <div class="redes">
+                <a href="https://x.com/elrincondemariana.ve" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://instagram.com/elrincondemariana.ve" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/elrincondemariana.ve" target="_blank"><i class="fab fa-facebook"></i></a>
+            </div>
+            <p class="footer-copy">© 2026 El Rincón de Mariana. Todos los derechos reservados.</p>
+            <p class="footer-hecho">Hecho con ❤️ en Venezuela</p>
+        </div>
+    </footer>
+
+    <a href="#" class="whatsapp-float" id="whatsapp-float" target="_blank" aria-label="Pedir por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts -->
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/whatsapp.js"></script>
     <script src="js/registro.js"></script>
 </body>
 </html>
