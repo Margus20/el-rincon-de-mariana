@@ -17,8 +17,6 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/registro.css">
     
-    <!-- Librerías para generar la imagen del certificado -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Librería de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -81,7 +79,7 @@
 
     <section id="promos" class="seccion-promos">
         <div class="container">
-            <h2 class="titulo-seccion">🔥 Promociones de la Semana 🔥</h2>
+            <h2 class="titulo-seccion"> Promociones de la Semana 🔥</h2>
             <div id="promos-container" class="promos-grid">
                 <p class="cargando">Cargando promociones...</p>
             </div>
@@ -118,7 +116,7 @@
                     
                     <p class="nota-registro">
                         <i class="fas fa-info-circle"></i> 
-                        Al registrarte, tu Certificado Oficial se generará automáticamente. 
+                        Al registrarte, tu Certificado Oficial se abrirá en una nueva pestaña. 
                         Tu código QR quedará <strong>anclado para siempre a tu cédula de identidad</strong>.
                     </p>
                 </form>
@@ -136,29 +134,29 @@
                         
                         <p class="instrucciones" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin: 15px 0;">
                             <i class="fas fa-check-circle"></i> 
-                            <strong>¡Listo!</strong> Tu Certificado Oficial ha sido generado.
+                            <strong>¡Listo!</strong> Se abrió tu Certificado en una nueva pestaña.
                         </p>
-
-                        <!-- BOTÓN DESCARGAR IMAGEN IMPRIMIBLE -->
-                        <a href="#" id="btn-descargar-imagen" class="btn-registrar" 
-                           style="background: #E67E22; margin-top: 10px; display: inline-block; 
-                                  text-decoration: none; padding: 15px 30px; border-radius: 50px; 
-                                  color: white; font-weight: bold; text-align: center; width: 100%; box-sizing: border-box;">
-                            <i class="fas fa-image"></i> Descargar Certificado (Imagen Imprimible PNG)
-                        </a>
 
                         <p style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; 
                                   padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9rem;">
                             <i class="fas fa-print"></i> 
-                            <strong>¿Qué hacer con esta imagen?</strong><br>
-                            • Guárdala en tu teléfono o computadora<br>
-                            • Imprímela en papel grueso o cartulina<br>
-                            • Recorta la tarjeta por la línea punteada<br>
-                            • Plastifícala para mayor durabilidad<br>
-                            • Preséntala en cada visita para acumular puntos
+                            <strong>¿Qué hacer ahora?</strong><br>
+                            1. En la nueva pestaña verás tu certificado perfecto<br>
+                            2. Toca el botón naranja <strong>"🖨️ Imprimir / Guardar PDF"</strong><br>
+                            3. Elige <strong>"Guardar como PDF"</strong> en el destino de impresión<br>
+                            4. Imprime el PDF, recorta el carnet y plastifícalo
                         </p>
 
-                        <!-- BOTÓN VOLVER AL INICIO -->
+                        <!-- Botón para abrir certificado manualmente si se cerró la pestaña -->
+                        <a href="#" id="btn-ver-certificado" class="btn-registrar" 
+                           style="background: #E67E22; margin-top: 10px; display: inline-block; 
+                                  text-decoration: none; padding: 15px 30px; border-radius: 50px; 
+                                  color: white; font-weight: bold; text-align: center; width: 100%; box-sizing: border-box;"
+                           target="_blank">
+                            <i class="fas fa-file-certificate"></i> Ver Certificado de Nuevo
+                        </a>
+
+                        <!-- Botón Volver al Inicio -->
                         <button onclick="window.location.href='#inicio'; location.reload();" 
                                 class="btn-registrar" 
                                 style="background: #5D4037; margin-top: 10px; width: 100%;">
