@@ -8,56 +8,77 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: #f4f4f4; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #E67E22; text-align: center; font-family: 'Fredoka One', cursive; }
+        h1 { color: #E67E22; text-align: center; font-family: 'Fredoka One', cursive; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
         input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        input:focus { outline: none; border-color: #E67E22; }
         .btn { display: block; width: 100%; padding: 15px; background: #E67E22; color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; text-align: center; text-decoration: none; }
-        .btn-wa { background: #25D366; margin-top: 10px; }
+        .btn:hover { background: #D35400; }
         
-        /* Estilos ocultos para el PDF */
         #pdf-content { display: none; width: 210mm; min-height: 297mm; padding: 15mm; background: white; color: #333; }
-        .pdf-header { text-align: center; border-bottom: 2px solid #E67E22; padding-bottom: 10px; margin-bottom: 20px; }
-        .pdf-header h2 { color: #E67E22; font-family: 'Fredoka One', cursive; margin: 0; }
+        .pdf-header { text-align: center; border-bottom: 3px solid #E67E22; padding-bottom: 15px; margin-bottom: 25px; }
+        .pdf-header h2 { color: #E67E22; font-family: 'Fredoka One', cursive; font-size: 24pt; margin-bottom: 5px; }
+        .pdf-header p { color: #666; font-size: 12pt; font-style: italic; }
+        
         .instrucciones { margin-bottom: 30px; }
-        .instrucciones h3 { color: #5D4037; font-size: 14pt; margin-top: 15px; }
-        .instrucciones ul { margin-left: 20px; font-size: 11pt; line-height: 1.5; }
+        .instrucciones h3 { color: #5D4037; font-size: 16pt; margin-bottom: 15px; border-left: 4px solid #E67E22; padding-left: 10px; }
+        .instrucciones ul { margin-left: 25px; font-size: 11pt; line-height: 1.8; }
+        .instrucciones li { margin-bottom: 8px; }
+        .instrucciones strong { color: #E67E22; }
         
-        /* Diseño de la Tarjeta */
-        .tarjeta-area { border: 2px dashed #999; padding: 20px; position: relative; margin-top: 40px; text-align: center; }
-        .tarjeta-area::before { content: '✂ RECORTAR POR LA LÍNEA PUNTEADA ✂'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; color: #999; font-weight: bold; }
+        .tarjeta-area { border: 2px dashed #999; padding: 25px; position: relative; margin-top: 40px; text-align: center; background: #f9f9f9; }
+        .tarjeta-area::before { content: '✂ RECORTAR POR LA LÍNEA PUNTEADA ✂'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #f9f9f9; padding: 0 15px; color: #999; font-weight: bold; font-size: 10pt; }
         
-        .tarjeta { width: 85mm; height: 55mm; border: 1px solid #333; border-radius: 8px; margin: 0 auto; display: flex; overflow: hidden; background: #FFF8E7; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .t-izq { flex: 1; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 1px solid #ddd; background: #fff; }
-        .t-izq img { width: 35mm; height: 35mm; }
-        .t-izq h4 { margin: 5px 0 0; color: #E67E22; font-family: 'Fredoka One'; font-size: 10pt; text-align: center; }
-        .t-der { flex: 1.5; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
-        .t-datos { font-size: 9pt; color: #333; }
-        .t-datos p { margin: 3px 0; }
+        .tarjeta { width: 85mm; height: 55mm; border: 2px solid #333; border-radius: 8px; margin: 0 auto; display: flex; overflow: hidden; background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .t-izq { flex: 0 0 35mm; padding: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 1px solid #ddd; background: #fff; }
+        .t-izq img { width: 28mm; height: 28mm; object-fit: contain; }
+        .t-izq h4 { margin: 5px 0 0; color: #E67E22; font-family: 'Fredoka One', cursive; font-size: 9pt; text-align: center; line-height: 1.2; }
+        .t-der { flex: 1; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
+        .t-datos { font-size: 8pt; color: #333; line-height: 1.6; }
+        .t-datos p { margin: 2px 0; }
         .t-datos strong { color: #E67E22; }
+        .t-qr { width: 22mm; height: 22mm; background: white; padding: 2mm; border-radius: 3px; align-self: center; margin: 5px 0; }
+        .t-qr img { width: 100%; height: 100%; }
         .t-promo { background: #E67E22; color: white; text-align: center; padding: 4px; border-radius: 4px; font-size: 8pt; font-weight: bold; }
+        
+        .pdf-footer { margin-top: 30px; text-align: center; font-size: 9pt; color: #999; border-top: 1px solid #ddd; padding-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>🎉 ¡Registro Exitoso!</h1>
-        <p style="text-align: center;">Tus datos están listos. Genera tu tarjeta PDF abajo.</p>
+        <p class="subtitle">Tus datos están listos. Genera tu tarjeta PDF abajo.</p>
         
         <form id="form-tarjeta">
-            <div class="form-group"><label>Nombre:</label><input type="text" id="nombre" required></div>
-            <div class="form-group"><label>Cédula:</label><input type="text" id="cedula" required></div>
-            <div class="form-group"><label>Teléfono:</label><input type="text" id="telefono" required></div>
-            <div class="form-group"><label>Código QR:</label><input type="text" id="qr" required></div>
+            <div class="form-group">
+                <label>Nombre y Apellido:</label>
+                <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+            </div>
+            <div class="form-group">
+                <label>Cédula de Identidad:</label>
+                <input type="text" id="cedula" placeholder="Ej: 12345678" required>
+            </div>
+            <div class="form-group">
+                <label>Teléfono / WhatsApp:</label>
+                <input type="tel" id="telefono" placeholder="Ej: 04121234567" required>
+            </div>
+            <div class="form-group">
+                <label>Código QR:</label>
+                <input type="text" id="qr" placeholder="Ej: ERM-12345678-ABC123" required>
+            </div>
             <button type="submit" class="btn">📄 Generar y Descargar PDF</button>
         </form>
 
         <div id="opciones" style="display:none; margin-top:20px; text-align:center;">
-            <p>✅ PDF Generado. Elige una opción:</p>
-            <a href="#" id="btn-descarga" class="btn" download> Descargar PDF</a>
-            <a href="#" id="btn-wa" class="btn btn-wa" target="_blank">📱 Avisar a Mariana por WhatsApp</a>
+            <p style="font-size: 18px; color: #27ae60; font-weight: bold;">✅ PDF Generado Exitosamente</p>
+            <a href="#" id="btn-descarga" class="btn" download>⬇️ Descargar PDF</a>
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">Imprime la hoja, recorta la tarjeta y plastifícala</p>
         </div>
     </div>
 
@@ -69,14 +90,17 @@
         </div>
 
         <div class="instrucciones">
-            <h3>📋 Instrucciones de uso</h3>
+            <h3>📋 Tarjeta de Fidelidad - Instrucciones de Uso</h3>
             <ul>
-                <li><strong>Imprime</strong> esta hoja en papel grueso o cartulina.</li>
-                <li><strong>Recorta</strong> la tarjeta por la línea punteada.</li>
-                <li><strong>Plastifícala</strong> para que dure más tiempo.</li>
-                <li>Consume <strong>$10 o más</strong> por visita para acumular puntos.</li>
-                <li>Al completar <strong>5 visitas</strong>, la <strong>6ta es GRATIS</strong> (hasta $10).</li>
-                <li>Si pierdes tu tarjeta, avísanos por WhatsApp con tu cédula.</li>
+                <li><strong>Imprime</strong> esta hoja en papel grueso o cartulina para mejor durabilidad.</li>
+                <li><strong>Recorta</strong> la tarjeta por la línea punteada con tijeras.</li>
+                <li><strong>Plastifica</strong> la tarjeta (lamina fría o caliente) para protegerla del desgaste y manchas.</li>
+                <li><strong>Presenta</strong> esta tarjeta cada vez que visites El Rincón de Mariana.</li>
+                <li>El personal escaneará tu código QR para registrar tu visita.</li>
+                <li>Debes consumir <strong>$10 o más</strong> por visita para que cuente como válida.</li>
+                <li>Al completar <strong>5 visitas válidas</strong>, tu <strong>6ta visita es GRATIS</strong> (hasta $10 de consumo).</li>
+                <li>Si tu consumo es mayor a $10, solo pagas la diferencia.</li>
+                <li>Si pierdes tu tarjeta, escríbenos al WhatsApp <strong>0412-9354244</strong> con tu cédula para reponerla.</li>
             </ul>
         </div>
 
@@ -90,16 +114,24 @@
                     <div class="t-datos">
                         <p><strong>Cliente:</strong> <span id="p-nombre"></span></p>
                         <p><strong>Cédula:</strong> <span id="p-cedula"></span></p>
-                        <p><strong>Código:</strong> <span id="p-qr" style="font-family:monospace; font-size:8pt;"></span></p>
+                        <p><strong>Código:</strong> <span id="p-qr" style="font-family:monospace; font-size:7pt;"></span></p>
+                    </div>
+                    <div class="t-qr">
+                        <img id="p-qr-img" src="" alt="QR">
                     </div>
                     <div class="t-promo">5 VISITAS = 6ta GRATIS</div>
                 </div>
             </div>
         </div>
+
+        <div class="pdf-footer">
+            <p>El Rincón de Mariana | WhatsApp: 0412-9354244 | Instagram: @elrincondemariana.ve</p>
+            <p>Guatire, Edo. Miranda, Venezuela</p>
+        </div>
     </div>
 
     <script>
-        // 1. Cargar datos de la URL si vienen del registro
+        // Cargar datos de la URL si vienen del registro
         const params = new URLSearchParams(window.location.search);
         if(params.get('nombre')) document.getElementById('nombre').value = params.get('nombre');
         if(params.get('cedula')) document.getElementById('cedula').value = params.get('cedula');
@@ -113,34 +145,32 @@
             const cedula = document.getElementById('cedula').value;
             const qr = document.getElementById('qr').value;
 
-            // Llenar tarjeta
             document.getElementById('p-nombre').innerText = nombre;
             document.getElementById('p-cedula').innerText = cedula;
             document.getElementById('p-qr').innerText = qr;
+            
+            const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${qr}`;
+            document.getElementById('p-qr-img').src = qrURL;
 
             const content = document.getElementById('pdf-content');
-            content.style.display = 'block'; // Mostrar temporalmente para renderizar
+            content.style.display = 'block';
 
-            await new Promise(r => setTimeout(r, 500)); // Esperar renderizado
+            await new Promise(r => setTimeout(r, 1000));
 
-            const canvas = await html2canvas(content, { scale: 2 });
+            const canvas = await html2canvas(content, { scale: 2, useCORS: true });
             const imgData = canvas.toDataURL('image/png');
             
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'letter');
-            pdf.addImage(imgData, 'PNG', 0, 0, 216, 279); // Tamaño carta
+            pdf.addImage(imgData, 'PNG', 0, 0, 216, 279);
             
             const blob = pdf.output('blob');
             const url = URL.createObjectURL(blob);
             
             document.getElementById('btn-descarga').href = url;
-            document.getElementById('btn-descarga').download = `Tarjeta-${cedula}.pdf`;
-            
-            // Configurar WhatsApp a Mariana
-            const msg = `Hola Mariana, soy ${nombre} (Cédula: ${cedula}). Ya generé mi tarjeta PDF. Mi código es ${qr}.`;
-            document.getElementById('btn-wa').href = `https://wa.me/584129354244?text=${encodeURIComponent(msg)}`;
+            document.getElementById('btn-descarga').download = `Tarjeta-Fidelidad-${cedula}.pdf`;
 
-            content.style.display = 'none'; // Ocultar de nuevo
+            content.style.display = 'none';
             document.getElementById('opciones').style.display = 'block';
         });
     </script>
