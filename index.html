@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Rincón de Mariana - ¡El sabor que provoca!</title>
-    <meta name="description" content="Las mejores parrillas, hamburguesas, perros calientes. 100% carne de primera.">
+    <meta name="description" content="Las mejores parrillas, hamburguesas, perros calientes. 100% carne de primera. Delivery disponible.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -16,6 +17,10 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/registro.css">
     
+    <!-- Librerías para el Certificado PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Librería de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -43,7 +48,7 @@
 
     <section id="inicio" class="hero">
         <div class="hero-content">
-            <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo" class="hero-logo-img">
+            <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo El Rincón de Mariana" class="hero-logo-img">
             <h1>El Rincón de <span>Mariana</span></h1>
             <p class="lema">¡El sabor que provoca!</p>
             <div class="calidad-badge">
@@ -87,10 +92,11 @@
     <!-- SECCIÓN REGISTRO -->
     <section id="registro" class="seccion-registro">
         <div class="container">
-            <h2 class="titulo-seccion"> Regístrate y Acumula Puntos 🎉</h2>
+            <h2 class="titulo-seccion">🎉 Club de Fidelidad 🎉</h2>
             <p class="subtitulo-seccion">¡Compra 5 veces y la 6ta es GRATIS!</p>
             
             <div class="registro-container">
+                <!-- Formulario de registro -->
                 <form id="formulario-registro" class="formulario-registro">
                     <div class="campo-form">
                         <label for="cedula"><i class="fas fa-id-card"></i> Cédula de Identidad</label>
@@ -108,16 +114,17 @@
                     </div>
                     
                     <button type="submit" id="btn-registrar" class="btn-registrar">
-                        <i class="fas fa-qrcode"></i> Generar mi Código QR
+                        <i class="fas fa-file-certificate"></i> Generar mi Certificado Oficial
                     </button>
                     
                     <p class="nota-registro">
                         <i class="fas fa-info-circle"></i> 
-                        Al registrarte, recibirás un código QR único. Preséntalo en cada visita para acumular puntos.
+                        Al registrarte, tu Certificado Oficial en PDF se descargará automáticamente. 
+                        Tu código QR quedará anclado a tu cédula para siempre.
                     </p>
                 </form>
                 
-                <!-- Resultado después del registro -->
+                <!-- Resultado después del registro (SIN botones de descarga, solo confirmación y volver) -->
                 <div id="resultado-registro" class="resultado-registro" style="display: none;">
                     <div class="qr-card">
                         <h3>¡Registro Exitoso! 🎉</h3>
@@ -128,20 +135,16 @@
                         <p class="codigo-texto">Tu código: <strong id="qr-cliente-codigo"></strong></p>
                         <p class="cedula-texto">Cédula: <span id="qr-cliente-cedula"></span></p>
                         
-                        <div class="botones-resultado">
-                            <a href="#" id="btn-descargar-tarjeta" class="btn-descargar" target="_blank" style="background: #E67E22; width: 100%;">
-                                <i class="fas fa-file-pdf"></i> Descargar Tarjeta PDF
-                            </a>
-                        </div>
-                        
-                        <p class="instrucciones">
-                            <i class="fas fa-lightbulb"></i> 
-                            <strong>¿Qué hacer ahora?</strong><br>
-                            1. Toca "Descargar Tarjeta PDF"<br>
-                            2. Imprime la hoja, recorta la tarjeta y plastifícala<br>
-                            3. Preséntala en cada visita<br>
-                            4. Acumula 5 compras y la 6ta es GRATIS
+                        <p class="instrucciones" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <i class="fas fa-check-circle"></i> 
+                            <strong>¡Listo!</strong> Tu Certificado Oficial en PDF se ha descargado automáticamente en tu dispositivo. 
+                            Por favor, imprímelo, recórtalo y plastifícalo.
                         </p>
+
+                        <!-- BOTÓN PARA VOLVER AL INICIO -->
+                        <button onclick="window.location.href='#inicio'; location.reload();" class="btn-registrar" style="background: #5D4037; margin-top: 10px;">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </button>
                     </div>
                 </div>
             </div>
@@ -182,7 +185,7 @@
                     <div class="info-item"><i class="fas fa-award"></i><span>100% Carne de 1ra</span></div>
                 </div>
                 <div class="mapa">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d123456!2d-66.9036!3d10.4806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDI4JzUwLjIiTiA2NsKwNTQnMTMuMCJX!5e0!3m2!1ses!2sve!4v1234567890" allowfullscreen="" loading="lazy" title="Ubicación"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d123456!2d-66.9036!3d10.4806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDI4JzUwLjIiTiA2NsKwNTQnMTMuMCJX!5e0!3m2!1ses!2sve!4v1234567890" allowfullscreen="" loading="lazy" title="Ubicación del negocio"></iframe>
                 </div>
             </div>
         </div>
@@ -206,10 +209,10 @@
             <div class="redes-contacto">
                 <p style="margin-top: 2rem; font-size: 1.2rem;">Síguenos en redes sociales:</p>
                 <div class="redes" style="margin-top: 1rem;">
-                    <a href="https://x.com/elrincondemariana.ve" target="_blank"><i class="fab fa-x-twitter"></i></a>
-                    <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://instagram.com/elrincondemariana.ve" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://facebook.com/elrincondemariana.ve" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://x.com/elrincondemariana.ve" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://instagram.com/elrincondemariana.ve" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://facebook.com/elrincondemariana.ve" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
                 </div>
                 <p style="margin-top: 1rem; font-size: 1.3rem; font-weight: 800;">@elrincondemariana.ve</p>
             </div>
