@@ -1,5 +1,6 @@
 /* ========================================
    SISTEMA DE REGISTRO - El Rincón de Mariana
+   VERSIÓN FINAL CON VALIDACIONES
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -17,7 +18,7 @@ async function registrarCliente(evento) {
     const telefono = document.getElementById('telefono').value.trim();
     
     if (!cedula || !nombre || !telefono) {
-        alert('️ Por favor completa todos los campos');
+        alert('⚠️ Por favor completa todos los campos');
         return;
     }
     
@@ -55,33 +56,50 @@ async function registrarCliente(evento) {
 }
 
 function mostrarResultado(codigoQR, nombre, cedula, telefono) {
-    document.getElementById('formulario-registro').style.display = 'none';
+    // Ocultar formulario y mostrar resultado
+    const formulario = document.getElementById('formulario-registro');
     const resultado = document.getElementById('resultado-registro');
-    resultado.style.display = 'block';
+    
+    if (formulario) formulario.style.display = 'none';
+    if (resultado) resultado.style.display = 'block';
     
     // Generar imagen QR
     const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${codigoQR}`;
-    document.getElementById('qr-imagen').innerHTML = `<img src="${qrURL}" alt="QR" style="width: 250px; height: 250px;">`;
+    const qrImagen = document.getElementById('qr-imagen');
+    if (qrImagen) {
+        qrImagen.innerHTML = `<img src="${qrURL}" alt="QR" style="width: 250px; height: 250px;">`;
+    }
     
-    document.getElementById('qr-cliente-nombre').textContent = nombre;
-    document.getElementById('qr-cliente-codigo').textContent = codigoQR;
-    document.getElementById('qr-cliente-cedula').textContent = cedula;
+    // Llenar datos
+    const elNombre = document.getElementById('qr-cliente-nombre');
+    const elCodigo = document.getElementById('qr-cliente-codigo');
+    const elCedula = document.getElementById('qr-cliente-cedula');
     
-    // 1. Botón Descargar QR (Imagen)
+    if (elNombre) elNombre.textContent = nombre;
+    if (elCodigo) elCodigo.textContent = codigoQR;
+    if (elCedula) elCedula.textContent = cedula;
+    
+    // Botón 1: Descargar QR (imagen)
     const btnDescargar = document.getElementById('btn-descargar-qr');
-    btnDescargar.href = qrURL;
-    btnDescargar.download = `QR-${cedula}.png`;
+    if (btnDescargar) {
+        btnDescargar.href = qrURL;
+        btnDescargar.download = `QR-${cedula}.png`;
+    }
     
-    // 2. Botón Descargar Tarjeta PDF (Va a la página de generación)
+    // Botón 2: Descargar Tarjeta PDF (va a la página de generación)
     const btnPDF = document.getElementById('btn-descargar-tarjeta');
-    // Pasamos los datos por URL para que aparezcan escritos en el formulario de la otra página
-    btnPDF.href = `generar-tarjeta.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&qr=${encodeURIComponent(codigoQR)}`;
+    if (btnPDF) {
+        const urlGenerar = `generar-tarjeta.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&qr=${encodeURIComponent(codigoQR)}`;
+        btnPDF.href = urlGenerar;
+    }
     
-    // 3. Botón WhatsApp (AHORA VA AL NÚMERO DE MARIANA)
+    // Botón 3: WhatsApp (avisa a Mariana)
     const btnWhatsApp = document.getElementById('btn-whatsapp-qr');
-    const numeroMariana = '584129354244'; // Número de Mariana
-    const mensaje = `Hola Mariana, soy *${nombre}* (Cédula: ${cedula}). Me acabo de registrar en la página web. Mi código es ${codigoQR}. Quedo atento.`;
-    btnWhatsApp.href = `https://wa.me/${numeroMariana}?text=${encodeURIComponent(mensaje)}`;
+    if (btnWhatsApp) {
+        const numeroMariana = '584129354244';
+        const mensaje = `Hola Mariana, soy *${nombre}* (Cédula: ${cedula}). Me acabo de registrar en la página web. Mi código es ${codigoQR}. Quedo atento.`;
+        btnWhatsApp.href = `https://wa.me/${numeroMariana}?text=${encodeURIComponent(mensaje)}`;
+    }
     
     console.log('✅ Registrado:', codigoQR);
 }
