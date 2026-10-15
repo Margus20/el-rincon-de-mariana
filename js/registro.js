@@ -30,12 +30,13 @@ async function registrarCliente(evento) {
     
     // Mostrar mensaje de carga
     const btnSubmit = document.getElementById('btn-registrar');
-    btnSubmit.textContent = '⏳ Registrando...';
+    const textoOriginal = btnSubmit.innerHTML;
+    btnSubmit.innerHTML = '⏳ Registrando...';
     btnSubmit.disabled = true;
     
     try {
         // 1. Guardar el cliente en la base de datos
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('clientes')
             .insert([
                 {
@@ -58,7 +59,7 @@ async function registrarCliente(evento) {
     } catch (error) {
         console.error('Error al registrar:', error);
         alert('❌ Error al registrar: ' + error.message);
-        btnSubmit.textContent = ' Registrarme';
+        btnSubmit.innerHTML = textoOriginal;
         btnSubmit.disabled = false;
     }
 }
@@ -93,20 +94,4 @@ function mostrarQR(codigoQR, nombre, cedula) {
     btnWhatsApp.href = `https://wa.me/584129354244?text=${encodeURIComponent(mensaje)}`;
     
     console.log('✅ Cliente registrado: ' + codigoQR);
-}
-
-// Función para consultar el estado del cliente (para el futuro)
-async function consultarCliente(codigoQR) {
-    const { data, error } = await supabase
-        .from('clientes')
-        .select('*')
-        .eq('codigo_qr', codigoQR)
-        .single();
-    
-    if (error) {
-        console.error('Error al consultar:', error);
-        return null;
-    }
-    
-    return data;
 }
