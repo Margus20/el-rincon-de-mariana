@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/promos.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/registro.css">
+    
+    <!-- Librería de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -28,6 +32,7 @@
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#menu">Menú</a></li>
                 <li><a href="#promos">Promos</a></li>
+                <li><a href="#registro">Registrarme</a></li>
                 <li><a href="#horarios">Horarios</a></li>
                 <li><a href="#ubicacion">Ubicación</a></li>
                 <li><a href="#contacto" class="btn-pedir">Pedir</a></li>
@@ -55,8 +60,8 @@
                 <a href="#menu" class="btn btn-primary">
                     <i class="fas fa-utensils"></i> Ver Menú
                 </a>
-                <a href="#contacto" class="btn btn-secondary">
-                    <i class="fab fa-whatsapp"></i> Pedir Ahora
+                <a href="#registro" class="btn btn-secondary">
+                    <i class="fas fa-qrcode"></i> Registrarme
                 </a>
             </div>
         </div>
@@ -74,9 +79,76 @@
 
     <section id="promos" class="seccion-promos">
         <div class="container">
-            <h2 class="titulo-seccion">🔥 Promociones de la Semana </h2>
+            <h2 class="titulo-seccion"> Promociones de la Semana 🔥</h2>
             <div id="promos-container" class="promos-grid">
                 <p class="cargando">Cargando promociones...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- NUEVA SECCIÓN: REGISTRO DE CLIENTES -->
+    <section id="registro" class="seccion-registro">
+        <div class="container">
+            <h2 class="titulo-seccion">🎉 Regístrate y Acumula Puntos 🎉</h2>
+            <p class="subtitulo-seccion">¡Compra 11 veces y la 12 es GRATIS!</p>
+            
+            <div class="registro-container">
+                <!-- Formulario de registro -->
+                <form id="formulario-registro" class="formulario-registro">
+                    <div class="campo-form">
+                        <label for="cedula"><i class="fas fa-id-card"></i> Cédula de Identidad</label>
+                        <input type="text" id="cedula" placeholder="Ej: 12345678" required>
+                    </div>
+                    
+                    <div class="campo-form">
+                        <label for="nombre"><i class="fas fa-user"></i> Nombre y Apellido</label>
+                        <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    
+                    <div class="campo-form">
+                        <label for="telefono"><i class="fab fa-whatsapp"></i> Teléfono / WhatsApp</label>
+                        <input type="tel" id="telefono" placeholder="Ej: 04121234567" required>
+                    </div>
+                    
+                    <button type="submit" id="btn-registrar" class="btn-registrar">
+                        <i class="fas fa-qrcode"></i> Generar mi Código QR
+                    </button>
+                    
+                    <p class="nota-registro">
+                        <i class="fas fa-info-circle"></i> 
+                        Al registrarte, recibirás un código QR único. Preséntalo en cada visita para acumular puntos.
+                    </p>
+                </form>
+                
+                <!-- Resultado después del registro -->
+                <div id="resultado-registro" class="resultado-registro" style="display: none;">
+                    <div class="qr-card">
+                        <h3>¡Registro Exitoso! 🎉</h3>
+                        <p class="cliente-nombre" id="qr-cliente-nombre"></p>
+                        
+                        <div id="qr-imagen" class="qr-imagen"></div>
+                        
+                        <p class="codigo-texto">Tu código: <strong id="qr-cliente-codigo"></strong></p>
+                        <p class="cedula-texto">Cédula: <span id="qr-cliente-cedula"></span></p>
+                        
+                        <div class="botones-resultado">
+                            <a href="#" id="btn-descargar-qr" class="btn-descargar" download>
+                                <i class="fas fa-download"></i> Descargar QR
+                            </a>
+                            <a href="#" id="btn-whatsapp-qr" class="btn-whatsapp-qr" target="_blank">
+                                <i class="fab fa-whatsapp"></i> Enviar por WhatsApp
+                            </a>
+                        </div>
+                        
+                        <p class="instrucciones">
+                            <i class="fas fa-lightbulb"></i> 
+                            <strong>¿Cómo funciona?</strong><br>
+                            1. Guarda esta imagen en tu teléfono<br>
+                            2. Preséntala en cada visita<br>
+                            3. Acumula 11 compras y la 12 es GRATIS
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -107,7 +179,7 @@
             <div class="ubicacion-grid">
                 <div class="ubicacion-info">
                     <h3>Información de Contacto</h3>
-                    <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>[Dirección pendiente - agrégala aquí]</span></div>
+                    <div class="info-item"><i class="fas fa-map-marker-alt"></i><span>[Dirección pendiente]</span></div>
                     <div class="info-item"><i class="fas fa-phone"></i><span>0412-9354244</span></div>
                     <div class="info-item"><i class="fas fa-phone"></i><span>0416-7017155</span></div>
                     <div class="info-item"><i class="fab fa-whatsapp"></i><span>WhatsApp: 0412-9354244</span></div>
@@ -139,7 +211,7 @@
             <div class="redes-contacto">
                 <p style="margin-top: 2rem; font-size: 1.2rem;">Síguenos en redes sociales:</p>
                 <div class="redes" style="margin-top: 1rem;">
-                    <a href="https://x.com/elrincondemariana.ve" target="_blank" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://x.com/elrincondemariana.ve" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
                     <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                     <a href="https://instagram.com/elrincondemariana.ve" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="https://facebook.com/elrincondemariana.ve" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
@@ -154,10 +226,10 @@
             <h3 class="footer-logo">El Rincón de Mariana</h3>
             <p class="footer-lema">¡El sabor que provoca!</p>
             <div class="redes">
-                <a href="https://x.com/elrincondemariana.ve" target="_blank" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
-                <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://instagram.com/elrincondemariana.ve" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://facebook.com/elrincondemariana.ve" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://x.com/elrincondemariana.ve" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                <a href="https://tiktok.com/@elrincondemariana.ve" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://instagram.com/elrincondemariana.ve" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/elrincondemariana.ve" target="_blank"><i class="fab fa-facebook"></i></a>
             </div>
             <p class="footer-copy">© 2026 El Rincón de Mariana. Todos los derechos reservados.</p>
             <p class="footer-hecho">Hecho con ❤️ en Venezuela</p>
@@ -168,8 +240,11 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <!-- Scripts (en orden: primero Supabase, luego config, luego el resto) -->
+    <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/whatsapp.js"></script>
+    <script src="js/registro.js"></script>
 </body>
 </html>
