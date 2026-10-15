@@ -18,13 +18,13 @@ async function registrarCliente(evento) {
     const telefono = document.getElementById('telefono').value.trim();
     
     if (!cedula || !nombre || !telefono) {
-        alert('⚠️ Por favor completa todos los campos');
+        alert('️ Por favor completa todos los campos');
         return;
     }
     
     const btnSubmit = document.getElementById('btn-registrar');
     const textoOriginal = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = '⏳ Generando Certificado...';
+    btnSubmit.innerHTML = ' Generando Certificado...';
     btnSubmit.disabled = true;
     
     try {
@@ -72,15 +72,16 @@ async function registrarCliente(evento) {
         const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${codigoQR}`;
         document.getElementById('qr-imagen').innerHTML = `<img src="${qrURL}" style="width: 200px; height: 200px;">`;
         
-        // Configurar botón para abrir certificado en nueva pestaña
+        // URL del certificado con TODOS los parámetros (incluido teléfono)
+        const urlCert = `certificado.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&qr=${encodeURIComponent(codigoQR)}`;
+        
+        // Configurar botón para abrir certificado manualmente
         const btnCertificado = document.getElementById('btn-ver-certificado');
         if (btnCertificado) {
-            const urlCert = `certificado.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&qr=${encodeURIComponent(codigoQR)}`;
             btnCertificado.href = urlCert;
         }
         
         // Abrir automáticamente el certificado en nueva pestaña
-        const urlCert = `certificado.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&qr=${encodeURIComponent(codigoQR)}`;
         window.open(urlCert, '_blank');
         
     } catch (error) {
