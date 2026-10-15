@@ -20,7 +20,7 @@
             box-shadow: 0 3px 15px rgba(0,0,0,0.1);
         }
         
-        /* ENCABEZADO */
+        /* HEADER */
         .header {
             display: flex;
             align-items: center;
@@ -62,33 +62,21 @@
             font-size: 11px;
         }
         
-        /* TEXTO */
-        .texto {
+        /* TEXTO EN 2 COLUMNAS */
+        .contenido {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .columna {
+            flex: 1;
             text-align: justify;
             font-size: 13px;
-            line-height: 1.6;
-            margin: 15px 0;
+            line-height: 1.7;
         }
-        .texto strong { color: #E67E22; }
         
-        /* CAJA NOMBRE */
-        .caja-nombre {
-            background: #FFF8E7;
-            border: 2px solid #E67E22;
-            border-radius: 6px;
-            padding: 12px;
-            margin: 15px 0;
-            text-align: center;
-        }
-        .caja-nombre h3 {
-            font-size: 20px;
-            color: #5D4037;
-            margin-bottom: 5px;
-        }
-        .caja-nombre .cedula {
-            color: #E67E22;
-            font-weight: bold;
-        }
+        .columna strong { color: #E67E22; }
         
         /* BENEFICIOS */
         .beneficios {
@@ -108,6 +96,15 @@
             line-height: 1.7;
         }
         .beneficios strong { color: #E67E22; }
+        
+        /* TEXTO INFERIOR */
+        .texto-inferior {
+            text-align: justify;
+            font-size: 13px;
+            line-height: 1.7;
+            margin: 15px 0;
+        }
+        .texto-inferior strong { color: #E67E22; }
         
         /* CARNET */
         .carnet-box {
@@ -131,7 +128,7 @@
         
         .carnet {
             display: flex;
-            height: 140px;
+            height: 150px;
             border: 2px solid #333;
             border-radius: 8px;
             overflow: hidden;
@@ -148,12 +145,12 @@
             padding: 10px;
         }
         .carnet-left img {
-            width: 90px;
-            height: 90px;
+            width: 110px;
+            height: 110px;
             object-fit: contain;
         }
         .carnet-left p {
-            font-size: 11px;
+            font-size: 12px;
             color: #E67E22;
             font-weight: bold;
             margin-top: 5px;
@@ -171,23 +168,23 @@
             position: relative;
         }
         .qr {
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             border: 1px solid #333;
             margin-bottom: 8px;
         }
         .carnet-info {
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
         }
-        .carnet-info .nombre {
-            font-size: 13px;
+        .carnet-info .linea1 {
+            font-size: 14px;
             color: #5D4037;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
-        .carnet-info .telefono {
-            font-size: 10px;
+        .carnet-info .linea2 {
+            font-size: 11px;
             color: #666;
         }
         .badge {
@@ -242,12 +239,19 @@
             .acciones { display: none !important; }
             @page { size: letter; margin: 10mm; }
         }
+        
+        @media (max-width: 600px) {
+            .contenido { flex-direction: column; gap: 10px; }
+            .carnet { height: 130px; }
+            .carnet-left img { width: 90px; height: 90px; }
+            .qr { width: 80px; height: 80px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="acciones">
-        <button onclick="window.print()" class="btn">️ Imprimir / Guardar PDF</button>
+        <button onclick="window.print()" class="btn">🖨️ Imprimir / Guardar PDF</button>
         <a href="index.html#registro" class="btn secundario">← Volver</a>
     </div>
 
@@ -270,31 +274,36 @@
             <p class="numero">N° <span id="num-cert"></span></p>
         </div>
 
-        <!-- TEXTO -->
-        <div class="texto">
-            <p>
-                <strong>El Rincón de Mariana</strong> certifica que:
-            </p>
+        <!-- CONTENIDO EN 2 COLUMNAS -->
+        <div class="contenido">
+            <div class="columna">
+                <p>
+                    <strong>El Rincón de Mariana</strong> certifica que:
+                </p>
+                <p style="text-align: center; font-size: 16px; font-weight: bold; color: #5D4037; margin: 15px 0;">
+                    MARCOS VARGAS<br>
+                    <span style="font-size: 13px; color: #E67E22;">Cédula: 17642323</span>
+                </p>
+                <p>
+                    Es miembro oficial de nuestro <strong>Programa de Fidelización</strong>.
+                </p>
+            </div>
             
-            <div class="caja-nombre">
-                <h3 id="nombre-titular"></h3>
-                <p>Cédula: <span class="cedula" id="cedula-titular"></span></p>
+            <div class="columna">
+                <div class="beneficios">
+                    <h4>📋 Beneficios:</h4>
+                    <ul>
+                        <li>Acumule puntos por compras de <strong>$10 o más</strong></li>
+                        <li><strong>5 visitas válidas</strong> = <strong>6ta visita GRATIS</strong> (hasta $10)</li>
+                        <li>Si consume más de $10, solo paga la diferencia</li>
+                        <li>Acceso a promociones especiales</li>
+                    </ul>
+                </div>
             </div>
+        </div>
 
-            <p>
-                Es miembro oficial de nuestro <strong>Programa de Fidelización</strong>.
-            </p>
-
-            <div class="beneficios">
-                <h4> Beneficios:</h4>
-                <ul>
-                    <li>Acumule puntos por compras de <strong>$10 o más</strong></li>
-                    <li><strong>5 visitas válidas</strong> = <strong>6ta visita GRATIS</strong> (hasta $10)</li>
-                    <li>Si consume más de $10, solo paga la diferencia</li>
-                    <li>Acceso a promociones especiales</li>
-                </ul>
-            </div>
-
+        <!-- TEXTO INFERIOR -->
+        <div class="texto-inferior">
             <p>
                 Este certificado debe ser <strong>impreso, recortado y plastificado</strong>. 
                 El código QR es <strong>único, personal e intransferible</strong>, asociado permanentemente 
@@ -312,8 +321,8 @@
                 <div class="carnet-right">
                     <img id="carnet-qr" class="qr" src="" alt="QR">
                     <div class="carnet-info">
-                        <div class="nombre" id="carnet-nombre"></div>
-                        <div class="telefono" id="carnet-telefono"></div>
+                        <div class="linea1" id="carnet-nombre"></div>
+                        <div class="linea2" id="carnet-telefono"></div>
                     </div>
                     <div class="badge">5 VISITAS<br>=<br>6ta GRATIS</div>
                 </div>
@@ -333,8 +342,12 @@
         const telefono = params.get('telefono') || '0000-0000000';
         const qr = params.get('qr') || 'ERM-00000000-XXXXXX';
         
-        document.getElementById('nombre-titular').textContent = nombre.toUpperCase();
-        document.getElementById('cedula-titular').textContent = cedula;
+        // Reemplazar nombre y cédula en el texto
+        const textoCentrado = document.querySelector('.columna p:nth-child(2)');
+        if (textoCentrado) {
+            textoCentrado.innerHTML = `${nombre.toUpperCase()}<br><span style="font-size: 13px; color: #E67E22;">Cédula: ${cedula}</span>`;
+        }
+        
         document.getElementById('carnet-nombre').textContent = nombre;
         document.getElementById('carnet-telefono').textContent = telefono;
         document.getElementById('num-cert').textContent = qr;
