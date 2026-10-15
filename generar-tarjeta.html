@@ -3,545 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generar Tarjeta de Fidelidad - El Rincón de Mariana</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Librerías para generar PDF -->
+    <title>Tarjeta de Fidelidad - El Rincón de Mariana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        body { font-family: 'Nunito', sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #E67E22; text-align: center; font-family: 'Fredoka One', cursive; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        .btn { display: block; width: 100%; padding: 15px; background: #E67E22; color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; text-align: center; text-decoration: none; }
+        .btn-wa { background: #25D366; margin-top: 10px; }
         
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: #f5f5f5;
-            padding: 2rem;
-        }
+        /* Estilos ocultos para el PDF */
+        #pdf-content { display: none; width: 210mm; min-height: 297mm; padding: 15mm; background: white; color: #333; }
+        .pdf-header { text-align: center; border-bottom: 2px solid #E67E22; padding-bottom: 10px; margin-bottom: 20px; }
+        .pdf-header h2 { color: #E67E22; font-family: 'Fredoka One', cursive; margin: 0; }
+        .instrucciones { margin-bottom: 30px; }
+        .instrucciones h3 { color: #5D4037; font-size: 14pt; margin-top: 15px; }
+        .instrucciones ul { margin-left: 20px; font-size: 11pt; line-height: 1.5; }
         
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
+        /* Diseño de la Tarjeta */
+        .tarjeta-area { border: 2px dashed #999; padding: 20px; position: relative; margin-top: 40px; text-align: center; }
+        .tarjeta-area::before { content: '✂ RECORTAR POR LA LÍNEA PUNTEADA ✂'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; color: #999; font-weight: bold; }
         
-        h1 {
-            font-family: 'Fredoka One', cursive;
-            color: #E67E22;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        label {
-            display: block;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #3E2723;
-        }
-        
-        input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Nunito', sans-serif;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #E67E22;
-        }
-        
-        .btn-generar {
-            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s;
-        }
-        
-        .btn-generar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #3498db;
-        }
-        
-        .btn-secondary:hover {
-            background: #2980b9;
-        }
-        
-        .btn-whatsapp {
-            background: #25D366;
-        }
-        
-        .btn-whatsapp:hover {
-            background: #128C7E;
-        }
-        
-        .btn-email {
-            background: #9b59b6;
-        }
-        
-        .btn-email:hover {
-            background: #8e44ad;
-        }
-        
-        .opciones-entrega {
-            display: none;
-            margin-top: 2rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
-            border-radius: 15px;
-            border: 2px solid #E67E22;
-        }
-        
-        .opciones-entrega h3 {
-            color: #3E2723;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-        }
-        
-        .instrucciones-envio {
-            background: white;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #5D4037;
-            border-left: 4px solid #E67E22;
-            display: none;
-        }
-        
-        .instrucciones-envio.visible {
-            display: block;
-        }
-        
-        .instrucciones-envio strong {
-            color: #E67E22;
-        }
-        
-        /* Estilos del PDF (ocultos en pantalla) */
-        #pdf-content {
-            display: none;
-            width: 210mm;
-            padding: 10mm;
-            background: white;
-        }
-        
-        .instrucciones {
-            margin-bottom: 20mm;
-        }
-        
-        .instrucciones h2 {
-            color: #E67E22;
-            font-size: 18pt;
-            margin-bottom: 10pt;
-            border-bottom: 2px solid #E67E22;
-            padding-bottom: 5pt;
-        }
-        
-        .instrucciones h3 {
-            color: #5D4037;
-            font-size: 12pt;
-            margin-top: 10pt;
-            margin-bottom: 5pt;
-        }
-        
-        .instrucciones ul {
-            margin-left: 20pt;
-            margin-bottom: 10pt;
-        }
-        
-        .instrucciones li {
-            font-size: 10pt;
-            margin-bottom: 5pt;
-            line-height: 1.5;
-        }
-        
-        .tarjeta-container {
-            border: 2px dashed #999;
-            padding: 10mm;
-            position: relative;
-        }
-        
-        .tarjeta-container::before {
-            content: '✂ RECORTAR POR LÍNEA PUNTEADA ✂';
-            position: absolute;
-            top: -8pt;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 0 10pt;
-            font-size: 9pt;
-            color: #999;
-        }
-        
-        .tarjeta {
-            width: 90mm;
-            height: 50mm;
-            border: 1px solid #3E2723;
-            border-radius: 3mm;
-            padding: 5mm;
-            display: flex;
-            gap: 5mm;
-            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .tarjeta-logo {
-            flex: 0 0 35mm;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .tarjeta-logo img {
-            width: 25mm;
-            height: 25mm;
-            object-fit: contain;
-        }
-        
-        .tarjeta-logo h3 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 9pt;
-            color: #E67E22;
-            text-align: center;
-            margin-top: 2mm;
-        }
-        
-        .tarjeta-logo p {
-            font-size: 7pt;
-            color: #5D4037;
-            text-align: center;
-            font-style: italic;
-        }
-        
-        .tarjeta-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        .tarjeta-qr {
-            width: 25mm;
-            height: 25mm;
-            background: white;
-            padding: 2mm;
-            border-radius: 2mm;
-            align-self: center;
-        }
-        
-        .tarjeta-qr img {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .tarjeta-datos {
-            font-size: 8pt;
-            color: #3E2723;
-        }
-        
-        .tarjeta-datos strong {
-            color: #E67E22;
-        }
-        
-        .tarjeta-datos p {
-            margin: 2pt 0;
-        }
-        
-        .tarjeta-programa {
-            font-size: 7pt;
-            color: #5D4037;
-            text-align: center;
-            margin-top: 2mm;
-            font-weight: 700;
-        }
+        .tarjeta { width: 85mm; height: 55mm; border: 1px solid #333; border-radius: 8px; margin: 0 auto; display: flex; overflow: hidden; background: #FFF8E7; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .t-izq { flex: 1; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 1px solid #ddd; background: #fff; }
+        .t-izq img { width: 35mm; height: 35mm; }
+        .t-izq h4 { margin: 5px 0 0; color: #E67E22; font-family: 'Fredoka One'; font-size: 10pt; text-align: center; }
+        .t-der { flex: 1.5; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
+        .t-datos { font-size: 9pt; color: #333; }
+        .t-datos p { margin: 3px 0; }
+        .t-datos strong { color: #E67E22; }
+        .t-promo { background: #E67E22; color: white; text-align: center; padding: 4px; border-radius: 4px; font-size: 8pt; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🎉 Genera tu Tarjeta de Fidelidad</h1>
-        <p style="text-align: center; color: #666; margin-bottom: 2rem;">
-            Ingresa tus datos y elige cómo recibir tu tarjeta
-        </p>
+        <h1>🎉 ¡Registro Exitoso!</h1>
+        <p style="text-align: center;">Tus datos están listos. Genera tu tarjeta PDF abajo.</p>
         
         <form id="form-tarjeta">
-            <div class="form-group">
-                <label for="nombre"><i class="fas fa-user"></i> Nombre y Apellido</label>
-                <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="cedula"><i class="fas fa-id-card"></i> Cédula de Identidad</label>
-                <input type="text" id="cedula" placeholder="Ej: 12345678" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="telefono"><i class="fab fa-whatsapp"></i> Teléfono / WhatsApp</label>
-                <input type="tel" id="telefono" placeholder="Ej: 04121234567" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> Correo Electrónico (opcional)</label>
-                <input type="email" id="email" placeholder="Ej: juan@email.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="codigo-qr"><i class="fas fa-qrcode"></i> Código QR (te lo dieron al registrarte)</label>
-                <input type="text" id="codigo-qr" placeholder="Ej: ERM-12345678-ABC123" required>
-            </div>
-            
-            <button type="submit" class="btn-generar">
-                <i class="fas fa-file-pdf"></i> Generar mi Tarjeta
-            </button>
+            <div class="form-group"><label>Nombre:</label><input type="text" id="nombre" required></div>
+            <div class="form-group"><label>Cédula:</label><input type="text" id="cedula" required></div>
+            <div class="form-group"><label>Teléfono:</label><input type="text" id="telefono" required></div>
+            <div class="form-group"><label>Código QR:</label><input type="text" id="qr" required></div>
+            <button type="submit" class="btn">📄 Generar y Descargar PDF</button>
         </form>
 
-        <!-- Opciones de entrega (aparecen después de generar) -->
-        <div id="opciones-entrega" class="opciones-entrega">
-            <h3>📥 ¿Cómo quieres recibir tu tarjeta?</h3>
-            <div class="botones-entrega">
-                <button onclick="descargarPDF()" class="btn-generar">
-                    <i class="fas fa-download"></i> Descargar al Teléfono/PC
-                </button>
-                <button onclick="enviarWhatsApp()" class="btn-generar btn-whatsapp">
-                    <i class="fab fa-whatsapp"></i> Enviar a mi WhatsApp
-                </button>
-                <button onclick="enviarEmail()" class="btn-generar btn-email">
-                    <i class="fas fa-envelope"></i> Enviar por Correo
-                </button>
-                <button onclick="compartir()" class="btn-generar btn-secondary">
-                    <i class="fas fa-share-alt"></i> Compartir (otras apps)
-                </button>
-            </div>
-            
-            <div id="instrucciones-envio" class="instrucciones-envio"></div>
+        <div id="opciones" style="display:none; margin-top:20px; text-align:center;">
+            <p>✅ PDF Generado. Elige una opción:</p>
+            <a href="#" id="btn-descarga" class="btn" download> Descargar PDF</a>
+            <a href="#" id="btn-wa" class="btn btn-wa" target="_blank">📱 Avisar a Mariana por WhatsApp</a>
         </div>
     </div>
 
-    <!-- Contenido del PDF (oculto) -->
+    <!-- CONTENIDO DEL PDF (OCULTO) -->
     <div id="pdf-content">
+        <div class="pdf-header">
+            <h2>El Rincón de Mariana</h2>
+            <p>¡El sabor que provoca!</p>
+        </div>
+
         <div class="instrucciones">
-            <h2>📋 Instrucciones para tu Tarjeta de Fidelidad</h2>
-            
-            <h3>🖨️ Cómo imprimir tu tarjeta:</h3>
+            <h3>📋 Instrucciones de uso</h3>
             <ul>
-                <li>Imprime esta hoja en papel <strong>cartulina o papel bond grueso (180-200g)</strong> para mejor durabilidad</li>
-                <li>Usa configuración de impresión: <strong>Tamaño carta (Letter) o A4</strong>, orientación vertical</li>
-                <li>Imprime a <strong>color</strong> para mejor presentación</li>
-            </ul>
-            
-            <h3>✂️ Cómo preparar tu tarjeta:</h3>
-            <ul>
-                <li>Recorta la tarjeta por las <strong>líneas punteadas</strong> con tijeras</li>
-                <li><strong>Plastifica la tarjeta</strong> (lamina fría o caliente) para protegerla del desgaste y manchas</li>
-                <li>Guarda tu tarjeta en tu billetera o lugar seguro</li>
-            </ul>
-            
-            <h3>🎯 Cómo funciona el programa:</h3>
-            <ul>
-                <li><strong>Presenta esta tarjeta</strong> cada vez que visites El Rincón de Mariana</li>
-                <li>El personal escaneará tu código QR para registrar tu visita</li>
-                <li>Debes consumir <strong>$10 o más</strong> por visita para que cuente como válida</li>
-                <li>Al completar <strong>5 visitas válidas</strong>, tu <strong>6ta visita es GRATIS</strong> (hasta $10 de consumo)</li>
-                <li>Si tu consumo es mayor a $10, solo pagas la diferencia</li>
-            </ul>
-            
-            <h3>⚠️ Importante:</h3>
-            <ul>
-                <li>Esta tarjeta es <strong>personal e intransferible</strong></li>
-                <li>El premio <strong>no es acumulable</strong> con otras promociones</li>
-                <li>Si pierdes tu tarjeta, escríbenos al WhatsApp <strong>0412-9354244</strong> con tu cédula para reponerla</li>
-                <li>Solo se aceptan tarjetas <strong>originales plastificadas</strong> (no fotocopias)</li>
-            </ul>
-            
-            <h3> Contacto:</h3>
-            <ul>
-                <li><strong>WhatsApp:</strong> 0412-9354244 / 0416-7017155</li>
-                <li><strong>Instagram:</strong> @elrincondemariana.ve</li>
-                <li><strong>Ubicación:</strong> Guatire, Edo. Miranda, Venezuela</li>
+                <li><strong>Imprime</strong> esta hoja en papel grueso o cartulina.</li>
+                <li><strong>Recorta</strong> la tarjeta por la línea punteada.</li>
+                <li><strong>Plastifícala</strong> para que dure más tiempo.</li>
+                <li>Consume <strong>$10 o más</strong> por visita para acumular puntos.</li>
+                <li>Al completar <strong>5 visitas</strong>, la <strong>6ta es GRATIS</strong> (hasta $10).</li>
+                <li>Si pierdes tu tarjeta, avísanos por WhatsApp con tu cédula.</li>
             </ul>
         </div>
-        
-        <div class="tarjeta-container">
+
+        <div class="tarjeta-area">
             <div class="tarjeta">
-                <div class="tarjeta-logo">
+                <div class="t-izq">
                     <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo">
-                    <h3>El Rincón de Mariana</h3>
-                    <p>¡El sabor que provoca!</p>
+                    <h4>El Rincón de Mariana</h4>
                 </div>
-                
-                <div class="tarjeta-info">
-                    <div class="tarjeta-qr">
-                        <img id="qr-img" src="" alt="QR">
+                <div class="t-der">
+                    <div class="t-datos">
+                        <p><strong>Cliente:</strong> <span id="p-nombre"></span></p>
+                        <p><strong>Cédula:</strong> <span id="p-cedula"></span></p>
+                        <p><strong>Código:</strong> <span id="p-qr" style="font-family:monospace; font-size:8pt;"></span></p>
                     </div>
-                    
-                    <div class="tarjeta-datos">
-                        <p><strong>Cliente:</strong> <span id="pdf-nombre"></span></p>
-                        <p><strong>Cédula:</strong> <span id="pdf-cedula"></span></p>
-                        <p><strong>Emitida:</strong> <span id="pdf-fecha"></span></p>
-                    </div>
-                    
-                    <div class="tarjeta-programa">
-                        5 visitas = 6ta GRATIS (hasta $10)
-                    </div>
+                    <div class="t-promo">5 VISITAS = 6ta GRATIS</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let pdfBlob = null;
-        let datosCliente = {};
+        // 1. Cargar datos de la URL si vienen del registro
+        const params = new URLSearchParams(window.location.search);
+        if(params.get('nombre')) document.getElementById('nombre').value = params.get('nombre');
+        if(params.get('cedula')) document.getElementById('cedula').value = params.get('cedula');
+        if(params.get('telefono')) document.getElementById('telefono').value = params.get('telefono');
+        if(params.get('qr')) document.getElementById('qr').value = params.get('qr');
 
-        document.getElementById('form-tarjeta').addEventListener('submit', async function(e) {
+        document.getElementById('form-tarjeta').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            datosCliente = {
-                nombre: document.getElementById('nombre').value.trim(),
-                cedula: document.getElementById('cedula').value.trim(),
-                telefono: document.getElementById('telefono').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                codigoQR: document.getElementById('codigo-qr').value.trim()
-            };
+            const nombre = document.getElementById('nombre').value;
+            const cedula = document.getElementById('cedula').value;
+            const qr = document.getElementById('qr').value;
+
+            // Llenar tarjeta
+            document.getElementById('p-nombre').innerText = nombre;
+            document.getElementById('p-cedula').innerText = cedula;
+            document.getElementById('p-qr').innerText = qr;
+
+            const content = document.getElementById('pdf-content');
+            content.style.display = 'block'; // Mostrar temporalmente para renderizar
+
+            await new Promise(r => setTimeout(r, 500)); // Esperar renderizado
+
+            const canvas = await html2canvas(content, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
             
-            if (!datosCliente.nombre || !datosCliente.cedula || !datosCliente.telefono || !datosCliente.codigoQR) {
-                alert('⚠️ Por favor completa todos los campos obligatorios');
-                return;
-            }
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'letter');
+            pdf.addImage(imgData, 'PNG', 0, 0, 216, 279); // Tamaño carta
             
-            await generarPDF();
+            const blob = pdf.output('blob');
+            const url = URL.createObjectURL(blob);
             
-            // Mostrar opciones de entrega
-            document.getElementById('opciones-entrega').style.display = 'block';
+            document.getElementById('btn-descarga').href = url;
+            document.getElementById('btn-descarga').download = `Tarjeta-${cedula}.pdf`;
             
-            // Scroll suave a las opciones
-            document.getElementById('opciones-entrega').scrollIntoView({ behavior: 'smooth' });
+            // Configurar WhatsApp a Mariana
+            const msg = `Hola Mariana, soy ${nombre} (Cédula: ${cedula}). Ya generé mi tarjeta PDF. Mi código es ${qr}.`;
+            document.getElementById('btn-wa').href = `https://wa.me/584129354244?text=${encodeURIComponent(msg)}`;
+
+            content.style.display = 'none'; // Ocultar de nuevo
+            document.getElementById('opciones').style.display = 'block';
         });
-
-        async function generarPDF() {
-            // Generar la imagen del QR
-            const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${datosCliente.codigoQR}`;
-            document.getElementById('qr-img').src = qrURL;
-            
-            // Llenar los datos
-            document.getElementById('pdf-nombre').textContent = datosCliente.nombre;
-            document.getElementById('pdf-cedula').textContent = datosCliente.cedula;
-            
-            // Fecha de emisión
-            const hoy = new Date();
-            const fechaFormateada = hoy.toLocaleDateString('es-VE', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            document.getElementById('pdf-fecha').textContent = fechaFormateada;
-            
-            // Mostrar el contenido del PDF temporalmente
-            const pdfContent = document.getElementById('pdf-content');
-            pdfContent.style.display = 'block';
-            
-            // Esperar a que las imágenes carguen
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            try {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'letter');
-                
-                const canvas = await html2canvas(pdfContent, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false
-                });
-                
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                
-                // Guardar como blob para poder compartir
-                pdfBlob = pdf.output('blob');
-                
-                // Ocultar el contenido
-                pdfContent.style.display = 'none';
-                
-                alert('✅ Tarjeta generada. Elige cómo quieres recibirla:');
-                
-            } catch (error) {
-                console.error('Error al generar PDF:', error);
-                alert('❌ Error al generar el PDF: ' + error.message);
-                pdfContent.style.display = 'none';
-            }
-        }
-
-        function descargarPDF() {
-            if (!pdfBlob) return;
-            
-            const url = URL.createObjectURL(pdfBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Tarjeta-Fidelidad-${datosCliente.cedula}.pdf`;
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            mostrarInstrucciones('📥 <strong>PDF descargado exitosamente.</strong><br>Revisa tu carpeta de Descargas (Downloads). Guárdalo en tu teléfono y llévalo a imprimir cuando puedas.');
-        }
-
-        function enviarWhatsApp() {
-            if (!pdfBlob) return;
-            
-            // Convertir el número de teléfono a formato internacional para WhatsApp
-            // Ejemplo: 04121234567 → 584121234567
-            let telefonoLimpio = datosCliente.telefono.replace(/\D/g, ''); // Quitar todo lo que no sea número
-            
-            // Si empieza con 58, dejarlo así. Si empieza con 0, quitarlo y agregar 58
-            if (telefonoLimpio.startsWith('0')) {
-                telefonoLimpio = '58' + telefonoLimpio.substring(1);
-            } else if (!telefonoLimpio.startsWith('58')) {
-                telefonoLimpio = '58' + telefonoLimpio;
-            }
-            
-            const mensaje = `¡Hola ${datosCliente.nombre}! 🎉\n\nAcabas de generar tu tarjeta de fidelidad de *El Rincón de Mariana*.\n\n Datos:\n• Nombre: ${datosCliente.nombre}\n• Cédula: ${datosCliente.cedula}\n• Código QR: ${datosCliente.codigoQR}\n\n📥 El archivo PDF está en tu carpeta de Descargas con el nombre:\n*Tarjeta-Fidelidad-${datosCliente.cedula}.pdf*\n\n️ Imprímelo, plastifícalo y recórtalo.\n Presenta esta tarjeta en cada visita para acumular puntos.\n\n¡Te esperamos! `;
-            
-            const url = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`;
-            
-            // Primero descargar el PDF automáticamente
-            const urlDescarga = URL.createObjectURL(pdfBlob);
-            const a = document.createElement('a');
-            a.href = urlDescarga;
-            a.download = `Tarjeta-Fidelidad-${datosCliente.cedula}.pdf`;
-            a.click();
-            URL.revokeObjectURL(urlDescarga);
-            
-            // Luego abrir WhatsApp
-            window.open(url, '_blank');
-            
-            mostrarInstrucciones(`📱 <strong>Se abrió WhatsApp al número ${datosCliente.telefono}.</strong><br><br>⚠️ <strong>IMPORTANTE:</strong> El PDF se descargó automáticamente a tu carpeta de Descargas.<br><br>📎 <strong>Debes adjuntarlo manualmente:</strong><br>1. Toca el ícono del clip 📎 en WhatsApp<br>2. Selecciona
+    </script>
+</body>
+</html>
