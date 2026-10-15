@@ -11,197 +11,175 @@
         body {
             background: #f0f0f0;
             font-family: 'Lora', Georgia, serif;
-            padding: 20px;
+            padding: 10px;
         }
         
         .certificado {
             width: 210mm;
-            min-height: 297mm;
+            height: 297mm;
             margin: 0 auto;
             background: white;
             padding: 15mm;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             position: relative;
+            overflow: hidden;
         }
         
-        /* Marco doble */
-        .marco-externo {
-            border: 8px double #E67E22;
-            padding: 8mm;
-            height: 100%;
-            min-height: 267mm;
-            position: relative;
+        /* PARTE SUPERIOR: Información */
+        .info-superior {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #E67E22;
+            padding-bottom: 20px;
         }
         
-        .marco-interno {
-            border: 3px solid #5D4037;
-            padding: 6mm;
-            height: 100%;
-            min-height: 251mm;
-            position: relative;
-        }
-        
-        /* Esquinas decorativas */
-        .esquina {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-        }
-        .esquina.tl { top: 10px; left: 10px; border-top: 4px solid #E67E22; border-left: 4px solid #E67E22; }
-        .esquina.tr { top: 10px; right: 10px; border-top: 4px solid #E67E22; border-right: 4px solid #E67E22; }
-        .esquina.bl { bottom: 10px; left: 10px; border-bottom: 4px solid #E67E22; border-left: 4px solid #E67E22; }
-        .esquina.br { bottom: 10px; right: 10px; border-bottom: 4px solid #E67E22; border-right: 4px solid #E67E22; }
-        
-        /* Encabezado */
-        .encabezado {
-            text-align: center;
-            border-bottom: 3px double #E67E22;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .logo {
-            width: 90px;
-            height: 90px;
+        .logo-pequeno {
+            width: 80px;
+            height: 80px;
             object-fit: contain;
-            margin-bottom: 10px;
+            flex-shrink: 0;
         }
         
-        .titulo-negocio {
-            font-family: 'Playfair Display', serif;
-            font-size: 36pt;
+        .info-texto {
+            flex: 1;
+            font-size: 10pt;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .info-texto h3 {
+            font-size: 12pt;
             color: #E67E22;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-weight: 900;
-            margin: 10px 0;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
         
-        .lema {
-            font-style: italic;
-            color: #666;
-            font-size: 14pt;
-            border-top: 2px solid #E67E22;
-            border-bottom: 2px solid #E67E22;
-            display: inline-block;
-            padding: 5px 25px;
-            margin-top: 5px;
+        .info-texto p {
+            margin-bottom: 8px;
         }
         
-        /* Título del certificado */
-        .titulo-certificado {
+        .info-texto strong {
+            color: #5D4037;
+        }
+        
+        /* TÍTULO CENTRAL */
+        .titulo-central {
             text-align: center;
             margin: 30px 0;
         }
         
-        .titulo-certificado h2 {
+        .titulo-central h1 {
             font-family: 'Playfair Display', serif;
             font-size: 28pt;
-            color: #5D4037;
-            letter-spacing: 6px;
+            color: #E67E22;
+            letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 900;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
-        .linea-decorativa {
-            width: 250px;
-            height: 3px;
-            background: linear-gradient(to right, transparent, #E67E22, transparent);
-            margin: 10px auto;
+        .titulo-central .lema {
+            font-style: italic;
+            color: #666;
+            font-size: 12pt;
+            border-top: 2px solid #E67E22;
+            border-bottom: 2px solid #E67E22;
+            display: inline-block;
+            padding: 5px 20px;
         }
         
         .numero-cert {
             color: #999;
-            font-size: 11pt;
-            letter-spacing: 2px;
+            font-size: 10pt;
             margin-top: 10px;
+            letter-spacing: 2px;
         }
         
-        /* Cuerpo del texto */
-        .cuerpo {
+        /* CUERPO DEL CERTIFICADO */
+        .cuerpo-certificado {
             text-align: justify;
-            font-size: 12pt;
+            font-size: 11pt;
             line-height: 1.8;
-            margin: 25px 40px;
+            margin: 25px 0;
             color: #333;
         }
         
-        .cuerpo p {
-            margin-bottom: 18px;
-            text-indent: 40px;
+        .cuerpo-certificado p {
+            margin-bottom: 15px;
+            text-indent: 30px;
         }
         
-        .cuerpo strong {
+        .cuerpo-certificado strong {
             color: #E67E22;
-        }
-        
-        /* Caja del titular */
-        .caja-titular {
-            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
-            border: 2px solid #E67E22;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 25px 0;
-            text-align: center;
-        }
-        
-        .caja-titular h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 26pt;
-            color: #5D4037;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-        
-        .caja-titular p {
-            font-size: 12pt;
-            color: #666;
-            margin: 5px 0;
-        }
-        
-        .caja-titular .cedula-num {
-            color: #E67E22;
-            font-size: 14pt;
             font-weight: bold;
         }
         
-        /* Beneficios */
-        .beneficios {
-            background: #f9f9f9;
-            border-left: 6px solid #E67E22;
-            padding: 20px 25px;
-            margin: 25px 0;
+        .caja-nombre {
+            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
+            border: 2px solid #E67E22;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
         }
         
-        .beneficios h4 {
+        .caja-nombre h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20pt;
             color: #5D4037;
-            font-size: 15pt;
-            border-bottom: 2px solid #E67E22;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
         }
         
-        .beneficios ul {
-            margin-left: 25px;
-            line-height: 2;
+        .caja-nombre p {
             font-size: 11pt;
+            color: #666;
+            text-indent: 0;
         }
         
-        .beneficios li strong {
+        .caja-nombre .cedula {
+            color: #E67E22;
+            font-size: 13pt;
+            font-weight: bold;
+        }
+        
+        /* BENEFICIOS */
+        .beneficios-box {
+            background: #f9f9f9;
+            border-left: 5px solid #E67E22;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        
+        .beneficios-box h3 {
+            color: #5D4037;
+            font-size: 13pt;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #E67E22;
+            padding-bottom: 6px;
+        }
+        
+        .beneficios-box ul {
+            margin-left: 25px;
+            line-height: 1.8;
+            font-size: 10pt;
+        }
+        
+        .beneficios-box li strong {
             color: #E67E22;
         }
         
-        /* Fecha y firma */
+        /* FIRMA */
         .firma-seccion {
             display: flex;
             justify-content: space-between;
-            margin: 40px 40px 30px 40px;
+            margin: 30px 20px 20px 20px;
         }
         
         .firma-box {
             text-align: center;
-            width: 200px;
+            width: 180px;
         }
         
         .firma-linea {
@@ -212,156 +190,146 @@
         }
         
         .sello {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             opacity: 0.3;
             margin-bottom: 5px;
         }
         
-        /* Línea de corte */
-        .linea-corte {
-            border-top: 3px dashed #999;
-            margin: 40px 0 25px 0;
+        /* CARNET - DISEÑO CONAPDIS */
+        .carnet-container {
+            margin-top: 40px;
+            border: 3px dashed #999;
+            padding: 20px;
             position: relative;
+            background: #fafafa;
         }
         
-        .linea-corte span {
+        .carnet-container::before {
+            content: '✂ RECORTAR POR LA LÍNEA PUNTEADA ✂';
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            background: white;
-            padding: 0 20px;
+            background: #fafafa;
+            padding: 0 15px;
             color: #999;
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: bold;
-            letter-spacing: 2px;
-        }
-        
-        /* Carnet */
-        .carnet-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 25px;
+            letter-spacing: 1px;
         }
         
         .carnet {
-            width: 85mm;
-            height: 55mm;
-            border: 3px solid #E67E22;
-            border-radius: 10px;
             display: flex;
+            width: 100%;
+            height: 120mm;
+            border: 2px solid #333;
+            border-radius: 10px;
             overflow: hidden;
-            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 50%, #fff 100%);
-            box-shadow: 0 6px 15px rgba(230, 126, 34, 0.3);
+            background: white;
         }
         
-        .carnet-izq {
-            flex: 0 0 40%;
-            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+        /* ANVERSO (Izquierda) - Logo grande */
+        .carnet-anverso {
+            flex: 1;
+            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-            border-right: 2px solid rgba(255,255,255,0.3);
+            padding: 20px;
+            border-right: 2px solid #ddd;
         }
         
-        .carnet-izq img {
-            width: 35mm;
-            height: 35mm;
+        .carnet-anverso img {
+            width: 80mm;
+            height: 80mm;
             object-fit: contain;
-            filter: brightness(0) invert(1);
+            margin-bottom: 15px;
         }
         
-        .carnet-izq h4 {
-            color: white;
+        .carnet-anverso h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 10pt;
+            font-size: 14pt;
+            color: #E67E22;
             text-align: center;
-            margin-top: 8px;
-            font-weight: bold;
+            font-weight: 900;
+            letter-spacing: 1px;
         }
         
-        .carnet-der {
+        /* REVERSO (Derecha) - QR grande */
+        .carnet-reverso {
             flex: 1;
-            padding: 12px;
+            background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
         }
         
-        .carnet-datos {
-            font-size: 9pt;
-            color: #333;
-            line-height: 1.5;
+        .qr-grande {
+            width: 70mm;
+            height: 70mm;
+            border: 2px solid #333;
+            border-radius: 5px;
+            margin-bottom: 15px;
         }
         
-        .carnet-datos p {
-            margin: 3px 0;
-        }
-        
-        .carnet-datos strong {
-            color: #E67E22;
-            font-size: 8pt;
-        }
-        
-        .carnet-datos .nombre-titular {
+        .datos-reverso {
+            text-align: center;
             font-size: 11pt;
+            color: #333;
             font-weight: bold;
         }
         
-        .carnet-datos .codigo-id {
-            font-family: monospace;
-            font-size: 7pt;
+        .datos-reverso .nombre {
+            font-size: 13pt;
+            color: #5D4037;
+            margin-bottom: 5px;
         }
         
-        .carnet-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 5px;
+        .datos-reverso .telefono {
+            font-size: 10pt;
+            color: #666;
         }
         
         .badge-promo {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
             background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
             color: white;
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 5px;
-            font-size: 8pt;
+            font-size: 9pt;
             font-weight: bold;
             text-align: center;
             line-height: 1.3;
         }
         
-        .qr-carnet {
-            width: 35mm;
-            height: 35mm;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-        
-        /* Footer */
+        /* FOOTER */
         .footer-cert {
             text-align: center;
             font-size: 9pt;
             color: #999;
-            margin-top: 25px;
+            margin-top: 20px;
             border-top: 1px solid #ddd;
-            padding-top: 12px;
+            padding-top: 10px;
         }
         
         .footer-cert p {
-            margin: 4px 0;
+            margin: 3px 0;
         }
         
-        /* Botones de acción (no se imprimen) */
+        /* BOTONES */
         .acciones {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             z-index: 1000;
         }
         
@@ -369,14 +337,13 @@
             background: #E67E22;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 50px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-decoration: none;
-            display: inline-block;
         }
         
         .btn-accion:hover {
@@ -387,7 +354,7 @@
             background: #5D4037;
         }
         
-        /* Estilos de impresión */
+        /* IMPRESIÓN */
         @media print {
             body {
                 background: white;
@@ -397,6 +364,7 @@
                 box-shadow: none;
                 margin: 0;
                 width: 100%;
+                height: 100%;
             }
             .acciones {
                 display: none !important;
@@ -406,22 +374,10 @@
                 margin: 0;
             }
         }
-        
-        @media (max-width: 768px) {
-            .certificado {
-                width: 100%;
-                padding: 10mm;
-            }
-            .titulo-negocio { font-size: 24pt; }
-            .titulo-certificado h2 { font-size: 20pt; }
-            .cuerpo { margin: 15px 20px; font-size: 11pt; }
-            .carnet { width: 75mm; height: 48mm; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Botones de acción (no se imprimen) -->
     <div class="acciones">
         <button onclick="window.print()" class="btn-accion">
             🖨️ Imprimir / Guardar PDF
@@ -432,137 +388,123 @@
     </div>
 
     <div class="certificado">
-        <div class="marco-externo">
-            <div class="marco-interno">
-                <!-- Esquinas -->
-                <div class="esquina tl"></div>
-                <div class="esquina tr"></div>
-                <div class="esquina bl"></div>
-                <div class="esquina br"></div>
+        
+        <!-- PARTE SUPERIOR: Información -->
+        <div class="info-superior">
+            <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo" class="logo-pequeno">
+            <div class="info-texto">
+                <h3>El Rincón de Mariana</h3>
+                <p><strong>Ubicación:</strong> Guatire, Edo. Miranda, Venezuela</p>
+                <p><strong>Contacto:</strong> WhatsApp: 0412-9354244 / 0416-7017155</p>
+                <p><strong>Instagram:</strong> @elrincondemariana.ve</p>
+                <p><strong>Horario:</strong> Viernes 5PM-11PM | Sábado y Domingo 12PM-11PM</p>
+            </div>
+        </div>
 
-                <!-- Encabezado -->
-                <div class="encabezado">
-                    <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo" class="logo">
-                    <h1 class="titulo-negocio">El Rincón de Mariana</h1>
-                    <div class="lema">¡El sabor que provoca!</div>
+        <!-- TÍTULO CENTRAL -->
+        <div class="titulo-central">
+            <h1>Certificado de Membresía</h1>
+            <div class="lema">¡El sabor que provoca!</div>
+            <p class="numero-cert">N° <span id="num-cert"></span></p>
+        </div>
+
+        <!-- CUERPO -->
+        <div class="cuerpo-certificado">
+            <p>
+                Por medio del presente documento oficial, <strong>El Rincón de Mariana</strong>, 
+                establecimiento dedicado a la gastronomía, hace constar que el ciudadano(a):
+            </p>
+            
+            <div class="caja-nombre">
+                <h2 id="nombre-titular"></h2>
+                <p>Cédula de Identidad: <span class="cedula" id="cedula-titular"></span></p>
+            </div>
+
+            <p>
+                Ha sido registrado(a) exitosamente en nuestro <strong>Programa de Fidelización Digital</strong>, 
+                quedando acreditado(a) como miembro oficial de nuestro club de beneficios.
+            </p>
+
+            <div class="beneficios-box">
+                <h3>📋 Beneficios del Programa:</h3>
+                <ul>
+                    <li>Acumule puntos por cada compra de <strong>$10 o más</strong></li>
+                    <li>Al completar <strong>5 visitas válidas</strong>, su <strong>6ta visita es GRATIS</strong></li>
+                    <li>Consumo máximo del beneficio: hasta <strong>$10</strong></li>
+                    <li>Si su consumo excede $10, solo paga la diferencia</li>
+                    <li>Acceso a promociones especiales para miembros</li>
+                </ul>
+            </div>
+
+            <p>
+                Este certificado debe ser impreso, recortado por la línea punteada y plastificado. 
+                El código QR es <strong>único, personal e intransferible</strong>, y está permanentemente 
+                asociado a su número de cédula de identidad.
+            </p>
+        </div>
+
+        <!-- FIRMA -->
+        <div class="firma-seccion">
+            <div class="firma-box">
+                <div class="firma-linea">Guatire, <span id="fecha-hoy"></span></div>
+            </div>
+            <div class="firma-box">
+                <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" class="sello">
+                <div class="firma-linea">El Rincón de Mariana<br>Autorizado</div>
+            </div>
+        </div>
+
+        <!-- CARNET TIPO CONAPDIS -->
+        <div class="carnet-container">
+            <div class="carnet">
+                <!-- ANVERSO: Logo grande -->
+                <div class="carnet-anverso">
+                    <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo">
+                    <h3>El Rincón de Mariana</h3>
                 </div>
-
-                <!-- Título -->
-                <div class="titulo-certificado">
-                    <h2>Certificado de Membresía</h2>
-                    <div class="linea-decorativa"></div>
-                    <p class="numero-cert">N° <span id="num-cert"></span></p>
-                </div>
-
-                <!-- Cuerpo -->
-                <div class="cuerpo">
-                    <p>
-                        Por medio del presente documento oficial, <strong>El Rincón de Mariana</strong>, 
-                        establecimiento dedicado a la gastronomía, hace constar que el ciudadano(a):
-                    </p>
-                    
-                    <div class="caja-titular">
-                        <h3 id="nombre-titular"></h3>
-                        <p>Cédula de Identidad: <span class="cedula-num" id="cedula-titular"></span></p>
+                
+                <!-- REVERSO: QR grande -->
+                <div class="carnet-reverso">
+                    <img id="carnet-qr" class="qr-grande" src="" alt="QR">
+                    <div class="datos-reverso">
+                        <div class="nombre" id="carnet-nombre"></div>
+                        <div class="telefono" id="carnet-telefono"></div>
                     </div>
-
-                    <p>
-                        Ha sido registrado(a) exitosamente en nuestro <strong>Programa de Fidelización Digital</strong>, 
-                        quedando acreditado(a) como miembro oficial de nuestro club de beneficios.
-                    </p>
-
-                    <div class="beneficios">
-                        <h4>📋 Beneficios del Programa:</h4>
-                        <ul>
-                            <li>Acumule puntos por cada compra de <strong>$10 o más</strong></li>
-                            <li>Al completar <strong>5 visitas válidas</strong>, su <strong>6ta visita es GRATIS</strong></li>
-                            <li>Consumo máximo del beneficio: hasta <strong>$10</strong></li>
-                            <li>Si su consumo excede $10, solo paga la diferencia</li>
-                            <li>Acceso a promociones especiales para miembros</li>
-                        </ul>
-                    </div>
-
-                    <p>
-                        Este certificado debe ser impreso, recortado por la línea punteada inferior y plastificado. 
-                        El código QR es <strong>único, personal e intransferible</strong>, y está permanentemente 
-                        asociado a su número de cédula de identidad.
-                    </p>
-                </div>
-
-                <!-- Firma -->
-                <div class="firma-seccion">
-                    <div class="firma-box">
-                        <div class="firma-linea">Guatire, <span id="fecha-hoy"></span></div>
-                    </div>
-                    <div class="firma-box">
-                        <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" class="sello">
-                        <div class="firma-linea">El Rincón de Mariana<br>Autorizado</div>
-                    </div>
-                </div>
-
-                <!-- Línea de corte -->
-                <div class="linea-corte">
-                    <span>✂ RECORTAR POR LA LÍNEA PUNTEADA ✂</span>
-                </div>
-
-                <!-- Carnet -->
-                <div class="carnet-container">
-                    <div class="carnet">
-                        <div class="carnet-izq">
-                            <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo">
-                            <h4>El Rincón<br>de Mariana</h4>
-                        </div>
-                        <div class="carnet-der">
-                            <div class="carnet-datos">
-                                <p><strong>TITULAR:</strong><br><span class="nombre-titular" id="carnet-nombre"></span></p>
-                                <p><strong>CÉDULA:</strong> <span id="carnet-cedula"></span></p>
-                                <p><strong>ID:</strong> <span class="codigo-id" id="carnet-id"></span></p>
-                            </div>
-                            <div class="carnet-bottom">
-                                <div class="badge-promo">5 VISITAS<br>=<br>6ta GRATIS</div>
-                                <img id="carnet-qr" class="qr-carnet" src="" alt="QR">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer -->
-                <div class="footer-cert">
-                    <p><strong>El Rincón de Mariana</strong> | WhatsApp: 0412-9354244 / 0416-7017155</p>
-                    <p>Instagram: @elrincondemariana.ve | Guatire, Edo. Miranda, Venezuela</p>
-                    <p style="font-style: italic; font-size: 8pt; margin-top: 8px;">Documento generado electrónicamente - Válido sin enmiendas ni tachaduras</p>
+                    <div class="badge-promo">5 VISITAS<br>=<br>6ta GRATIS</div>
                 </div>
             </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer-cert">
+            <p><strong>El Rincón de Mariana</strong> | WhatsApp: 0412-9354244 / 0416-7017155</p>
+            <p>Instagram: @elrincondemariana.ve | Guatire, Edo. Miranda, Venezuela</p>
+            <p style="font-style: italic; font-size: 8pt; margin-top: 5px;">Documento generado electrónicamente - Válido sin enmiendas ni tachaduras</p>
         </div>
     </div>
 
     <script>
-        // Leer datos de la URL
         const params = new URLSearchParams(window.location.search);
         const nombre = params.get('nombre') || 'Cliente';
         const cedula = params.get('cedula') || '00000000';
+        const telefono = params.get('telefono') || '0000-0000000';
         const qr = params.get('qr') || 'ERM-00000000-XXXXXX';
         
-        // Llenar datos
         document.getElementById('nombre-titular').textContent = nombre.toUpperCase();
         document.getElementById('cedula-titular').textContent = cedula;
         document.getElementById('carnet-nombre').textContent = nombre;
-        document.getElementById('carnet-cedula').textContent = cedula;
-        document.getElementById('carnet-id').textContent = qr;
+        document.getElementById('carnet-telefono').textContent = telefono;
         document.getElementById('num-cert').textContent = qr;
         
-        // QR del carnet
-        const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${qr}`;
+        const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${qr}`;
         document.getElementById('carnet-qr').src = qrURL;
         
-        // Fecha
         const fechaHoy = new Date().toLocaleDateString('es-VE', { 
             year: 'numeric', month: 'long', day: 'numeric' 
         });
         document.getElementById('fecha-hoy').textContent = fechaHoy;
         
-        // Título de la página
         document.title = `Certificado - ${nombre} - El Rincón de Mariana`;
     </script>
 </body>
-  </html>
+</html>
