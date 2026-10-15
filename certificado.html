@@ -19,8 +19,6 @@
             padding: 30px;
             box-shadow: 0 3px 15px rgba(0,0,0,0.1);
         }
-        
-        /* HEADER */
         .header {
             display: flex;
             align-items: center;
@@ -44,8 +42,6 @@
             color: #666;
             margin: 2px 0;
         }
-        
-        /* TÍTULO */
         .titulo {
             text-align: center;
             margin: 20px 0;
@@ -61,24 +57,18 @@
             color: #999;
             font-size: 11px;
         }
-        
-        /* TEXTO EN 2 COLUMNAS */
         .contenido {
             display: flex;
             gap: 20px;
             margin: 20px 0;
         }
-        
         .columna {
             flex: 1;
             text-align: justify;
             font-size: 13px;
             line-height: 1.7;
         }
-        
         .columna strong { color: #E67E22; }
-        
-        /* BENEFICIOS */
         .beneficios {
             background: #f5f5f5;
             border-left: 4px solid #E67E22;
@@ -96,8 +86,6 @@
             line-height: 1.7;
         }
         .beneficios strong { color: #E67E22; }
-        
-        /* TEXTO INFERIOR */
         .texto-inferior {
             text-align: justify;
             font-size: 13px;
@@ -106,7 +94,7 @@
         }
         .texto-inferior strong { color: #E67E22; }
         
-        /* CARNET */
+        /* CARNET - LOGO GRANDE */
         .carnet-box {
             margin-top: 25px;
             border: 3px dashed #999;
@@ -125,7 +113,6 @@
             color: #999;
             font-size: 10px;
         }
-        
         .carnet {
             display: flex;
             height: 150px;
@@ -133,7 +120,6 @@
             border-radius: 8px;
             overflow: hidden;
         }
-        
         .carnet-left {
             flex: 1;
             background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
@@ -142,21 +128,21 @@
             align-items: center;
             justify-content: center;
             border-right: 2px solid #ddd;
-            padding: 10px;
+            padding: 5px;
         }
         .carnet-left img {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             object-fit: contain;
+            margin-bottom: 5px;
         }
         .carnet-left p {
-            font-size: 12px;
+            font-size: 11px;
             color: #E67E22;
             font-weight: bold;
-            margin-top: 5px;
             text-align: center;
+            line-height: 1.2;
         }
-        
         .carnet-right {
             flex: 1;
             background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
@@ -200,8 +186,6 @@
             text-align: center;
             line-height: 1.2;
         }
-        
-        /* FOOTER */
         .footer {
             text-align: center;
             font-size: 10px;
@@ -210,8 +194,6 @@
             border-top: 1px solid #ddd;
             padding-top: 10px;
         }
-        
-        /* BOTONES */
         .acciones {
             position: fixed;
             top: 15px;
@@ -232,18 +214,16 @@
         }
         .btn:hover { background: #D35400; }
         .btn.secundario { background: #5D4037; }
-        
         @media print {
             body { background: white; padding: 0; }
             .certificado { box-shadow: none; }
             .acciones { display: none !important; }
             @page { size: letter; margin: 10mm; }
         }
-        
         @media (max-width: 600px) {
             .contenido { flex-direction: column; gap: 10px; }
             .carnet { height: 130px; }
-            .carnet-left img { width: 90px; height: 90px; }
+            .carnet-left img { width: 110px; height: 110px; }
             .qr { width: 80px; height: 80px; }
         }
     </style>
@@ -256,8 +236,6 @@
     </div>
 
     <div class="certificado">
-        
-        <!-- HEADER -->
         <div class="header">
             <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo" class="logo">
             <div class="header-info">
@@ -268,27 +246,20 @@
             </div>
         </div>
 
-        <!-- TÍTULO -->
         <div class="titulo">
             <h2>Certificado de Membresía</h2>
             <p class="numero">N° <span id="num-cert"></span></p>
         </div>
 
-        <!-- CONTENIDO EN 2 COLUMNAS -->
         <div class="contenido">
             <div class="columna">
-                <p>
-                    <strong>El Rincón de Mariana</strong> certifica que:
-                </p>
+                <p><strong>El Rincón de Mariana</strong> certifica que:</p>
                 <p style="text-align: center; font-size: 16px; font-weight: bold; color: #5D4037; margin: 15px 0;">
                     MARCOS VARGAS<br>
                     <span style="font-size: 13px; color: #E67E22;">Cédula: 17642323</span>
                 </p>
-                <p>
-                    Es miembro oficial de nuestro <strong>Programa de Fidelización</strong>.
-                </p>
+                <p>Es miembro oficial de nuestro <strong>Programa de Fidelización</strong>.</p>
             </div>
-            
             <div class="columna">
                 <div class="beneficios">
                     <h4>📋 Beneficios:</h4>
@@ -302,16 +273,10 @@
             </div>
         </div>
 
-        <!-- TEXTO INFERIOR -->
         <div class="texto-inferior">
-            <p>
-                Este certificado debe ser <strong>impreso, recortado y plastificado</strong>. 
-                El código QR es <strong>único, personal e intransferible</strong>, asociado permanentemente 
-                a su cédula de identidad.
-            </p>
+            <p>Este certificado debe ser <strong>impreso, recortado y plastificado</strong>. El código QR es <strong>único, personal e intransferible</strong>, asociado permanentemente a su cédula de identidad.</p>
         </div>
 
-        <!-- CARNET -->
         <div class="carnet-box">
             <div class="carnet">
                 <div class="carnet-left">
@@ -329,7 +294,6 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">
             <p>Documento generado electrónicamente - Guatire, Edo. Miranda, Venezuela</p>
         </div>
@@ -342,7 +306,6 @@
         const telefono = params.get('telefono') || '0000-0000000';
         const qr = params.get('qr') || 'ERM-00000000-XXXXXX';
         
-        // Reemplazar nombre y cédula en el texto
         const textoCentrado = document.querySelector('.columna p:nth-child(2)');
         if (textoCentrado) {
             textoCentrado.innerHTML = `${nombre.toUpperCase()}<br><span style="font-size: 13px; color: #E67E22;">Cédula: ${cedula}</span>`;
