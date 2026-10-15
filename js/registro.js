@@ -1,6 +1,6 @@
 /* ========================================
    SISTEMA DE REGISTRO - El Rincón de Mariana
-   VERSIÓN FINAL: QR único por cédula
+   VERSIÓN FINAL: QR único por cédula (anti-duplicados)
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -24,16 +24,16 @@ async function registrarCliente(evento) {
     
     const btnSubmit = document.getElementById('btn-registrar');
     const textoOriginal = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = ' Buscando cliente...';
+    btnSubmit.innerHTML = '⏳ Buscando cliente...';
     btnSubmit.disabled = true;
     
     try {
-        // PASO 1: Buscar si el cliente ya existe por cédula
-        const { data: clienteExistente, error: errorBusqueda } = await supabaseClient
+        // PASO 1: Buscar si el cliente ya existe por cédula (tomar solo el primero)
+        const { data: clientesEncontrados, error: errorBusqueda } = await supabaseClient
             .from('clientes')
             .select('codigo_qr, nombre_y_apellido, telefono, puntos, deuda_actual')
             .eq('cedula', cedula)
-            .maybeSingle();
+            .limit(1);
         
         if (errorBusqueda) throw errorBusqueda;
         
@@ -41,13 +41,14 @@ async function registrarCliente(evento) {
         let esClienteNuevo = false;
         let puntosActuales = 0;
         
-        if (clienteExistente) {
-            // ✅ Cliente ya existe - usar su QR existente (mantiene sus puntos)
-            codigoQR = clienteExistente.codigo_qr;
-            puntosActuales = clienteExistente.puntos || 0;
+        if (clientesEncontrados && clientesEncontrados.length > 0) {
+            // ✅ Cliente ya existe - usar su QR existente
+            const cliente = clientesEncontrados[0];
+            codigoQR = cliente.codigo_qr;
+            puntosActuales = cliente.puntos || 0;
             console.log('✅ Cliente existente encontrado:', codigoQR);
         } else {
-            //  Cliente nuevo - generar QR único
+            // 🆕 Cliente nuevo - generar QR único
             codigoQR = 'ERM-' + cedula + '-' + Date.now().toString(36).toUpperCase();
             esClienteNuevo = true;
             
@@ -78,21 +79,18 @@ async function registrarCliente(evento) {
 }
 
 function mostrarResultado(codigoQR, nombre, cedula, telefono, esClienteNuevo, puntos) {
-    // Ocultar formulario y mostrar resultado
     const formulario = document.getElementById('formulario-registro');
     const resultado = document.getElementById('resultado-registro');
     
     if (formulario) formulario.style.display = 'none';
     if (resultado) resultado.style.display = 'block';
     
-    // Generar imagen QR
     const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${codigoQR}`;
     const qrImagen = document.getElementById('qr-imagen');
     if (qrImagen) {
         qrImagen.innerHTML = `<img src="${qrURL}" alt="QR" style="width: 250px; height: 250px;">`;
     }
     
-    // Llenar datos
     const elNombre = document.getElementById('qr-cliente-nombre');
     const elCodigo = document.getElementById('qr-cliente-codigo');
     const elCedula = document.getElementById('qr-cliente-cedula');
@@ -101,7 +99,6 @@ function mostrarResultado(codigoQR, nombre, cedula, telefono, esClienteNuevo, pu
     if (elCodigo) elCodigo.textContent = codigoQR;
     if (elCedula) elCedula.textContent = cedula;
     
-    // Botón único: Descargar Tarjeta PDF
     const btnPDF = document.getElementById('btn-descargar-tarjeta');
     if (btnPDF) {
         const urlGenerar = `generar-tarjeta.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&qr=${encodeURIComponent(codigoQR)}&puntos=${puntos}&nuevo=${esClienteNuevo}`;
