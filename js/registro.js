@@ -1,6 +1,6 @@
 /* ========================================
    SISTEMA DE REGISTRO - El Rincón de Mariana
-   VERSIÓN FINAL CON VALIDACIONES
+   VERSIÓN FINAL: QR único por cédula
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,34 +18,56 @@ async function registrarCliente(evento) {
     const telefono = document.getElementById('telefono').value.trim();
     
     if (!cedula || !nombre || !telefono) {
-        alert('⚠️ Por favor completa todos los campos');
+        alert('️ Por favor completa todos los campos');
         return;
     }
     
-    // Generar código único
-    const codigoQR = 'ERM-' + cedula + '-' + Date.now().toString(36).toUpperCase();
-    
     const btnSubmit = document.getElementById('btn-registrar');
     const textoOriginal = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = '⏳ Registrando...';
+    btnSubmit.innerHTML = ' Buscando cliente...';
     btnSubmit.disabled = true;
     
     try {
-        // Guardar en Supabase
-        const { data, error } = await supabaseClient
+        // PASO 1: Buscar si el cliente ya existe por cédula
+        const { data: clienteExistente, error: errorBusqueda } = await supabaseClient
             .from('clientes')
-            .insert([{
-                cedula: cedula,
-                nombre_y_apellido: nombre,
-                telefono: telefono,
-                deuda_actual: 0,
-                puntos: 0,
-                codigo_qr: codigoQR
-            }]);
+            .select('codigo_qr, nombre_y_apellido, telefono, puntos, deuda_actual')
+            .eq('cedula', cedula)
+            .maybeSingle();
         
-        if (error) throw error;
+        if (errorBusqueda) throw errorBusqueda;
         
-        mostrarResultado(codigoQR, nombre, cedula, telefono);
+        let codigoQR;
+        let esClienteNuevo = false;
+        let puntosActuales = 0;
+        
+        if (clienteExistente) {
+            // ✅ Cliente ya existe - usar su QR existente (mantiene sus puntos)
+            codigoQR = clienteExistente.codigo_qr;
+            puntosActuales = clienteExistente.puntos || 0;
+            console.log('✅ Cliente existente encontrado:', codigoQR);
+        } else {
+            //  Cliente nuevo - generar QR único
+            codigoQR = 'ERM-' + cedula + '-' + Date.now().toString(36).toUpperCase();
+            esClienteNuevo = true;
+            
+            // Guardar nuevo cliente en la base de datos
+            const { error: errorInsert } = await supabaseClient
+                .from('clientes')
+                .insert([{
+                    cedula: cedula,
+                    nombre_y_apellido: nombre,
+                    telefono: telefono,
+                    deuda_actual: 0,
+                    puntos: 0,
+                    codigo_qr: codigoQR
+                }]);
+            
+            if (errorInsert) throw errorInsert;
+            console.log('✅ Cliente nuevo registrado:', codigoQR);
+        }
+        
+        mostrarResultado(codigoQR, nombre, cedula, telefono, esClienteNuevo, puntosActuales);
         
     } catch (error) {
         console.error('Error:', error);
@@ -55,7 +77,7 @@ async function registrarCliente(evento) {
     }
 }
 
-function mostrarResultado(codigoQR, nombre, cedula, telefono) {
+function mostrarResultado(codigoQR, nombre, cedula, telefono, esClienteNuevo, puntos) {
     // Ocultar formulario y mostrar resultado
     const formulario = document.getElementById('formulario-registro');
     const resultado = document.getElementById('resultado-registro');
@@ -79,27 +101,12 @@ function mostrarResultado(codigoQR, nombre, cedula, telefono) {
     if (elCodigo) elCodigo.textContent = codigoQR;
     if (elCedula) elCedula.textContent = cedula;
     
-    // Botón 1: Descargar QR (imagen)
-    const btnDescargar = document.getElementById('btn-descargar-qr');
-    if (btnDescargar) {
-        btnDescargar.href = qrURL;
-        btnDescargar.download = `QR-${cedula}.png`;
-    }
-    
-    // Botón 2: Descargar Tarjeta PDF (va a la página de generación)
+    // Botón único: Descargar Tarjeta PDF
     const btnPDF = document.getElementById('btn-descargar-tarjeta');
     if (btnPDF) {
-        const urlGenerar = `generar-tarjeta.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&qr=${encodeURIComponent(codigoQR)}`;
+        const urlGenerar = `generar-tarjeta.html?nombre=${encodeURIComponent(nombre)}&cedula=${encodeURIComponent(cedula)}&telefono=${encodeURIComponent(telefono)}&qr=${encodeURIComponent(codigoQR)}&puntos=${puntos}&nuevo=${esClienteNuevo}`;
         btnPDF.href = urlGenerar;
     }
     
-    // Botón 3: WhatsApp (avisa a Mariana)
-    const btnWhatsApp = document.getElementById('btn-whatsapp-qr');
-    if (btnWhatsApp) {
-        const numeroMariana = '584129354244';
-        const mensaje = `Hola Mariana, soy *${nombre}* (Cédula: ${cedula}). Me acabo de registrar en la página web. Mi código es ${codigoQR}. Quedo atento.`;
-        btnWhatsApp.href = `https://wa.me/${numeroMariana}?text=${encodeURIComponent(mensaje)}`;
-    }
-    
-    console.log('✅ Registrado:', codigoQR);
+    console.log('✅ Registro completado:', codigoQR, esClienteNuevo ? '(NUEVO)' : '(EXISTENTE)');
 }
