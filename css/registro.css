@@ -1,0 +1,240 @@
+/* ========================================
+   ESTILOS DE REGISTRO - El Rincón de Mariana
+   ======================================== */
+
+.seccion-registro {
+    background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
+    padding: 4rem 1rem;
+}
+
+.registro-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(93, 64, 55, 0.15);
+}
+
+.formulario-registro {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.campo-form label {
+    font-weight: 700;
+    color: var(--marron-oscuro);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.campo-form label i {
+    color: var(--naranja);
+}
+
+.campo-form input {
+    padding: 1rem;
+    border: 2px solid var(--crema-oscuro);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+    transition: border-color 0.3s;
+}
+
+.campo-form input:focus {
+    outline: none;
+    border-color: var(--naranja);
+}
+
+.btn-registrar {
+    background: linear-gradient(135deg, var(--naranja) 0%, var(--naranja-oscuro) 100%);
+    color: white;
+    padding: 1.2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+}
+
+.btn-registrar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(230, 126, 34, 0.5);
+}
+
+.btn-registrar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.nota-registro {
+    background: var(--crema);
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: var(--marron);
+    border-left: 4px solid var(--naranja);
+}
+
+.nota-registro i {
+    color: var(--naranja);
+}
+
+/* Resultado después del registro */
+.resultado-registro {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.qr-card {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--crema) 0%, white 100%);
+    border-radius: 20px;
+    border: 3px solid var(--naranja);
+}
+
+.qr-card h3 {
+    color: var(--marron-oscuro);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.cliente-nombre {
+    color: var(--naranja);
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.qr-imagen {
+    background: white;
+    padding: 1rem;
+    border-radius: 15px;
+    display: inline-block;
+    margin: 1rem 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.qr-imagen img {
+    display: block;
+    margin: 0 auto;
+}
+
+.codigo-texto {
+    font-size: 1.1rem;
+    color: var(--marron);
+    margin: 1rem 0 0.5rem;
+}
+
+.codigo-texto strong {
+    color: var(--naranja-oscuro);
+    font-family: monospace;
+    font-size: 1.2rem;
+    background: var(--crema);
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+}
+
+.cedula-texto {
+    color: var(--marron);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.botones-resultado {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+}
+
+.btn-descargar, .btn-whatsapp-qr {
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.btn-descargar {
+    background: var(--marron);
+    color: white;
+}
+
+.btn-descargar:hover {
+    background: var(--marron-oscuro);
+    transform: translateY(-2px);
+}
+
+.btn-whatsapp-qr {
+    background: var(--verde-whatsapp);
+    color: white;
+}
+
+.btn-whatsapp-qr:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+}
+
+.instrucciones {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-top: 1.5rem;
+    text-align: left;
+    font-size: 0.95rem;
+    color: var(--marron);
+    line-height: 1.8;
+    border: 2px dashed var(--naranja);
+}
+
+.instrucciones i {
+    color: var(--naranja);
+    font-size: 1.2rem;
+}
+
+.instrucciones strong {
+    color: var(--marron-oscuro);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .registro-container {
+        padding: 1.5rem;
+    }
+    
+    .botones-resultado {
+        flex-direction: column;
+    }
+    
+    .btn-descargar, .btn-whatsapp-qr {
+        width: 100%;
+        justify-content: center;
+    }
+}
