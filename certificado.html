@@ -94,7 +94,7 @@
         }
         .texto-inferior strong { color: #E67E22; }
         
-        /* === CARNET (DISEÑO LIMPIO Y PROFESIONAL) === */
+        /* === CARNET === */
         .carnet-box {
             margin-top: 25px;
             border: 3px dashed #999;
@@ -103,7 +103,7 @@
             background: #fafafa;
         }
         .carnet-box::before {
-            content: '✂ RECORTAR ✂';
+            content: '✂ RECORTAR ';
             position: absolute;
             top: -10px;
             left: 50%;
@@ -118,25 +118,25 @@
             height: 200px;
             border: 2px solid #333;
             border-radius: 8px;
-            overflow: hidden; /* Mantiene los bordes redondeados limpios */
+            overflow: hidden;
             background: white;
         }
         
-        /* LADO IZQUIERDO: Logo grande centrado perfectamente */
+        /* LADO IZQUIERDO: Logo grande */
         .carnet-izquierdo {
             flex: 1;
             background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
             border-right: 2px solid #E67E22;
-            position: relative; /* Clave para el centrado absoluto */
+            position: relative;
         }
         .carnet-izquierdo img {
-            width: 260px;  /* Tamaño grande */
-            height: 260px;
+            width: 300px;
+            height: 300px;
             object-fit: contain;
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* Centrado matemático perfecto */
+            transform: translate(-50%, -50%);
             z-index: 1;
         }
         
@@ -171,19 +171,6 @@
         .carnet-info .telefono {
             font-size: 12px;
             color: #666;
-        }
-        .badge {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: #E67E22;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 9px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 1.3;
         }
         
         .footer {
@@ -226,7 +213,7 @@
 <body>
 
     <div class="acciones">
-        <button onclick="window.print()" class="btn">🖨️ Imprimir / Guardar PDF</button>
+        <button onclick="window.print()" class="btn">️ Imprimir / Guardar PDF</button>
         <a href="index.html#registro" class="btn secundario">← Volver</a>
     </div>
 
@@ -284,7 +271,6 @@
                         <div class="nombre" id="carnet-nombre"></div>
                         <div class="telefono" id="carnet-telefono"></div>
                     </div>
-                    <div class="badge">5 VISITAS<br>=<br>6ta GRATIS</div>
                 </div>
             </div>
         </div>
