@@ -107,7 +107,7 @@
 
             <!-- Aquí iremos agregando las funciones paso a paso -->
             <button class="action-btn primary" onclick="alert('Próximamente: Escáner de QR')">
-                📷 Escanear Código QR
+                 Escanear Código QR
             </button>
             
             <button class="action-btn" onclick="alert('Próximamente: Lista de Clientes')">
@@ -123,7 +123,6 @@
     <script>
         // ==========================================
         // CONFIGURACIÓN DE SUPABASE
-        // Credenciales insertadas automáticamente
         // ==========================================
         const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
@@ -138,6 +137,7 @@
 
         // Verificar si ya hay una sesión activa al cargar la página
         window.onload = async () => {
+            alert('Diagnóstico: La página cargó correctamente.');
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
                 await verificarUsuario(session.user.email);
@@ -145,63 +145,77 @@
         };
 
         async function iniciarSesion() {
+            alert('Paso 1: Botón presionado correctamente.');
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
             
             if (!email || !password) {
-                mostrarError('Por favor, completa todos los campos.');
+                alert('Paso 2: Faltan datos. Por favor, completa todos los campos.');
                 return;
             }
 
+            alert('Paso 3: Datos obtenidos. Intentando conectar con Supabase...');
             loading.style.display = 'block';
             errorMsg.style.display = 'none';
 
-            // 1. Intentar autenticar con Supabase Auth
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-            if (error) {
+                if (error) {
+                    loading.style.display = 'none';
+                    alert('Paso 4: Error de Supabase: ' + error.message);
+                    mostrarError('Correo o contraseña incorrectos.');
+                    return;
+                }
+
+                alert('Paso 5: Autenticación exitosa. Verificando permisos en la base de datos...');
+                await verificarUsuario(email);
+
+            } catch (err) {
                 loading.style.display = 'none';
-                mostrarError('Correo o contraseña incorrectos.');
-                return;
+                alert('Paso 6: Error inesperado del sistema: ' + err.message);
+                mostrarError('Ocurrió un error inesperado. Revisa tu conexión a internet.');
             }
-
-            // 2. Si la autenticación es exitosa, verificar si está en la tabla 'empleados' y activo
-            await verificarUsuario(email);
         }
 
         async function verificarUsuario(email) {
-            loading.style.display = 'block';
-            
-            // Buscamos en la tabla 'empleados'
-            const { data, error } = await supabase
-                .from('empleados')
-                .select('nombre, rol, activo')
-                .eq('email', email)
-                .single();
+            try {
+                const { data, error } = await supabase
+                    .from('empleados')
+                    .select('nombre, rol, activo')
+                    .eq('email', email)
+                    .single();
 
-            loading.style.display = 'none';
+                loading.style.display = 'none';
 
-            if (error || !data) {
-                mostrarError('No tienes permisos de acceso al panel.');
-                await supabase.auth.signOut();
-                return;
+                if (error || !data) {
+                    alert('Paso 7: No se encontró el usuario en la tabla empleados.');
+                    mostrarError('No tienes permisos de acceso al panel.');
+                    await supabase.auth.signOut();
+                    return;
+                }
+
+                if (!data.activo) {
+                    alert('Paso 8: El usuario existe pero está inactivo.');
+                    mostrarError('Tu cuenta ha sido desactivada. Contacta al administrador.');
+                    await supabase.auth.signOut();
+                    return;
+                }
+
+                alert('Paso 9: ¡Todo correcto! Ingresando al panel...');
+                mostrarPanel(data.nombre, data.rol);
+
+            } catch (err) {
+                loading.style.display = 'none';
+                alert('Paso 10: Error al verificar usuario: ' + err.message);
             }
-
-            if (!data.activo) {
-                mostrarError('Tu cuenta ha sido desactivada. Contacta al administrador.');
-                await supabase.auth.signOut();
-                return;
-            }
-
-            // Si todo está bien, mostramos el panel
-            mostrarPanel(data.nombre, data.rol);
         }
 
         function mostrarPanel(nombre, rol) {
             loginScreen.style.display = 'none';
             dashboardScreen.style.display = 'flex';
-            document.getElementById('welcomeName').textContent = `Hola, ${nombre}`;
-            document.getElementById('welcomeRole').textContent = `Rol: ${rol.charAt(0).toUpperCase() + rol.slice(1)}`;
+            document.getElementById('welcomeName').textContent = 'Hola, ' + nombre;
+            document.getElementById('welcomeRole').textContent = 'Rol: ' + rol.charAt(0).toUpperCase() + rol.slice(1);
         }
 
         function mostrarError(mensaje) {
