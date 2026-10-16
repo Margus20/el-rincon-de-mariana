@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel de Control - El Rincón de Mariana</title>
+    <!-- Cargamos la librería de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f4f4f4; color: #333; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Pantalla de Login */
+        .login-screen {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; background: white;
+        }
+        .login-box {
+            width: 100%; max-width: 350px; text-align: center;
+        }
+        .login-box h1 { color: #E67E22; margin-bottom: 10px; font-size: 24px; }
+        .login-box p { color: #666; margin-bottom: 25px; font-size: 14px; }
+        
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: bold; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;
+            font-size: 16px; outline: none; transition: border 0.3s;
+        }
+        .input-group input:focus { border-color: #E67E22; }
+        
+        .btn-login {
+            width: 100%; padding: 14px; background: #E67E22; color: white; border: none;
+            border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        .btn-login:active { background: #D35400; }
+        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; display: none; }
+
+        /* Pantalla del Dashboard (Panel Principal) */
+        .dashboard-screen { display: none; flex: 1; flex-direction: column; }
+        .header-panel {
+            background: #E67E22; color: white; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-panel h2 { font-size: 18px; }
+        .btn-logout {
+            background: rgba(255,255,255,0.2); border: 1px solid white; color: white;
+            padding: 6px 12px; border-radius: 5px; font-size: 13px; cursor: pointer;
+        }
+        
+        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .welcome-card {
+            background: white; padding: 20px; border-radius: 10px; text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .welcome-card h3 { color: #5D4037; margin-bottom: 5px; }
+        .welcome-card p { color: #666; font-size: 14px; }
+
+        .action-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 18px; background: white; border: 2px solid #E67E22;
+            border-radius: 10px; color: #E67E22; font-size: 18px; font-weight: bold;
+            text-decoration: none; cursor: pointer; transition: 0.2s;
+        }
+        .action-btn.primary { background: #E67E22; color: white; }
+        .action-btn:active { transform: scale(0.98); }
+
+        .loading { display: none; text-align: center; margin-top: 10px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA DE INICIO DE SESIÓN -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h1>El Rincón de Mariana</h1>
+            <p>Panel de Control Interno</p>
+            
+            <div class="input-group">
+                <label>Correo electrónico</label>
+                <input type="email" id="email" placeholder="ejemplo@correo.com">
+            </div>
+            
+            <div class="input-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            
+            <button class="btn-login" onclick="iniciarSesion()">Ingresar al Panel</button>
+            <div id="loading" class="loading">Verificando credenciales...</div>
+            <div id="errorMsg" class="error-msg">Correo o contraseña incorrectos, o usuario inactivo.</div>
+        </div>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL DEL PANEL (DASHBOARD) -->
+    <div id="dashboardScreen" class="dashboard-screen">
+        <div class="header-panel">
+            <h2>Panel de Control</h2>
+            <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="welcome-card">
+                <h3 id="welcomeName">Bienvenido</h3>
+                <p id="welcomeRole">Cargando perfil...</p>
+            </div>
+
+            <!-- Aquí iremos agregando las funciones paso a paso -->
+            <button class="action-btn primary" onclick="alert('Próximamente: Escáner de QR')">
+                📷 Escanear Código QR
+            </button>
+            
+            <button class="action-btn" onclick="alert('Próximamente: Lista de Clientes')">
+                👥 Ver Lista de Clientes
+            </button>
+            
+            <button class="action-btn" onclick="alert('Próximamente: Registro Manual')">
+                🔍 Buscar por Cédula
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURACIÓN DE SUPABASE
+        // Credenciales insertadas automáticamente
+        // ==========================================
+        const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Elementos del DOM
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboardScreen = document.getElementById('dashboardScreen');
+        const errorMsg = document.getElementById('errorMsg');
+        const loading = document.getElementById('loading');
+
+        // Verificar si ya hay una sesión activa al cargar la página
+        window.onload = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                await verificarUsuario(session.user.email);
+            }
+        };
+
+        async function iniciarSesion() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!email || !password) {
+                mostrarError('Por favor, completa todos los campos.');
+                return;
+            }
+
+            loading.style.display = 'block';
+            errorMsg.style.display = 'none';
+
+            // 1. Intentar autenticar con Supabase Auth
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                loading.style.display = 'none';
+                mostrarError('Correo o contraseña incorrectos.');
+                return;
+            }
+
+            // 2. Si la autenticación es exitosa, verificar si está en la tabla 'empleados' y activo
+            await verificarUsuario(email);
+        }
+
+        async function verificarUsuario(email) {
+            loading.style.display = 'block';
+            
+            // Buscamos en la tabla 'empleados'
+            const { data, error } = await supabase
+                .from('empleados')
+                .select('nombre, rol, activo')
+                .eq('email', email)
+                .single();
+
+            loading.style.display = 'none';
+
+            if (error || !data) {
+                mostrarError('No tienes permisos de acceso al panel.');
+                await supabase.auth.signOut();
+                return;
+            }
+
+            if (!data.activo) {
+                mostrarError('Tu cuenta ha sido desactivada. Contacta al administrador.');
+                await supabase.auth.signOut();
+                return;
+            }
+
+            // Si todo está bien, mostramos el panel
+            mostrarPanel(data.nombre, data.rol);
+        }
+
+        function mostrarPanel(nombre, rol) {
+            loginScreen.style.display = 'none';
+            dashboardScreen.style.display = 'flex';
+            document.getElementById('welcomeName').textContent = `Hola, ${nombre}`;
+            document.getElementById('welcomeRole').textContent = `Rol: ${rol.charAt(0).toUpperCase() + rol.slice(1)}`;
+        }
+
+        function mostrarError(mensaje) {
+            errorMsg.textContent = mensaje;
+            errorMsg.style.display = 'block';
+        }
+
+        async function cerrarSesion() {
+            await supabase.auth.signOut();
+            dashboardScreen.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            errorMsg.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
