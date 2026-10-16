@@ -94,7 +94,7 @@
         }
         .texto-inferior strong { color: #E67E22; }
         
-        /* CARNET */
+        /* CARNET - DOS LADOS SEPARADOS */
         .carnet-box {
             margin-top: 25px;
             border: 3px dashed #999;
@@ -103,7 +103,7 @@
             background: #fafafa;
         }
         .carnet-box::before {
-            content: '✂ RECORTAR ✂';
+            content: ' RECORTAR ✂';
             position: absolute;
             top: -10px;
             left: 50%;
@@ -115,76 +115,75 @@
         }
         .carnet {
             display: flex;
-            height: 200px;
+            height: 220px;
             border: 2px solid #333;
             border-radius: 8px;
             overflow: hidden;
         }
-        .carnet-left {
+        
+        /* LADO IZQUIERDO - LOGO */
+        .carnet-izquierdo {
             flex: 1;
             background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             border-right: 2px solid #ddd;
+            overflow: hidden;
+            position: relative;
         }
-        .carnet-left img {
-            width: 480px;
-            height: 480px;
+        .carnet-izquierdo img {
+            width: 100%;
+            height: 100%;
+            max-width: 200px;
+            max-height: 200px;
             object-fit: contain;
-            margin: -60px;
         }
-        .carnet-left p {
-            font-size: 11px;
-            color: #E67E22;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 5px;
-        }
-        .carnet-right {
+        
+        /* LADO DERECHO - QR */
+        .carnet-derecho {
             flex: 1;
             background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 15px;
             position: relative;
         }
         .qr {
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border: 1px solid #333;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .carnet-info {
             text-align: center;
-            font-size: 12px;
-            font-weight: bold;
         }
-        .carnet-info .linea1 {
+        .carnet-info .nombre {
             font-size: 14px;
+            font-weight: bold;
             color: #5D4037;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
-        .carnet-info .linea2 {
+        .carnet-info .telefono {
             font-size: 11px;
             color: #666;
         }
         .badge {
             position: absolute;
-            bottom: 8px;
-            right: 8px;
+            bottom: 10px;
+            right: 10px;
             background: #E67E22;
             color: white;
-            padding: 3px 6px;
+            padding: 4px 8px;
             border-radius: 3px;
-            font-size: 8px;
+            font-size: 9px;
             font-weight: bold;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.3;
         }
+        
         .footer {
             text-align: center;
             font-size: 10px;
@@ -255,7 +254,7 @@
             </div>
             <div class="columna">
                 <div class="beneficios">
-                    <h4>📋 Beneficios:</h4>
+                    <h4> Beneficios:</h4>
                     <ul>
                         <li>Acumule puntos por compras de <strong>$10 o más</strong></li>
                         <li><strong>5 visitas válidas</strong> = <strong>6ta visita GRATIS</strong> (hasta $10)</li>
@@ -268,20 +267,19 @@
 
         <div class="texto-inferior">
             <p>Este certificado debe ser <strong>impreso, recortado y plastificado</strong>. El código QR es <strong>único, personal e intransferible</strong>, asociado permanentemente a su cédula de identidad.</p>
-            <p style="margin-top: 10px; font-size: 12px;"><strong>📌 Importante:</strong> Presente su carnet en cada visita para escanearlo y validar sus visitas. Si lo pierde, vuelva a esta página y genere uno nuevo con su cédula; su código y puntos se mantienen.</p>
+            <p style="margin-top: 10px; font-size: 12px;"><strong> Importante:</strong> Presente su carnet en cada visita para escanearlo y validar sus visitas. Si lo pierde, vuelva a esta página y genere uno nuevo con su cédula; su código y puntos se mantienen.</p>
         </div>
 
         <div class="carnet-box">
             <div class="carnet">
-                <div class="carnet-left">
+                <div class="carnet-izquierdo">
                     <img src="https://i.postimg.cc/BnVpksfg/1000405763-removebg-preview.png" alt="Logo">
-                    <p>El Rincón<br>de Mariana</p>
                 </div>
-                <div class="carnet-right">
+                <div class="carnet-derecho">
                     <img id="carnet-qr" class="qr" src="" alt="QR">
                     <div class="carnet-info">
-                        <div class="linea1" id="carnet-nombre"></div>
-                        <div class="linea2" id="carnet-telefono"></div>
+                        <div class="nombre" id="carnet-nombre"></div>
+                        <div class="telefono" id="carnet-telefono"></div>
                     </div>
                     <div class="badge">5 VISITAS<br>=<br>6ta GRATIS</div>
                 </div>
