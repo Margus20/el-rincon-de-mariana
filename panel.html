@@ -61,13 +61,11 @@
     </div>
 
     <script>
-        // Declaración global limpia de credenciales
         const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
         
         let db = null;
 
-        // Inicialización protegida para evitar pantalla en blanco
         window.addEventListener('DOMContentLoaded', () => {
             try {
                 if (window.supabase) {
@@ -97,7 +95,7 @@
                 return;
             }
 
-            const emailInput = document.getElementById('email').value.trim();
+            const emailInput = document.getElementById('email').value.trim().toLowerCase();
             const passwordInput = document.getElementById('password').value.trim();
 
             if (!emailInput || !passwordInput) {
@@ -113,37 +111,37 @@
                 });
 
                 if (authError) {
-                    mostrarError('Correo o contraseña incorrectos.');
+                    mostrarError('Error de Autenticación: ' + authError.message);
                     return;
                 }
 
-                // 2. Verificar datos en la tabla empleados
+                // 2. Consultar la tabla empleados pidiendo las columnas existentes
                 const { data: emp, error: empError } = await db
                     .from('empleados')
-                    .select('nombre, rol, activo')
+                    .select('nombre, email')
                     .eq('email', emailInput)
                     .maybeSingle();
 
-                if (empError || !emp) {
-                    mostrarError('No tienes permisos registrados en la empresa.');
+                if (empError) {
+                    mostrarError('Error en tabla empleados: ' + empError.message);
                     await db.auth.signOut();
                     return;
                 }
 
-                if (!emp.activo) {
-                    mostrarError('Esta cuenta se encuentra desactivada.');
+                if (!emp) {
+                    mostrarError('El correo "' + emailInput + '" no se encontró en la tabla empleados.');
                     await db.auth.signOut();
                     return;
                 }
 
-                // 3. Mostrar el panel de control
+                // 3. Entrar al panel con éxito
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
                 document.getElementById('welcomeName').textContent = 'Hola, ' + emp.nombre;
-                document.getElementById('welcomeRole').textContent = 'Rol: ' + emp.rol;
+                document.getElementById('welcomeRole').textContent = 'Rol: Empleado';
 
             } catch (err) {
-                mostrarError('Ocurrió un error inesperado al procesar la solicitud.');
+                mostrarError('Excepción imprevista: ' + err.message);
             }
         }
 
