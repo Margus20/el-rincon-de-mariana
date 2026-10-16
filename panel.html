@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <!-- Importamos Supabase de forma segura -->
+    <!-- Librerías de Supabase y Lector de Códigos QR -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
@@ -21,16 +22,15 @@
         
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .welcome-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .action-btn { width: 100%; padding: 18px; background: white; border: 2px solid #E67E22; border-radius: 10px; color: #E67E22; font-size: 18px; font-weight: bold; cursor: pointer; text-align: center; }
+        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .welcome-card { background: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .action-btn { width: 100%; padding: 15px; background: white; border: 2px solid #E67E22; border-radius: 10px; color: #E67E22; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; }
         .action-btn.primary { background: #E67E22; color: white; }
         
-        /* Secciones dinámicas para las vistas secundarias */
-        .view-section { display: none; background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .view-section { display: none; background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-y: auto; max-height: 75vh; }
         .view-section h3 { color: #E67E22; margin-bottom: 15px; }
         .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
-        .client-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
     </style>
 </head>
 <body>
@@ -61,35 +61,46 @@
         
         <div class="main-content">
             <!-- Menú Principal -->
-            <div id="homeMenu" style="display: flex; flex-direction: column; gap: 15px; flex: 1;">
+            <div id="homeMenu" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
                 <div class="welcome-card">
                     <h3 id="welcomeName">Bienvenido</h3>
-                    <p id="welcomeRole">Cargando...</p>
+                    <p style="font-size: 13px; color: #666;">Sistema Activo</p>
                 </div>
                 
-                <!-- Botón de Escanear QR (Activa la cámara del teléfono) -->
                 <button class="action-btn primary" onclick="abrirEscanerQR()">📷 Escanear Código QR</button>
-                
-                <!-- Botón de Lista de Clientes -->
                 <button class="action-btn" onclick="verListaClientes()">👥 Ver Lista de Clientes</button>
-                
-                <!-- Botón de Buscar por Cédula -->
+                <button class="action-btn" onclick="verVisitas()">📋 Ver Historial de Visitas</button>
+                <button class="action-btn" onclick="verTransacciones()">💰 Ver Transacciones</button>
                 <button class="action-btn" onclick="abrirBuscadorCedula()">🔍 Buscar por Cédula</button>
             </div>
 
             <!-- Vista: Clientes -->
             <div id="clientsView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
-                <h3>Lista de Clientes</h3>
-                <div id="clientsListContainer">Cargando clientes...</div>
+                <h3>Lista de Clientes Registrados</h3>
+                <div id="clientsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Buscar por Cédula -->
+            <!-- Vista: Visitas -->
+            <div id="visitsView" class="view-section">
+                <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
+                <h3>Historial de Visitas</h3>
+                <div id="visitsListContainer">Cargando...</div>
+            </div>
+
+            <!-- Vista: Transacciones -->
+            <div id="transactionsView" class="view-section">
+                <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
+                <h3>Registro de Transacciones</h3>
+                <div id="transactionsListContainer">Cargando...</div>
+            </div>
+
+            <!-- Vista: Buscar por Cédula / Escáner QR -->
             <div id="searchView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
-                <h3>Buscar Cliente por Cédula</h3>
+                <h3>Consulta de Cliente / QR</h3>
                 <div class="input-group">
-                    <input type="text" id="cedulaInput" placeholder="Introduce la cédula...">
+                    <input type="text" id="cedulaInput" placeholder="Introduce la cédula o escanea un QR...">
                 </div>
                 <button class="btn-login" onclick="buscarCedula()" style="margin-bottom: 15px;">Buscar</button>
                 <div id="searchResultContainer"></div>
@@ -97,7 +108,8 @@
         </div>
     </div>
 
-    <!-- Input oculto para activar la cámara del móvil y escanear imágenes/QR -->
+    <!-- Elemento para procesar códigos QR desde archivos o cámara -->
+    <div id="qrReader" style="display: none;"></div>
     <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarArchivoQR(event)">
 
     <script>
@@ -105,6 +117,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
         
         let db = null;
+        let html5QrCode = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             try {
@@ -167,7 +180,7 @@
                 }
 
                 if (!emp) {
-                    mostrarError('El correo "' + emailInput + '" no se encontró en la tabla empleados.');
+                    mostrarError('El correo no se encontró en la tabla empleados.');
                     await db.auth.signOut();
                     return;
                 }
@@ -175,7 +188,6 @@
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
                 document.getElementById('welcomeName').textContent = 'Hola, ' + emp.nombre;
-                document.getElementById('welcomeRole').textContent = 'Panel de Control Activo';
 
             } catch (err) {
                 mostrarError('Excepción imprevista: ' + err.message);
@@ -183,9 +195,7 @@
         }
 
         async function cerrarSesion() {
-            if (db) {
-                await db.auth.signOut();
-            }
+            if (db) await db.auth.signOut();
             document.getElementById('dashboardScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('email').value = '';
@@ -194,27 +204,47 @@
             volverAlMenu();
         }
 
-        // --- FUNCIONES DE NAVEGACIÓN Y BOTONES ---
-
         function volverAlMenu() {
             document.getElementById('homeMenu').style.display = 'flex';
             document.getElementById('clientsView').style.display = 'none';
+            document.getElementById('visitsView').style.display = 'none';
+            document.getElementById('transactionsView').style.display = 'none';
             document.getElementById('searchView').style.display = 'none';
         }
 
-        // 1. Escanear Código QR (Abre la cámara del móvil para tomar foto o escanear)
+        // --- LECTOR DE CÓDIGO QR ---
+
         function abrirEscanerQR() {
             document.getElementById('qrFileInput').click();
         }
 
-        function procesarArchivoQR(event) {
+        async function procesarArchivoQR(event) {
             const file = event.target.files[0];
-            if (file) {
-                alert("Imagen capturada correctamente. Aquí puedes procesar el código QR o asociarlo al cliente.");
+            if (!file) return;
+
+            abrirBuscadorCedula();
+            const resultContainer = document.getElementById('searchResultContainer');
+            resultContainer.innerHTML = 'Leyendo código QR...';
+
+            try {
+                if (!html5QrCode) {
+                    html5QrCode = new Html5Qrcode("qrReader");
+                }
+                const qrCodeMessage = await html5QrCode.scanFile(file, true);
+                
+                document.getElementById('cedulaInput').value = qrCodeMessage;
+                resultContainer.innerHTML = `<p style="color:green;"><strong>QR Escaneado:</strong> ${qrCodeMessage}</p>`;
+                
+                // Realiza la búsqueda del cliente automáticamente con la cédula leída del QR
+                buscarCedula();
+
+            } catch (err) {
+                resultContainer.innerHTML = '<p style="color:red;">No se pudo detectar un código QR claro en la imagen capturada. Inténtalo de nuevo.</p>';
             }
         }
 
-        // 2. Ver Lista de Clientes (Consulta la tabla 'clientes' en Supabase)
+        // --- VISTAS Y BASE DE DATOS ---
+
         async function verListaClientes() {
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('clientsView').style.display = 'block';
@@ -222,33 +252,66 @@
             container.innerHTML = 'Cargando clientes...';
 
             try {
-                const { data: clientes, error } = await db
-                    .from('clientes')
-                    .select('*')
-                    .limit(50);
-
-                if (error) {
-                    container.innerHTML = 'Error al cargar clientes: ' + error.message;
-                    return;
-                }
-
-                if (!clientes || clientes.length === 0) {
-                    container.innerHTML = '<p>No hay clientes registrados todavía.</p>';
-                    return;
-                }
+                const { data, error } = await db.from('clientes').select('*').limit(50);
+                if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
+                if (!data || data.length === 0) { container.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
 
                 let html = '';
-                clientes.forEach(c => {
-                    html += `<div class="client-item"><strong>${c.nombre || 'Sin nombre'}</strong> - ${c.email || c.telefono || 'Sin contacto'}</div>`;
+                data.forEach(c => {
+                    html += `<div class="data-item"><strong>Cédula:</strong> ${c.cedula || 'N/A'} <br><small>Registrado: ${new Date(c.created_at).toLocaleDateString()}</small></div>`;
                 });
                 container.innerHTML = html;
-
             } catch (err) {
-                container.innerHTML = 'Error de conexión al buscar clientes.';
+                container.innerHTML = '<p style="color:red;">Error de conexión.</p>';
             }
         }
 
-        // 3. Buscar por Cédula
+        async function verVisitas() {
+            document.getElementById('homeMenu').style.display = 'none';
+            document.getElementById('visitsView').style.display = 'block';
+            const container = document.getElementById('visitsListContainer');
+            container.innerHTML = 'Cargando visitas...';
+
+            try {
+                const { data, error } = await db.from('visitas').select('*').limit(50);
+                if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
+                if (!data || data.length === 0) { container.innerHTML = '<p>No hay visitas registradas.</p>'; return; }
+
+                let html = '';
+                data.forEach(v => {
+                    html += `<div class="data-item">
+                        <strong>Tipo:</strong> ${v.tipo || 'General'} | <strong>Monto:</strong> ${v.monto_consumo_float || v.monto_consumo || '0'} <br>
+                        <small>Fecha: ${v.fecha ? new Date(v.fecha).toLocaleString() : 'N/A'} | Válida: ${v.es_valida ? 'Sí' : 'No'}</small><br>
+                        <em>Notas: ${v.notas || 'Sin notas'}</em>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = '<p style="color:red;">Error al cargar visitas.</p>';
+            }
+        }
+
+        async function verTransacciones() {
+            document.getElementById('homeMenu').style.display = 'none';
+            document.getElementById('transactionsView').style.display = 'block';
+            const container = document.getElementById('transactionsListContainer');
+            container.innerHTML = 'Cargando transacciones...';
+
+            try {
+                const { data, error } = await db.from('transacciones').select('*').limit(50);
+                if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
+                if (!data || data.length === 0) { container.innerHTML = '<p>No hay transacciones registradas.</p>'; return; }
+
+                let html = '';
+                data.forEach(t => {
+                    html += `<div class="data-item"><strong>ID Transacción:</strong> ${t.id} <br><small>Fecha: ${new Date(t.created_at).toLocaleString()}</small></div>`;
+                });
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = '<p style="color:red;">Error al cargar transacciones.</p>';
+            }
+        }
+
         function abrirBuscadorCedula() {
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('searchView').style.display = 'block';
@@ -261,14 +324,13 @@
             const resultContainer = document.getElementById('searchResultContainer');
 
             if (!cedula) {
-                resultContainer.innerHTML = '<p style="color:red;">Por favor, introduce una cédula.</p>';
+                resultContainer.innerHTML = '<p style="color:red;">Introduce un número de cédula.</p>';
                 return;
             }
 
             resultContainer.innerHTML = 'Buscando...';
 
             try {
-                // Asumiendo que en tu tabla 'clientes' tienes una columna llamada 'cedula' o similar
                 const { data, error } = await db
                     .from('clientes')
                     .select('*')
@@ -276,7 +338,7 @@
                     .maybeSingle();
 
                 if (error) {
-                    resultContainer.innerHTML = 'Error en la búsqueda: ' + error.message;
+                    resultContainer.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
                     return;
                 }
 
@@ -287,14 +349,13 @@
 
                 resultContainer.innerHTML = `
                     <div style="background: #fdf8f2; padding: 12px; border-radius: 8px; border: 1px solid #E67E22;">
-                        <p><strong>Nombre:</strong> ${data.nombre}</p>
+                        <p><strong>ID Cliente:</strong> ${data.id}</p>
                         <p><strong>Cédula:</strong> ${data.cedula}</p>
-                        <p><strong>Teléfono:</strong> ${data.telefono || 'No registrado'}</p>
+                        <p><strong>Fecha de registro:</strong> ${new Date(data.created_at).toLocaleDateString()}</p>
                     </div>
                 `;
-
             } catch (err) {
-                resultContainer.innerHTML = 'Error al procesar la búsqueda.';
+                resultContainer.innerHTML = '<p style="color:red;">Error al realizar la búsqueda.</p>';
             }
         }
     </script>
