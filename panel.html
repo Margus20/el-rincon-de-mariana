@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+5<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* Login */
         .login-screen { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: white; }
         .login-box { width: 100%; max-width: 350px; text-align: center; }
         .login-box h1 { color: #E67E22; margin-bottom: 10px; }
@@ -27,9 +26,8 @@
         .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
         .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
+        .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; word-break: break-all; }
         
-        /* Panel Principal */
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
@@ -41,7 +39,6 @@
         .view-section h3 { color: #E67E22; margin-bottom: 15px; }
         .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
         
-        /* Tarjeta de cliente */
         .client-card { display: flex; flex-direction: column; padding: 15px; border: 1px solid #E67E22; background: #fdf8f2; border-radius: 10px; gap: 12px; margin-bottom: 15px; }
         .client-main-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.6; }
@@ -187,7 +184,7 @@
 
     <script>
         const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53dXFkbWJxbHBtaXl4aXFkeG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjIzMDksImV4cCI6MjEwNzYzODMwOX0.3LVC7SwkHkDGRzdAzMMyHbwVi4m8bUFJwUizuRG15DE';
         
         let db = null;
         let html5QrCode = null;
@@ -245,7 +242,7 @@
                 const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
 
                 if (error) {
-                    mostrarError('Correo o contraseña incorrectos.');
+                    mostrarError('Error de autenticación: ' + error.message);
                     btn.disabled = false;
                     btn.textContent = 'Ingresar al Panel';
                     return;
@@ -257,7 +254,7 @@
                 precargarClientes();
 
             } catch (err) {
-                mostrarError('Error de conexión.');
+                mostrarError('Error de conexión: ' + err.message);
                 btn.disabled = false;
                 btn.textContent = 'Ingresar al Panel';
             }
@@ -299,7 +296,7 @@
 
             try {
                 const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
-                if (error || !data) { cont.innerHTML = '<p>No se encontraron clientes.</p>'; return; }
+                if (error || !data) { cont.innerHTML = '<p style="color:red;">Error al cargar datos: ' + (error ? error.message : '') + '</p>'; return; }
 
                 let html = '';
                 data.forEach(c => {
@@ -349,5 +346,4 @@
 
         async function cargarSelects(id) {
             const el = document.getElementById(id);
-            el.innerHTML = '<option value="">Cargando...</option>';
-            const { data } = await db.from('clientes').select('id, cedula, nombre_y_apellido, nombre').order('created_at', { ascending: fal
+            el.innerHTML = '<op
