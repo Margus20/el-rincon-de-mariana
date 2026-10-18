@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
+    <!-- Supabase y Lector QR -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Login */
         .login-screen { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: white; }
         .login-box { width: 100%; max-width: 350px; text-align: center; }
         .login-box h1 { color: #E67E22; margin-bottom: 10px; }
@@ -21,8 +26,10 @@
 
         .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
         .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
         
+        /* Panel Principal */
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
@@ -34,6 +41,7 @@
         .view-section h3 { color: #E67E22; margin-bottom: 15px; }
         .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
         
+        /* Tarjeta de cliente */
         .client-card { display: flex; flex-direction: column; padding: 15px; border: 1px solid #E67E22; background: #fdf8f2; border-radius: 10px; gap: 12px; margin-bottom: 15px; }
         .client-main-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.6; }
@@ -52,6 +60,7 @@
 </head>
 <body>
 
+    <!-- LOGIN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>El Rincón de Mariana</h1>
@@ -75,6 +84,7 @@
         </div>
     </div>
     
+    <!-- DASHBOARD -->
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
@@ -88,30 +98,78 @@
                     <p style="font-size: 13px; color: #666;">Sistema Activo</p>
                 </div>
                 
+                <button class="action-btn primary" id="btnEscaneoQR">📷 Escanear Código QR</button>
                 <button class="action-btn" id="menuClientes">👥 Ver Lista de Clientes</button>
                 <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
                 <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
-                <button class="action-btn primary" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
+                <button class="action-btn" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
             </div>
 
+            <!-- Vista Clientes -->
             <div id="clientsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Lista de Clientes Registrados</h3>
                 <div id="clientsListContainer">Cargando...</div>
             </div>
 
+            <!-- Vista Visitas -->
             <div id="visitsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Historial de Visitas</h3>
+                
+                <div class="form-box">
+                    <h4>➕ Registrar Visita Manual</h4>
+                    <div class="input-group">
+                        <label>Cliente</label>
+                        <select id="selectVisitaCli"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto Consumido ($)</label>
+                        <input type="number" id="montoVisitaDirecta" placeholder="15.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Notas</label>
+                        <input type="text" id="notasVisitaDirecta" placeholder="Servicio realizado">
+                    </div>
+                    <button class="btn-login" id="btnGuardarVisitaDir">Registrar Visita (+1 Punto)</button>
+                </div>
+
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
+            <!-- Vista Transacciones -->
             <div id="transactionsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Registro de Transacciones</h3>
+                
+                <div class="form-box">
+                    <h4>💰 Registrar Transacción / Ajustar Deuda</h4>
+                    <div class="input-group">
+                        <label>Cliente</label>
+                        <select id="selectTransCli"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo Movimiento</label>
+                        <select id="tipoTransaccion">
+                            <option value="Abono Deuda">Abono / Pago (- Deuda)</option>
+                            <option value="Nueva Deuda">Nueva Deuda (+ Deuda)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto ($)</label>
+                        <input type="number" id="montoTransaccion" placeholder="10.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Descripción</label>
+                        <input type="text" id="descTransaccion" placeholder="Efectivo / Pago móvil">
+                    </div>
+                    <button class="btn-secondary" id="btnGuardarTransDir">Registrar Movimiento</button>
+                </div>
+
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
+            <!-- Vista Búsqueda / Edición -->
             <div id="searchView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Consulta y Gestión de Cliente</h3>
@@ -124,65 +182,86 @@
         </div>
     </div>
 
+    <div id="qrReader" style="display: none;"></div>
+    <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;">
+
     <script>
-        const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
-        const API_KEY = "sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc";
-        let userToken = "";
+        const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
+        
+        let db = null;
+        let html5QrCode = null;
+        let clienteActual = null;
+        let mapaClientes = {};
 
         function mostrarError(txt) {
             const el = document.getElementById('errorMsg');
             if (el) { el.textContent = txt; el.style.display = 'block'; }
         }
 
-        document.getElementById('btnEye').addEventListener('click', () => {
-            const pwd = document.getElementById('password');
-            pwd.type = pwd.type === 'password' ? 'text' : 'password';
-            document.getElementById('btnEye').textContent = pwd.type === 'password' ? '👁️' : '🙈';
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.supabase) {
+                db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+
+            // Ojito clave
+            document.getElementById('btnEye').addEventListener('click', () => {
+                const pwd = document.getElementById('password');
+                pwd.type = pwd.type === 'password' ? 'text' : 'password';
+                document.getElementById('btnEye').textContent = pwd.type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Login
+            document.getElementById('btnLogin').addEventListener('click', ejecutarLogin);
+            document.getElementById('btnLogout').addEventListener('click', () => location.reload());
+
+            // Navegación Menú
+            document.getElementById('menuClientes').addEventListener('click', verListaClientes);
+            document.getElementById('menuVisitas').addEventListener('click', verVisitas);
+            document.getElementById('menuTransacciones').addEventListener('click', verTransacciones);
+            document.getElementById('menuBuscador').addEventListener('click', abrirBuscadorCedula);
+            document.getElementById('btnEscaneoQR').addEventListener('click', () => document.getElementById('qrFileInput').click());
+
+            document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
+
+            document.getElementById('qrFileInput').addEventListener('change', procesarArchivoQR);
+            document.getElementById('btnGuardarVisitaDir').addEventListener('click', guardarVisitaDirecta);
+            document.getElementById('btnGuardarTransDir').addEventListener('click', guardarTransaccionDirecta);
+            document.getElementById('btnBuscarCedula').addEventListener('click', buscarCedula);
         });
 
-        document.getElementById('btnLogin').addEventListener('click', async () => {
+        async function ejecutarLogin() {
+            document.getElementById('errorMsg').style.display = 'none';
             const email = document.getElementById('email').value.trim().toLowerCase();
             const pass = document.getElementById('password').value.trim();
-            const errDiv = document.getElementById('errorMsg');
-            errDiv.style.display = 'none';
 
-            if (!email || !pass) { mostrarError('Ingresa tu correo y contraseña.'); return; }
+            if (!email || !pass) { mostrarError('Por favor ingresa tu correo y contraseña.'); return; }
 
             const btn = document.getElementById('btnLogin');
             btn.disabled = true;
-            btn.textContent = 'Verificando...';
+            btn.textContent = 'Validando...';
 
             try {
-                const res = await fetch(`${API_URL}/auth/v1/token?grant_type=password`, {
-                    method: 'POST',
-                    headers: { 'apikey': API_KEY, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, password: pass })
-                });
+                const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
 
-                const data = await res.json();
-
-                if (!res.ok) {
-                    mostrarError('Contraseña o correo incorrectos.');
+                if (error) {
+                    mostrarError('Correo o contraseña incorrectos.');
                     btn.disabled = false;
                     btn.textContent = 'Ingresar al Panel';
                     return;
                 }
 
-                userToken = data.access_token;
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
                 document.getElementById('welcomeName').textContent = 'Hola, ' + email.split('@')[0];
+                precargarClientes();
 
-            } catch (e) {
-                mostrarError('Error de red al conectar.');
+            } catch (err) {
+                mostrarError('Error de conexión.');
                 btn.disabled = false;
                 btn.textContent = 'Ingresar al Panel';
             }
-        });
-
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            location.reload();
-        });
+        }
 
         function volverMenu() {
             document.getElementById('homeMenu').style.display = 'flex';
@@ -192,19 +271,26 @@
             document.getElementById('searchView').style.display = 'none';
         }
 
-        document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
-
         function linkWA(telRaw, nombre, deuda) {
             if (!telRaw || telRaw === 'Sin teléfono') return '#';
             let tel = telRaw.replace(/\D/g, '');
             if (!tel.startsWith('58') && tel.length === 10) tel = '58' + tel;
             let msg = deuda > 0 
-                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente de $${deuda.toFixed(2)}.`
-                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Tu cuenta está totalmente al día. ¡Gracias!`;
+                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente por pagar de $${deuda.toFixed(2)}. Quedamos a tu disposición. ¡Muchas gracias!`
+                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Queremos informarte que tu cuenta se encuentra totalmente al día. ¡Gracias por tu preferencia!`;
             return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
         }
 
-        document.getElementById('menuClientes').addEventListener('click', async () => {
+        async function precargarClientes() {
+            if (!db) return;
+            const { data } = await db.from('clientes').select('*');
+            if (data) {
+                mapaClientes = {};
+                data.forEach(c => { mapaClientes[c.id] = c; });
+            }
+        }
+
+        async function verListaClientes() {
             volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('clientsView').style.display = 'block';
@@ -212,12 +298,8 @@
             cont.innerHTML = 'Cargando clientes...';
 
             try {
-                const res = await fetch(`${API_URL}/rest/v1/clientes?select=*&order=created_at.desc`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-
-                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay clientes.</p>'; return; }
+                const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
+                if (error || !data) { cont.innerHTML = '<p>No se encontraron clientes.</p>'; return; }
 
                 let html = '';
                 data.forEach(c => {
@@ -230,6 +312,10 @@
                     const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
                     const wa = linkWA(tel, nom, deu);
 
+                    let promo = pts >= 5 
+                        ? `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`
+                        : `<div class="promo-pending">Visitas: ${pts}/5 (faltan ${5 - pts})</div>`;
+
                     html += `
                     <div class="client-card">
                         <div class="client-main-row">
@@ -238,7 +324,10 @@
                                 <small><strong>Cédula:</strong> ${ced}</small><br>
                                 <small><strong>Teléfono:</strong> ${tel}</small><br>
                                 <small><strong>Deuda:</strong> $${deu.toFixed(2)}</small><br>
-                                <small><strong>Visitas:</strong> ${pts}/5</small>
+                                ${promo}
+                                <div style="margin-top:8px;">
+                                    <button class="btn-action-sm" onclick="irAEditar('${ced}')">✏️ Editar / Add Visita</button>
+                                </div>
                             </div>
                             <div class="client-qr-box">
                                 <img src="${qr}" alt="QR">
@@ -249,8 +338,16 @@
                     </div>`;
                 });
                 cont.innerHTML = html;
-            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar datos.</p>'; }
-        });
-    </script>
-</body>
-</html>
+            } catch (err) { cont.innerHTML = '<p style="color:red;">Error de conexión.</p>'; }
+        }
+
+        function irAEditar(ced) {
+            abrirBuscadorCedula();
+            document.getElementById('cedulaInput').value = ced;
+            buscarCedula();
+        }
+
+        async function cargarSelects(id) {
+            const el = document.getElementById(id);
+            el.innerHTML = '<option value="">Cargando...</option>';
+            const { data } = await db.from('clientes').select('id, cedula, nombre_y_apellido, nombre').order('created_at', { ascending: fal
