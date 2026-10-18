@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <!-- Librerías de Supabase y Lector de Códigos QR -->
+    <!-- Supabase y Lector QR -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
@@ -30,11 +30,11 @@
         .view-section { display: none; background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-y: auto; max-height: 75vh; }
         .view-section h3 { color: #E67E22; margin-bottom: 15px; }
         .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
-        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; }
     </style>
 </head>
 <body>
-    <!-- Pantalla de Login -->
+    <!-- Login -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>El Rincón de Mariana</h1>
@@ -52,7 +52,7 @@
         </div>
     </div>
     
-    <!-- Pantalla Principal del Panel -->
+    <!-- Panel Principal -->
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
@@ -60,7 +60,6 @@
         </div>
         
         <div class="main-content">
-            <!-- Menú Principal -->
             <div id="homeMenu" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
                 <div class="welcome-card">
                     <h3 id="welcomeName">Bienvenido</h3>
@@ -74,28 +73,24 @@
                 <button class="action-btn" onclick="abrirBuscadorCedula()">🔍 Buscar por Cédula</button>
             </div>
 
-            <!-- Vista: Clientes -->
             <div id="clientsView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
                 <h3>Lista de Clientes Registrados</h3>
                 <div id="clientsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Visitas -->
             <div id="visitsView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
                 <h3>Historial de Visitas</h3>
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Transacciones -->
             <div id="transactionsView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
                 <h3>Registro de Transacciones</h3>
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Buscar por Cédula / Escáner QR -->
             <div id="searchView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
                 <h3>Consulta de Cliente / QR</h3>
@@ -108,7 +103,6 @@
         </div>
     </div>
 
-    <!-- Elemento para procesar códigos QR desde archivos o cámara -->
     <div id="qrReader" style="display: none;"></div>
     <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarArchivoQR(event)">
 
@@ -187,7 +181,7 @@
 
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
-                document.getElementById('welcomeName').textContent = 'Hola, ' + emp.nombre;
+                document.getElementById('welcomeName').textContent = 'Hola, ' + (emp.nombre || 'Empleado');
 
             } catch (err) {
                 mostrarError('Excepción imprevista: ' + err.message);
@@ -212,8 +206,6 @@
             document.getElementById('searchView').style.display = 'none';
         }
 
-        // --- LECTOR DE CÓDIGO QR ---
-
         function abrirEscanerQR() {
             document.getElementById('qrFileInput').click();
         }
@@ -235,16 +227,14 @@
                 document.getElementById('cedulaInput').value = qrCodeMessage;
                 resultContainer.innerHTML = `<p style="color:green;"><strong>QR Escaneado:</strong> ${qrCodeMessage}</p>`;
                 
-                // Realiza la búsqueda del cliente automáticamente con la cédula leída del QR
                 buscarCedula();
 
             } catch (err) {
-                resultContainer.innerHTML = '<p style="color:red;">No se pudo detectar un código QR claro en la imagen capturada. Inténtalo de nuevo.</p>';
+                resultContainer.innerHTML = '<p style="color:red;">No se pudo detectar un código QR claro en la imagen capturada.</p>';
             }
         }
 
-        // --- VISTAS Y BASE DE DATOS ---
-
+        // Consultar Clientes buscando tanto en nombre_y_apellido como en nombre
         async function verListaClientes() {
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('clientsView').style.display = 'block';
@@ -258,7 +248,14 @@
 
                 let html = '';
                 data.forEach(c => {
-                    html += `<div class="data-item"><strong>Cédula:</strong> ${c.cedula || 'N/A'} <br><small>Registrado: ${new Date(c.created_at).toLocaleDateString()}</small></div>`;
+                    const nombreCliente = c.nombre_y_apellido || c.nombre || 'Sin nombre';
+                    const telefono = c.telefono || 'Sin teléfono';
+                    const cedula = c.cedula || 'Sin cédula';
+                    const puntos = c.puntos !== undefined ? c.puntos : 0;
+                    html += `<div class="data-item">
+                        <strong>${nombreCliente}</strong> <br>
+                        <small>Cédula: ${cedula} | Tel: ${telefono} | Puntos: ${puntos}</small>
+                    </div>`;
                 });
                 container.innerHTML = html;
             } catch (err) {
@@ -266,6 +263,7 @@
             }
         }
 
+        // Consultar Visitas usando las columnas de la tabla 'visitas'
         async function verVisitas() {
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('visitsView').style.display = 'block';
@@ -280,7 +278,7 @@
                 let html = '';
                 data.forEach(v => {
                     html += `<div class="data-item">
-                        <strong>Tipo:</strong> ${v.tipo || 'General'} | <strong>Monto:</strong> ${v.monto_consumo_float || v.monto_consumo || '0'} <br>
+                        <strong>Tipo:</strong> ${v.tipo || 'normal'} | <strong>Monto:</strong> $${v.monto_consumo || 0} <br>
                         <small>Fecha: ${v.fecha ? new Date(v.fecha).toLocaleString() : 'N/A'} | Válida: ${v.es_valida ? 'Sí' : 'No'}</small><br>
                         <em>Notas: ${v.notas || 'Sin notas'}</em>
                     </div>`;
@@ -291,6 +289,7 @@
             }
         }
 
+        // Consultar Transacciones usando las columnas de la tabla 'transacciones'
         async function verTransacciones() {
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('transactionsView').style.display = 'block';
@@ -304,7 +303,11 @@
 
                 let html = '';
                 data.forEach(t => {
-                    html += `<div class="data-item"><strong>ID Transacción:</strong> ${t.id} <br><small>Fecha: ${new Date(t.created_at).toLocaleString()}</small></div>`;
+                    html += `<div class="data-item">
+                        <strong>Tipo:</strong> ${t.tipo || 'General'} | <strong>Monto:</strong> $${t.monto || 0} <br>
+                        <small>Fecha: ${t.fecha ? new Date(t.fecha).toLocaleString() : 'N/A'}</small><br>
+                        <em>Descripción: ${t.descripcion || 'Sin descripción'}</em>
+                    </div>`;
                 });
                 container.innerHTML = html;
             } catch (err) {
@@ -347,11 +350,15 @@
                     return;
                 }
 
+                const nombreFinal = data.nombre_y_apellido || data.nombre || 'No registrado';
+
                 resultContainer.innerHTML = `
                     <div style="background: #fdf8f2; padding: 12px; border-radius: 8px; border: 1px solid #E67E22;">
-                        <p><strong>ID Cliente:</strong> ${data.id}</p>
-                        <p><strong>Cédula:</strong> ${data.cedula}</p>
-                        <p><strong>Fecha de registro:</strong> ${new Date(data.created_at).toLocaleDateString()}</p>
+                        <p><strong>Nombre:</strong> ${nombreFinal}</p>
+                        <p><strong>Cédula:</strong> ${data.cedula || 'No registrada'}</p>
+                        <p><strong>Teléfono:</strong> ${data.telefono || 'No registrado'}</p>
+                        <p><strong>Puntos acumulados:</strong> ${data.puntos !== undefined ? data.puntos : 0}</p>
+                        <p><strong>Deuda actual:</strong> $${data.deuda_actual !== undefined ? data.deuda_actual : 0}</p>
                     </div>
                 `;
             } catch (err) {
