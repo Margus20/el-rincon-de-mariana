@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <!-- Librería Supabase -->
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* Pantalla de Login */
         .login-screen { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: white; }
         .login-box { width: 100%; max-width: 350px; text-align: center; }
         .login-box h1 { color: #E67E22; margin-bottom: 8px; font-size: 24px; }
@@ -21,9 +20,8 @@
         .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
         .input-group input:focus { border-color: #E67E22; }
 
-        /* Ojito Integrado en Contraseña */
         .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { padding-right: 50px; }
+        .password-wrapper input { padding-right: 50px; width: 100%; }
         .btn-eye { 
             position: absolute; 
             right: 5px; 
@@ -33,18 +31,14 @@
             border-radius: 6px; 
             cursor: pointer; 
             font-size: 16px; 
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-login:disabled { background: #ccc; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
         .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
         
-        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
+        .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; word-break: break-all; }
         
-        /* Panel Principal */
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
@@ -56,7 +50,6 @@
         .view-section h3 { color: #E67E22; margin-bottom: 15px; }
         .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
         
-        /* Tarjeta de cliente */
         .client-card { display: flex; flex-direction: column; padding: 15px; border: 1px solid #E67E22; background: #fdf8f2; border-radius: 10px; gap: 12px; margin-bottom: 15px; }
         .client-main-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.6; }
@@ -64,13 +57,10 @@
         .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
         .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
 
-        /* Insignia Promocional */
         .promo-badge { background: #27ae60; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px; }
         .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
 
-        /* Botón WhatsApp */
         .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
-        
         .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
         .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
         .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
@@ -78,7 +68,6 @@
 </head>
 <body>
 
-    <!-- PANTALLA LOGIN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>El Rincón de Mariana</h1>
@@ -93,20 +82,19 @@
                 <label>Contraseña</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" placeholder="••••••••">
-                    <button type="button" class="btn-eye" id="btnEye" onclick="togglePass()">👁️</button>
+                    <button type="button" class="btn-eye" id="btnEye">👁️</button>
                 </div>
             </div>
             
-            <button type="button" class="btn-login" id="btnLogin" onclick="login()">Ingresar al Panel</button>
+            <button type="button" class="btn-login" id="btnLogin">Ingresar al Panel</button>
             <div id="errorMsg" class="error-msg"></div>
         </div>
     </div>
     
-    <!-- PANTALLA PANEL -->
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
-            <button onclick="logout()" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
+            <button id="btnLogout" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
         </div>
         
         <div class="main-content">
@@ -116,22 +104,20 @@
                     <p style="font-size: 13px; color: #666;">Sistema Activo</p>
                 </div>
                 
-                <button class="action-btn" onclick="verListaClientes()">👥 Ver Lista de Clientes</button>
-                <button class="action-btn" onclick="verVisitas()">📋 Ver Historial de Visitas</button>
-                <button class="action-btn" onclick="verTransacciones()">💰 Ver Transacciones</button>
-                <button class="action-btn primary" onclick="abrirBuscadorCedula()">🔍 Buscar por Cédula / Editar</button>
+                <button class="action-btn" id="menuClientes">👥 Ver Lista de Clientes</button>
+                <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
+                <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
+                <button class="action-btn primary" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
             </div>
 
-            <!-- Vista: Lista Clientes -->
             <div id="clientsView" class="view-section">
-                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <button class="back-btn" class="btnVolver">← Volver</button>
                 <h3>Lista de Clientes Registrados</h3>
                 <div id="clientsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Historial Visitas -->
             <div id="visitsView" class="view-section">
-                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <button class="back-btn" class="btnVolver">← Volver</button>
                 <h3>Historial de Visitas</h3>
                 
                 <div class="form-box">
@@ -148,15 +134,14 @@
                         <label>Notas</label>
                         <input type="text" id="notasVisitaDirecta" placeholder="Servicio realizado">
                     </div>
-                    <button class="btn-login" onclick="guardarVisitaDirecta()">Registrar Visita (+1 Punto)</button>
+                    <button class="btn-login" id="btnGuardarVisitaDir">Registrar Visita (+1 Punto)</button>
                 </div>
 
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Transacciones -->
             <div id="transactionsView" class="view-section">
-                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <button class="back-btn" class="btnVolver">← Volver</button>
                 <h3>Registro de Transacciones</h3>
                 
                 <div class="form-box">
@@ -180,61 +165,98 @@
                         <label>Descripción</label>
                         <input type="text" id="descTransaccion" placeholder="Efectivo / Pago móvil">
                     </div>
-                    <button class="btn-secondary" onclick="guardarTransaccionDirecta()">Registrar Movimiento</button>
+                    <button class="btn-secondary" id="btnGuardarTransDir">Registrar Movimiento</button>
                 </div>
 
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Buscador / Edición -->
             <div id="searchView" class="view-section">
-                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <button class="back-btn" class="btnVolver">← Volver</button>
                 <h3>Consulta y Gestión de Cliente</h3>
                 <div class="input-group">
                     <input type="text" id="cedulaInput" placeholder="Ingresa número de cédula...">
                 </div>
-                <button class="btn-login" onclick="buscarCedula()" style="margin-bottom: 15px;">Buscar Cliente</button>
+                <button class="btn-login" id="btnBuscarCedula" style="margin-bottom: 15px;">Buscar Cliente</button>
                 <div id="searchResultContainer"></div>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE LOGICA -->
     <script>
         const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
         
-        let client = null;
+        let db = null;
         let clienteActual = null;
         let mapaClientes = {};
 
-        function getClient() {
-            if (!client && window.supabase) {
-                client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-            return client;
-        }
-
-        function togglePass() {
-            const pwd = document.getElementById('password');
-            const btn = document.getElementById('btnEye');
-            if (pwd.type === 'password') {
-                pwd.type = 'text';
-                btn.textContent = '🙈';
-            } else {
-                pwd.type = 'password';
-                btn.textContent = '👁️';
+        function mostrarError(txt) {
+            const el = document.getElementById('errorMsg');
+            if (el) {
+                el.textContent = txt;
+                el.style.display = 'block';
             }
         }
 
-        async function login() {
+        // Inicialización segura con listeners directos
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (window.supabase) {
+                    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } else {
+                    mostrarError('Error crítico: No se cargó la librería Supabase.');
+                    return;
+                }
+            } catch (e) {
+                mostrarError('Excepción al iniciar DB: ' + e.message);
+            }
+
+            // Ojito contraseña
+            const btnEye = document.getElementById('btnEye');
+            if (btnEye) {
+                btnEye.addEventListener('click', () => {
+                    const pwd = document.getElementById('password');
+                    if (pwd.type === 'password') {
+                        pwd.type = 'text';
+                        btnEye.textContent = '🙈';
+                    } else {
+                        pwd.type = 'password';
+                        btnEye.textContent = '👁️';
+                    }
+                });
+            }
+
+            // Botón Login
+            const btnLogin = document.getElementById('btnLogin');
+            if (btnLogin) {
+                btnLogin.addEventListener('click', ejecutarLogin);
+            }
+
+            // Botones de navegación
+            const btnLogout = document.getElementById('btnLogout');
+            if (btnLogout) btnLogout.addEventListener('click', ejecutarLogout);
+
+            document.getElementById('menuClientes').addEventListener('click', verListaClientes);
+            document.getElementById('menuVisitas').addEventListener('click', verVisitas);
+            document.getElementById('menuTransacciones').addEventListener('click', verTransacciones);
+            document.getElementById('menuBuscador').addEventListener('click', abrirBuscadorCedula);
+
+            document.querySelectorAll('.btnVolver').forEach(b => {
+                b.addEventListener('click', volverMenu);
+            });
+
+            document.getElementById('btnGuardarVisitaDir').addEventListener('click', guardarVisitaDirecta);
+            document.getElementById('btnGuardarTransDir').addEventListener('click', guardarTransaccionDirecta);
+            document.getElementById('btnBuscarCedula').addEventListener('click', buscarCedula);
+        });
+
+        async function ejecutarLogin() {
             const errDiv = document.getElementById('errorMsg');
             errDiv.style.display = 'none';
 
-            const db = getClient();
             if (!db) {
-                errDiv.textContent = 'Cargando conexión... Presiona ingresar de nuevo.';
-                errDiv.style.display = 'block';
+                mostrarError('Base de datos no inicializada.');
                 return;
             }
 
@@ -242,21 +264,19 @@
             const pass = document.getElementById('password').value.trim();
 
             if (!email || !pass) {
-                errDiv.textContent = 'Por favor ingresa tu correo y contraseña.';
-                errDiv.style.display = 'block';
+                mostrarError('Por favor ingresa tu correo y contraseña.');
                 return;
             }
 
             const btn = document.getElementById('btnLogin');
             btn.disabled = true;
-            btn.textContent = 'Ingresando...';
+            btn.textContent = 'Validando...';
 
             try {
                 const { data, error } = await db.auth.signInWithPassword({ email: email, password: pass });
 
                 if (error) {
-                    errDiv.textContent = 'Contraseña o correo incorrectos. Por favor, verifica e inténtalo de nuevo.';
-                    errDiv.style.display = 'block';
+                    mostrarError('Error de acceso: ' + error.message);
                     btn.disabled = false;
                     btn.textContent = 'Ingresar al Panel';
                     return;
@@ -268,15 +288,13 @@
                 precargarClientes();
 
             } catch (err) {
-                errDiv.textContent = 'Error: ' + err.message;
-                errDiv.style.display = 'block';
+                mostrarError('Excepción en login: ' + err.message);
                 btn.disabled = false;
                 btn.textContent = 'Ingresar al Panel';
             }
         }
 
-        async function logout() {
-            const db = getClient();
+        async function ejecutarLogout() {
             if (db) await db.auth.signOut();
             document.getElementById('dashboardScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
@@ -307,7 +325,6 @@
         }
 
         async function precargarClientes() {
-            const db = getClient();
             if (!db) return;
             const { data } = await db.from('clientes').select('*');
             if (data) {
@@ -324,7 +341,6 @@
             cont.innerHTML = 'Cargando clientes...';
 
             try {
-                const db = getClient();
                 const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
                 if (error) { cont.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
                 if (!data || data.length === 0) { cont.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
@@ -342,7 +358,7 @@
 
                     let promo = pts >= 5 
                         ? `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`
-                        : `<div class="promo-pending">Visitas: ${pts}/5 (faltan ${5 - pts})</div>`;
+                        : `<div class="promo-pending">Visitas: ${pts}/5</div>`;
 
                     html += `
                     <div class="client-card">
@@ -353,27 +369,8 @@
                                 <small><strong>Teléfono:</strong> ${tel}</small><br>
                                 <small><strong>Deuda:</strong> $${deu.toFixed(2)}</small><br>
                                 ${promo}
-                                <div style="margin-top:8px;">
-                                    <button class="btn-action-sm" onclick="irAEditar('${ced}')">✏️ Editar / Add Visita</button>
-                                </div>
                             </div>
                             <div class="client-qr-box">
                                 <img src="${qr}" alt="QR">
                                 <div class="client-qr-code">${code}</div>
-                            </div>
-                        </div>
-                        ${tel !== 'Sin teléfono' ? `<a href="${wa}" target="_blank" class="btn-whatsapp">💬 Enviar Estado por WhatsApp</a>` : ''}
-                    </div>`;
-                });
-                cont.innerHTML = html;
-            } catch (err) { cont.innerHTML = '<p style="color:red;">Error de conexión.</p>'; }
-        }
-
-        function irAEditar(ced) {
-            abrirBuscadorCedula();
-            document.getElementById('cedulaInput').value = ced;
-            buscarCedula();
-        }
-
-        async function cargarSelects(id) {
-    
+                         
