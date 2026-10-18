@@ -14,19 +14,28 @@
         .login-box { width: 100%; max-width: 350px; text-align: center; }
         .login-box h1 { color: #E67E22; margin-bottom: 10px; }
         .login-box p { color: #666; margin-bottom: 25px; font-size: 14px; }
-        .input-group { margin-bottom: 12px; text-align: left; }
+        .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: bold; }
-        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; }
         
-        /* Campo contraseña con ojito */
+        /* Contenedor de Contraseña + Ojito */
         .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { padding-right: 40px; }
-        .toggle-password { position: absolute; right: 10px; cursor: pointer; font-size: 18px; user-select: none; color: #777; }
+        .password-wrapper input { padding-right: 45px; }
+        .toggle-password { 
+            position: absolute; 
+            right: 8px; 
+            background: none; 
+            border: none; 
+            font-size: 20px; 
+            cursor: pointer; 
+            padding: 5px; 
+            z-index: 10;
+        }
 
-        .btn-login { width: 100%; padding: 12px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
         .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 10px; border-radius: 5px; display: none; text-align: center; font-weight: bold; }
+        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
         
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -75,10 +84,10 @@
                 <label>Contraseña</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" placeholder="••••••••">
-                    <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                    <button type="button" class="toggle-password" id="btnTogglePass">👁️</button>
                 </div>
             </div>
-            <button class="btn-login" onclick="iniciarSesion()">Ingresar al Panel</button>
+            <button type="button" class="btn-login" id="btnLogin">Ingresar al Panel</button>
             <div id="errorMsg" class="error-msg"></div>
         </div>
     </div>
@@ -191,7 +200,7 @@
         let db = null;
         let html5QrCode = null;
         let clienteActual = null;
-        let mapaClientes = {}; // Almacena datos del cliente por su ID
+        let mapaClientes = {};
 
         window.addEventListener('DOMContentLoaded', () => {
             try {
@@ -203,6 +212,18 @@
             } catch (e) {
                 mostrarError('Error de inicialización: ' + e.message);
             }
+
+            // Evento click y touch para el ojito
+            const btnToggle = document.getElementById('btnTogglePass');
+            if (btnToggle) {
+                btnToggle.addEventListener('click', togglePasswordVisibility);
+            }
+
+            // Evento click para el botón de ingresar
+            const btnLogin = document.getElementById('btnLogin');
+            if (btnLogin) {
+                btnLogin.addEventListener('click', ejecutarInicioSesion);
+            }
         });
 
         function mostrarError(msg) {
@@ -213,12 +234,21 @@
             }
         }
 
-        function togglePasswordVisibility() {
+        function togglePasswordVisibility(e) {
+            if (e) e.preventDefault();
             const pwdInput = document.getElementById('password');
-            pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+            const btnToggle = document.getElementById('btnTogglePass');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                btnToggle.textContent = '🙈';
+            } else {
+                pwdInput.type = 'password';
+                btnToggle.textContent = '👁️';
+            }
         }
 
-        async function iniciarSesion() {
+        async function ejecutarInicioSesion(e) {
+            if (e) e.preventDefault();
             const errorMsg = document.getElementById('errorMsg');
             errorMsg.style.display = 'none';
 
@@ -235,6 +265,10 @@
                 return;
             }
 
+            const btnLogin = document.getElementById('btnLogin');
+            btnLogin.disabled = true;
+            btnLogin.textContent = 'Ingresando...';
+
             try {
                 const { data: authData, error: authError } = await db.auth.signInWithPassword({
                     email: emailInput,
@@ -243,22 +277,21 @@
 
                 if (authError) {
                     mostrarError('Contraseña o correo incorrectos. Por favor, verifica e inténtalo de nuevo.');
+                    btnLogin.disabled = false;
+                    btnLogin.textContent = 'Ingresar al Panel';
                     return;
                 }
 
-                let nombreUsuario = 'Propietario / Empleado';
-                const { data: emp } = await db.from('empleados').select('nombre').eq('email', emailInput).maybeSingle();
-                if (emp && emp.nombre) nombreUsuario = emp.nombre;
-
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
-                document.getElementById('welcomeName').textContent = 'Hola, ' + nombreUsuario;
+                document.getElementById('welcomeName').textContent = 'Hola, ' + emailInput.split('@')[0];
 
-                // Precargar mapa de clientes para uso rápido
                 precargarClientesGlobal();
 
             } catch (err) {
-                mostrarError('Error al iniciar sesión: ' + err.message);
+                mostrarError('Error al ingresar: ' + err.message);
+                btnLogin.disabled = false;
+                btnLogin.textContent = 'Ingresar al Panel';
             }
         }
 
@@ -279,6 +312,11 @@
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
             document.getElementById('errorMsg').style.display = 'none';
+            const btnLogin = document.getElementById('btnLogin');
+            if (btnLogin) {
+                btnLogin.disabled = false;
+                btnLogin.textContent = 'Ingresar al Panel';
+            }
             volverAlMenu();
         }
 
@@ -339,22 +377,4 @@
                 if (!data || data.length === 0) { container.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
 
                 precargarClientesGlobal();
-                let html = '';
-                data.forEach(c => {
-                    const nombreCliente = c.nombre_y_apellido || c.nombre || 'Sin nombre';
-                    const telefono = c.telefono || 'Sin teléfono';
-                    const cedula = c.cedula || 'Sin cédula';
-                    const puntos = c.puntos !== undefined && c.puntos !== null ? c.puntos : 0;
-                    const deuda = c.deuda_actual !== undefined && c.deuda_actual !== null ? parseFloat(c.deuda_actual) : 0;
-                    
-                    const codigoQRTexto = c.codigo_qr || `ERM-${cedula}`;
-                    const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(codigoQRTexto)}`;
-                    const linkWA = generarLinkWhatsApp(telefono, nombreCliente, deuda);
-
-                    let promoHTML = puntos >= 5 
-                        ? `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`
-                        : `<div class="promo-pending">Visitas acumuladas: ${puntos}/5 (faltan ${5 - puntos} para regalía)</div>`;
-
-                    html += `
-                    <div class="client-card">
-                        <div class="client-
+  
