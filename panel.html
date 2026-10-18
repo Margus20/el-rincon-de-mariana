@@ -17,9 +17,16 @@
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: bold; }
         .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; }
-        .btn-login { width: 100%; padding: 12px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        
+        /* Campo contraseña con ojito */
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { padding-right: 40px; }
+        .toggle-password { position: absolute; right: 10px; cursor: pointer; font-size: 18px; user-select: none; color: #777; }
+
+        .btn-login { width: 100%; padding: 12px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 10px; border-radius: 5px; display: none; }
+        .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 10px; border-radius: 5px; display: none; text-align: center; font-weight: bold; }
         
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -33,24 +40,25 @@
         .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
         
         /* Tarjeta de cliente */
-        .client-card { display: flex; flex-direction: column; padding: 12px; border-bottom: 1px solid #eee; gap: 8px; }
+        .client-card { display: flex; flex-direction: column; padding: 15px; border: 1px solid #E67E22; background: #fdf8f2; border-radius: 10px; gap: 12px; margin-bottom: 15px; }
         .client-main-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.5; }
-        .client-qr-box { text-align: center; background: #fafafa; padding: 6px; border: 1px solid #ddd; border-radius: 6px; }
-        .client-qr-box img { width: 75px; height: 75px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
-        .client-qr-code { font-size: 9px; font-family: monospace; color: #E67E22; font-weight: bold; }
+        .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.6; }
+        .client-qr-box { text-align: center; background: #ffffff; padding: 8px; border: 2px solid #E67E22; border-radius: 8px; min-width: 95px; }
+        .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
+        .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
 
         /* Insignia de Promoción */
         .promo-badge { background: #27ae60; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px; }
         .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
 
         /* Botón de WhatsApp */
-        .btn-whatsapp { display: inline-flex; align-items: center; gap: 5px; background: #25D366; color: white; text-decoration: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 5px; width: fit-content; }
+        .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
         .btn-whatsapp:hover { background: #1eb857; }
 
-        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; }
-        .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; }
+        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
+        .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
         .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
+        .action-buttons-group { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
     </style>
 </head>
 <body>
@@ -65,7 +73,10 @@
             </div>
             <div class="input-group">
                 <label>Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••">
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="••••••••">
+                    <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                </div>
             </div>
             <button class="btn-login" onclick="iniciarSesion()">Ingresar al Panel</button>
             <div id="errorMsg" class="error-msg"></div>
@@ -104,6 +115,24 @@
             <div id="visitsView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
                 <h3>Historial de Visitas</h3>
+                
+                <div class="form-box">
+                    <h4>➕ Registrar Visita Manual</h4>
+                    <div class="input-group">
+                        <label>Seleccionar Cliente</label>
+                        <select id="selectClienteVisita"><option value="">Cargando clientes...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto Consumido ($)</label>
+                        <input type="number" id="montoVisitaDirecta" placeholder="Ejemplo: 15.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Notas / Detalle</label>
+                        <input type="text" id="notasVisitaDirecta" placeholder="Servicio realizado">
+                    </div>
+                    <button class="btn-login" onclick="guardarVisitaDirecta()">Registrar Visita (+1 Punto)</button>
+                </div>
+
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
@@ -111,6 +140,31 @@
             <div id="transactionsView" class="view-section">
                 <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
                 <h3>Registro de Transacciones</h3>
+                
+                <div class="form-box">
+                    <h4>💰 Registrar Transacción / Ajustar Deuda</h4>
+                    <div class="input-group">
+                        <label>Seleccionar Cliente</label>
+                        <select id="selectClienteTransaccion"><option value="">Cargando clientes...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo de Movimiento</label>
+                        <select id="tipoTransaccion">
+                            <option value="Abono Deuda">Abono / Pago de Deuda (- Deuda)</option>
+                            <option value="Nueva Deuda">Nueva Deuda / Fiado (+ Deuda)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto ($)</label>
+                        <input type="number" id="montoTransaccion" placeholder="Ejemplo: 10.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Descripción</label>
+                        <input type="text" id="descTransaccion" placeholder="Ej. Pago en efectivo / Pago móvil">
+                    </div>
+                    <button class="btn-secondary" onclick="guardarTransaccionDirecta()">Registrar Movimiento</button>
+                </div>
+
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
@@ -137,6 +191,7 @@
         let db = null;
         let html5QrCode = null;
         let clienteActual = null;
+        let mapaClientes = {}; // Almacena datos del cliente por su ID
 
         window.addEventListener('DOMContentLoaded', () => {
             try {
@@ -156,6 +211,11 @@
                 errorDiv.textContent = msg;
                 errorDiv.style.display = 'block';
             }
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('password');
+            pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
         }
 
         async function iniciarSesion() {
@@ -182,35 +242,34 @@
                 });
 
                 if (authError) {
-                    mostrarError('Error de Autenticación: ' + authError.message);
+                    mostrarError('Contraseña o correo incorrectos. Por favor, verifica e inténtalo de nuevo.');
                     return;
                 }
 
-                const { data: emp, error: empError } = await db
-                    .from('empleados')
-                    .select('nombre, email')
-                    .eq('email', emailInput)
-                    .maybeSingle();
-
-                if (empError) {
-                    mostrarError('Error en tabla empleados: ' + empError.message);
-                    await db.auth.signOut();
-                    return;
-                }
-
-                if (!emp) {
-                    mostrarError('El correo no se encontró en la tabla empleados.');
-                    await db.auth.signOut();
-                    return;
-                }
+                let nombreUsuario = 'Propietario / Empleado';
+                const { data: emp } = await db.from('empleados').select('nombre').eq('email', emailInput).maybeSingle();
+                if (emp && emp.nombre) nombreUsuario = emp.nombre;
 
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
-                document.getElementById('welcomeName').textContent = 'Hola, ' + (emp.nombre || 'Empleado');
+                document.getElementById('welcomeName').textContent = 'Hola, ' + nombreUsuario;
+
+                // Precargar mapa de clientes para uso rápido
+                precargarClientesGlobal();
 
             } catch (err) {
-                mostrarError('Excepción imprevista: ' + err.message);
+                mostrarError('Error al iniciar sesión: ' + err.message);
             }
+        }
+
+        async function precargarClientesGlobal() {
+            try {
+                const { data } = await db.from('clientes').select('*');
+                if (data) {
+                    mapaClientes = {};
+                    data.forEach(c => { mapaClientes[c.id] = c; });
+                }
+            } catch (e) {}
         }
 
         async function cerrarSesion() {
@@ -244,38 +303,30 @@
             resultContainer.innerHTML = 'Leyendo código QR...';
 
             try {
-                if (!html5QrCode) {
-                    html5QrCode = new Html5Qrcode("qrReader");
-                }
+                if (!html5QrCode) html5QrCode = new Html5Qrcode("qrReader");
                 const qrCodeMessage = await html5QrCode.scanFile(file, true);
                 
                 document.getElementById('cedulaInput').value = qrCodeMessage;
                 resultContainer.innerHTML = `<p style="color:green; margin-bottom: 10px;"><strong>QR Escaneado:</strong> ${qrCodeMessage}</p>`;
                 
                 buscarCedula();
-
             } catch (err) {
-                resultContainer.innerHTML = '<p style="color:red;">No se pudo detectar un código QR claro en la imagen capturada.</p>';
+                resultContainer.innerHTML = '<p style="color:red;">No se pudo detectar un código QR claro en la imagen.</p>';
             }
         }
 
-        // Generar enlace de WhatsApp según estado de deuda
         function generarLinkWhatsApp(telefonoRaw, nombre, deuda) {
-            if (!telefonoRaw) return '#';
-            let tel = telefonoRaw.replace(/\D/g, ''); // Limpiar caracteres
-            if (!tel.startsWith('58') && tel.length === 10) tel = '58' + tel; // Formato Venezuela por defecto
+            if (!telefonoRaw || telefonoRaw === 'Sin teléfono' || telefonoRaw === 'No registrado') return '#';
+            let tel = telefonoRaw.replace(/\D/g, '');
+            if (!tel.startsWith('58') && tel.length === 10) tel = '58' + tel;
             
-            let mensaje = '';
-            if (deuda > 0) {
-                mensaje = `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente por pagar de $${deuda.toFixed(2)}. Quedamos a tu disposición. ¡Muchas gracias!`;
-            } else {
-                mensaje = `Hola ${nombre}, te saludamos de El Rincón de Mariana. Queremos informarte que tu cuenta se encuentra totalmente al día. ¡Gracias por tu preferencia!`;
-            }
+            let mensaje = deuda > 0 
+                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente por pagar de $${deuda.toFixed(2)}. Quedamos a tu disposición. ¡Muchas gracias!`
+                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Queremos informarte que tu cuenta se encuentra totalmente al día. ¡Gracias por tu preferencia!`;
 
             return `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
         }
 
-        // VER LISTA DE CLIENTES
         async function verListaClientes() {
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('clientsView').style.display = 'block';
@@ -283,10 +334,11 @@
             container.innerHTML = 'Cargando clientes...';
 
             try {
-                const { data, error } = await db.from('clientes').select('*').limit(50);
+                const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false }).limit(50);
                 if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
                 if (!data || data.length === 0) { container.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
 
+                precargarClientesGlobal();
                 let html = '';
                 data.forEach(c => {
                     const nombreCliente = c.nombre_y_apellido || c.nombre || 'Sin nombre';
@@ -299,75 +351,10 @@
                     const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(codigoQRTexto)}`;
                     const linkWA = generarLinkWhatsApp(telefono, nombreCliente, deuda);
 
-                    // Indicador Promocional (>= 5 visitas para la 6ta gratis)
-                    let promoHTML = '';
-                    if (puntos >= 5) {
-                        promoHTML = `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`;
-                    } else {
-                        promoHTML = `<div class="promo-pending">Visitas acumuladas: ${puntos}/5 (faltan ${5 - puntos} para regalía)</div>`;
-                    }
+                    let promoHTML = puntos >= 5 
+                        ? `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`
+                        : `<div class="promo-pending">Visitas acumuladas: ${puntos}/5 (faltan ${5 - puntos} para regalía)</div>`;
 
                     html += `
                     <div class="client-card">
-                        <div class="client-main-row">
-                            <div class="client-info">
-                                <strong>${nombreCliente}</strong><br>
-                                <small><strong>Cédula:</strong> ${cedula}</small><br>
-                                <small><strong>Teléfono:</strong> ${telefono}</small><br>
-                                <small><strong>Deuda actual:</strong> $${deuda.toFixed(2)}</small><br>
-                                ${promoHTML}
-                            </div>
-                            <div class="client-qr-box">
-                                <img src="${qrURL}" alt="QR Code">
-                                <div class="client-qr-code">${codigoQRTexto}</div>
-                            </div>
-                        </div>
-                        ${c.telefono ? `<a href="${linkWA}" target="_blank" class="btn-whatsapp">💬 Enviar WhatsApp (Deuda: $${deuda.toFixed(2)})</a>` : ''}
-                    </div>`;
-                });
-                container.innerHTML = html;
-            } catch (err) {
-                container.innerHTML = '<p style="color:red;">Error de conexión.</p>';
-            }
-        }
-
-        async function verVisitas() {
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('visitsView').style.display = 'block';
-            const container = document.getElementById('visitsListContainer');
-            container.innerHTML = 'Cargando visitas...';
-
-            try {
-                const { data, error } = await db.from('visitas').select('*').limit(50);
-                if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
-                if (!data || data.length === 0) { container.innerHTML = '<p>No hay visitas registradas.</p>'; return; }
-
-                let html = '';
-                data.forEach(v => {
-                    html += `<div class="data-item">
-                        <strong>Tipo:</strong> ${v.tipo || 'normal'} | <strong>Monto:</strong> $${v.monto_consumo || 0} <br>
-                        <small>Fecha: ${v.fecha ? new Date(v.fecha).toLocaleString() : 'N/A'} | Válida: ${v.es_valida ? 'Sí' : 'No'}</small><br>
-                        <em>Notas: ${v.notas || 'Sin notas'}</em>
-                    </div>`;
-                });
-                container.innerHTML = html;
-            } catch (err) {
-                container.innerHTML = '<p style="color:red;">Error al cargar visitas.</p>';
-            }
-        }
-
-        async function verTransacciones() {
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('transactionsView').style.display = 'block';
-            const container = document.getElementById('transactionsListContainer');
-            container.innerHTML = 'Cargando transacciones...';
-
-            try {
-                const { data, error } = await db.from('transacciones').select('*').limit(50);
-                if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
-                if (!data || data.length === 0) { container.innerHTML = '<p>No hay transacciones registradas.</p>'; return; }
-
-                let html = '';
-                data.forEach(t => {
-                    html += `<div class="data-item">
-                        <strong>Tipo:</strong> ${t.tipo || 'General'} | <strong>Monto:</strong> $${t.monto
+                        <div class="client-
