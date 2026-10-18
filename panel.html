@@ -2,136 +2,378 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
+    <!-- Librería Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Pantalla de Login */
         .login-screen { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: white; }
         .login-box { width: 100%; max-width: 350px; text-align: center; }
-        .login-box h1 { color: #E67E22; margin-bottom: 10px; }
+        .login-box h1 { color: #E67E22; margin-bottom: 8px; font-size: 24px; }
+        .login-box p { color: #666; margin-bottom: 20px; font-size: 14px; }
+        
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: bold; }
-        .input-group input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
+        .input-group input:focus { border-color: #E67E22; }
+
+        /* Ojito Integrado en Contraseña */
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { padding-right: 50px; }
+        .btn-eye { 
+            position: absolute; 
+            right: 5px; 
+            background: #f0f0f0; 
+            border: 1px solid #ccc; 
+            padding: 8px 10px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 10px; border-radius: 5px; display: none; text-align: center; }
+        .btn-login:disabled { background: #ccc; }
+        .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
         
+        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
+        
+        /* Panel Principal */
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .welcome-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .action-btn { width: 100%; padding: 18px; background: white; border: 2px solid #E67E22; border-radius: 10px; color: #E67E22; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .welcome-card { background: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .action-btn { width: 100%; padding: 15px; background: white; border: 2px solid #E67E22; border-radius: 10px; color: #E67E22; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; }
         .action-btn.primary { background: #E67E22; color: white; }
+        
+        .view-section { display: none; background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-y: auto; max-height: 80vh; }
+        .view-section h3 { color: #E67E22; margin-bottom: 15px; }
+        .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
+        
+        /* Tarjeta de cliente */
+        .client-card { display: flex; flex-direction: column; padding: 15px; border: 1px solid #E67E22; background: #fdf8f2; border-radius: 10px; gap: 12px; margin-bottom: 15px; }
+        .client-main-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.6; }
+        .client-qr-box { text-align: center; background: #ffffff; padding: 8px; border: 2px solid #E67E22; border-radius: 8px; min-width: 95px; }
+        .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
+        .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
+
+        /* Insignia Promocional */
+        .promo-badge { background: #27ae60; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px; }
+        .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
+
+        /* Botón WhatsApp */
+        .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
+        
+        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
+        .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
+        .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
     </style>
 </head>
 <body>
+
+    <!-- PANTALLA LOGIN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>El Rincón de Mariana</h1>
             <p>Panel de Control Interno</p>
+            
             <div class="input-group">
                 <label>Correo electrónico</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
             </div>
+            
             <div class="input-group">
                 <label>Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••">
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="••••••••">
+                    <button type="button" class="btn-eye" id="btnEye" onclick="togglePass()">👁️</button>
+                </div>
             </div>
-            <button class="btn-login" onclick="iniciarSesion()">Ingresar al Panel</button>
+            
+            <button type="button" class="btn-login" id="btnLogin" onclick="login()">Ingresar al Panel</button>
             <div id="errorMsg" class="error-msg"></div>
         </div>
     </div>
     
+    <!-- PANTALLA PANEL -->
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
-            <button onclick="cerrarSesion()" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
+            <button onclick="logout()" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
         </div>
+        
         <div class="main-content">
-            <div class="welcome-card">
-                <h3 id="welcomeName">Bienvenido</h3>
-                <p id="welcomeRole" style="color: #E67E22; font-weight: bold; margin-top: 5px;">Cargando perfil...</p>
+            <div id="homeMenu" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+                <div class="welcome-card">
+                    <h3 id="welcomeName">Bienvenido</h3>
+                    <p style="font-size: 13px; color: #666;">Sistema Activo</p>
+                </div>
+                
+                <button class="action-btn" onclick="verListaClientes()">👥 Ver Lista de Clientes</button>
+                <button class="action-btn" onclick="verVisitas()">📋 Ver Historial de Visitas</button>
+                <button class="action-btn" onclick="verTransacciones()">💰 Ver Transacciones</button>
+                <button class="action-btn primary" onclick="abrirBuscadorCedula()">🔍 Buscar por Cédula / Editar</button>
             </div>
-            <button class="action-btn primary" onclick="alert('Función de escáner lista para activar en el siguiente paso')">📷 Escanear Código QR</button>
-            <button class="action-btn" onclick="alert('Lista de clientes lista para activar')">👥 Ver Lista de Clientes</button>
-            <button class="action-btn" onclick="alert('Búsqueda lista para activar')">🔍 Buscar por Cédula</button>
+
+            <!-- Vista: Lista Clientes -->
+            <div id="clientsView" class="view-section">
+                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <h3>Lista de Clientes Registrados</h3>
+                <div id="clientsListContainer">Cargando...</div>
+            </div>
+
+            <!-- Vista: Historial Visitas -->
+            <div id="visitsView" class="view-section">
+                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <h3>Historial de Visitas</h3>
+                
+                <div class="form-box">
+                    <h4>➕ Registrar Visita Manual</h4>
+                    <div class="input-group">
+                        <label>Cliente</label>
+                        <select id="selectVisitaCli"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto Consumido ($)</label>
+                        <input type="number" id="montoVisitaDirecta" placeholder="15.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Notas</label>
+                        <input type="text" id="notasVisitaDirecta" placeholder="Servicio realizado">
+                    </div>
+                    <button class="btn-login" onclick="guardarVisitaDirecta()">Registrar Visita (+1 Punto)</button>
+                </div>
+
+                <div id="visitsListContainer">Cargando...</div>
+            </div>
+
+            <!-- Vista: Transacciones -->
+            <div id="transactionsView" class="view-section">
+                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <h3>Registro de Transacciones</h3>
+                
+                <div class="form-box">
+                    <h4>💰 Registrar Transacción / Ajustar Deuda</h4>
+                    <div class="input-group">
+                        <label>Cliente</label>
+                        <select id="selectTransCli"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo Movimiento</label>
+                        <select id="tipoTransaccion">
+                            <option value="Abono Deuda">Abono / Pago (- Deuda)</option>
+                            <option value="Nueva Deuda">Nueva Deuda (+ Deuda)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto ($)</label>
+                        <input type="number" id="montoTransaccion" placeholder="10.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Descripción</label>
+                        <input type="text" id="descTransaccion" placeholder="Efectivo / Pago móvil">
+                    </div>
+                    <button class="btn-secondary" onclick="guardarTransaccionDirecta()">Registrar Movimiento</button>
+                </div>
+
+                <div id="transactionsListContainer">Cargando...</div>
+            </div>
+
+            <!-- Vista: Buscador / Edición -->
+            <div id="searchView" class="view-section">
+                <button class="back-btn" onclick="volverMenu()">← Volver</button>
+                <h3>Consulta y Gestión de Cliente</h3>
+                <div class="input-group">
+                    <input type="text" id="cedulaInput" placeholder="Ingresa número de cédula...">
+                </div>
+                <button class="btn-login" onclick="buscarCedula()" style="margin-bottom: 15px;">Buscar Cliente</button>
+                <div id="searchResultContainer"></div>
+            </div>
         </div>
     </div>
 
+    <!-- SCRIPT DE LOGICA -->
     <script>
-        // Esperamos a que toda la página y las librerías carguen antes de ejecutar nada
-        window.addEventListener('DOMContentLoaded', () => {
-            console.log("Página cargada correctamente");
-        });
-
         const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
         
-        // Inicializamos Supabase de forma segura
-        const db = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        let client = null;
+        let clienteActual = null;
+        let mapaClientes = {};
 
-        function mostrarError(msg) {
-            const errorDiv = document.getElementById('errorMsg');
-            errorDiv.textContent = msg;
-            errorDiv.style.display = 'block';
+        function getClient() {
+            if (!client && window.supabase) {
+                client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+            return client;
         }
 
-        async function iniciarSesion() {
-            document.getElementById('errorMsg').style.display = 'none';
-            const emailInput = document.getElementById('email').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('password').value.trim();
-
-            if (!emailInput || !passwordInput) {
-                mostrarError('Por favor, completa todos los campos.');
-                return;
+        function togglePass() {
+            const pwd = document.getElementById('password');
+            const btn = document.getElementById('btnEye');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                pwd.type = 'password';
+                btn.textContent = '👁️';
             }
+        }
 
+        async function login() {
+            const errDiv = document.getElementById('errorMsg');
+            errDiv.style.display = 'none';
+
+            const db = getClient();
             if (!db) {
-                mostrarError('Error: No se pudo conectar con la base de datos.');
+                errDiv.textContent = 'Cargando conexión... Presiona ingresar de nuevo.';
+                errDiv.style.display = 'block';
                 return;
             }
+
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const pass = document.getElementById('password').value.trim();
+
+            if (!email || !pass) {
+                errDiv.textContent = 'Por favor ingresa tu correo y contraseña.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('btnLogin');
+            btn.disabled = true;
+            btn.textContent = 'Ingresando...';
 
             try {
-                // 1. Autenticar
-                const { data: authData, error: authError } = await db.auth.signInWithPassword({ 
-                    email: emailInput, 
-                    password: passwordInput 
-                });
-                
-                if (authError) {
-                    mostrarError('Correo o contraseña incorrectos.');
+                const { data, error } = await db.auth.signInWithPassword({ email: email, password: pass });
+
+                if (error) {
+                    errDiv.textContent = 'Contraseña o correo incorrectos. Por favor, verifica e inténtalo de nuevo.';
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Ingresar al Panel';
                     return;
                 }
 
-                // 2. Verificar en tabla empleados
-                const { data: emp, error: empError } = await db.from('empleados').select('nombre, rol').eq('email', emailInput).maybeSingle();
-                
-                if (empError || !emp) {
-                    mostrarError('Usuario no encontrado en la base de datos de empleados.');
-                    await db.auth.signOut();
-                    return;
-                }
-
-                // 3. Mostrar el panel
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
-                document.getElementById('welcomeName').textContent = 'Hola, ' + emp.nombre;
-                document.getElementById('welcomeRole').textContent = 'Rol: ' + emp.rol.charAt(0).toUpperCase() + emp.rol.slice(1);
+                document.getElementById('welcomeName').textContent = 'Hola, ' + email.split('@')[0];
+                precargarClientes();
 
             } catch (err) {
-                mostrarError('Error inesperado: ' + err.message);
+                errDiv.textContent = 'Error: ' + err.message;
+                errDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Ingresar al Panel';
             }
         }
 
-        async function cerrarSesion() {
+        async function logout() {
+            const db = getClient();
             if (db) await db.auth.signOut();
             document.getElementById('dashboardScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
             document.getElementById('errorMsg').style.display = 'none';
+            const btn = document.getElementById('btnLogin');
+            if (btn) { btn.disabled = false; btn.textContent = 'Ingresar al Panel'; }
+            volverMenu();
         }
-    </script>
-</body>
-</html>
+
+        function volverMenu() {
+            document.getElementById('homeMenu').style.display = 'flex';
+            document.getElementById('clientsView').style.display = 'none';
+            document.getElementById('visitsView').style.display = 'none';
+            document.getElementById('transactionsView').style.display = 'none';
+            document.getElementById('searchView').style.display = 'none';
+        }
+
+        function linkWA(telRaw, nombre, deuda) {
+            if (!telRaw || telRaw === 'Sin teléfono') return '#';
+            let tel = telRaw.replace(/\D/g, '');
+            if (!tel.startsWith('58') && tel.length === 10) tel = '58' + tel;
+            let msg = deuda > 0 
+                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente por pagar de $${deuda.toFixed(2)}. Quedamos a tu disposición. ¡Muchas gracias!`
+                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Queremos informarte que tu cuenta se encuentra totalmente al día. ¡Gracias por tu preferencia!`;
+            return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
+        }
+
+        async function precargarClientes() {
+            const db = getClient();
+            if (!db) return;
+            const { data } = await db.from('clientes').select('*');
+            if (data) {
+                mapaClientes = {};
+                data.forEach(c => { mapaClientes[c.id] = c; });
+            }
+        }
+
+        async function verListaClientes() {
+            volverMenu();
+            document.getElementById('homeMenu').style.display = 'none';
+            document.getElementById('clientsView').style.display = 'block';
+            const cont = document.getElementById('clientsListContainer');
+            cont.innerHTML = 'Cargando clientes...';
+
+            try {
+                const db = getClient();
+                const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
+                if (error) { cont.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
+                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
+
+                let html = '';
+                data.forEach(c => {
+                    const nom = c.nombre_y_apellido || c.nombre || 'Sin nombre';
+                    const tel = c.telefono || 'Sin teléfono';
+                    const ced = c.cedula || 'Sin cédula';
+                    const pts = c.puntos || 0;
+                    const deu = c.deuda_actual ? parseFloat(c.deuda_actual) : 0;
+                    const code = c.codigo_qr || `ERM-${ced}`;
+                    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
+                    const wa = linkWA(tel, nom, deu);
+
+                    let promo = pts >= 5 
+                        ? `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`
+                        : `<div class="promo-pending">Visitas: ${pts}/5 (faltan ${5 - pts})</div>`;
+
+                    html += `
+                    <div class="client-card">
+                        <div class="client-main-row">
+                            <div class="client-info">
+                                <strong>${nom}</strong><br>
+                                <small><strong>Cédula:</strong> ${ced}</small><br>
+                                <small><strong>Teléfono:</strong> ${tel}</small><br>
+                                <small><strong>Deuda:</strong> $${deu.toFixed(2)}</small><br>
+                                ${promo}
+                                <div style="margin-top:8px;">
+                                    <button class="btn-action-sm" onclick="irAEditar('${ced}')">✏️ Editar / Add Visita</button>
+                                </div>
+                            </div>
+                            <div class="client-qr-box">
+                                <img src="${qr}" alt="QR">
+                                <div class="client-qr-code">${code}</div>
+                            </div>
+                        </div>
+                        ${tel !== 'Sin teléfono' ? `<a href="${wa}" target="_blank" class="btn-whatsapp">💬 Enviar Estado por WhatsApp</a>` : ''}
+                    </div>`;
+                });
+                cont.innerHTML = html;
+            } catch (err) { cont.innerHTML = '<p style="color:red;">Error de conexión.</p>'; }
+        }
+
+        function irAEditar(ced) {
+            abrirBuscadorCedula();
+            document.getElementById('cedulaInput').value = ced;
+            buscarCedula();
+        }
+
+        async function cargarSelects(id) {
+    
