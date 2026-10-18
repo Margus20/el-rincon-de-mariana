@@ -1,4 +1,4 @@
-5<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -197,22 +197,25 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (window.supabase) {
-                db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            try {
+                if (window.supabase) {
+                    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } else {
+                    mostrarError('Error: No se pudo cargar la librería Supabase desde el CDN.');
+                }
+            } catch (e) {
+                mostrarError('Excepción de inicio: ' + e.message);
             }
 
-            // Ojito clave
             document.getElementById('btnEye').addEventListener('click', () => {
                 const pwd = document.getElementById('password');
                 pwd.type = pwd.type === 'password' ? 'text' : 'password';
                 document.getElementById('btnEye').textContent = pwd.type === 'password' ? '👁️' : '🙈';
             });
 
-            // Login
             document.getElementById('btnLogin').addEventListener('click', ejecutarLogin);
             document.getElementById('btnLogout').addEventListener('click', () => location.reload());
 
-            // Navegación Menú
             document.getElementById('menuClientes').addEventListener('click', verListaClientes);
             document.getElementById('menuVisitas').addEventListener('click', verVisitas);
             document.getElementById('menuTransacciones').addEventListener('click', verTransacciones);
@@ -242,7 +245,7 @@
                 const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
 
                 if (error) {
-                    mostrarError('Error de autenticación: ' + error.message);
+                    mostrarError('Error de acceso: ' + error.message);
                     btn.disabled = false;
                     btn.textContent = 'Ingresar al Panel';
                     return;
@@ -254,7 +257,7 @@
                 precargarClientes();
 
             } catch (err) {
-                mostrarError('Error de conexión: ' + err.message);
+                mostrarError('Excepción en login: ' + err.message);
                 btn.disabled = false;
                 btn.textContent = 'Ingresar al Panel';
             }
@@ -296,7 +299,8 @@
 
             try {
                 const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
-                if (error || !data) { cont.innerHTML = '<p style="color:red;">Error al cargar datos: ' + (error ? error.message : '') + '</p>'; return; }
+                if (error) { cont.innerHTML = '<p style="color:red; font-weight:bold;">Error Supabase: ' + error.message + '</p>'; return; }
+                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
 
                 let html = '';
                 data.forEach(c => {
@@ -335,15 +339,4 @@
                     </div>`;
                 });
                 cont.innerHTML = html;
-            } catch (err) { cont.innerHTML = '<p style="color:red;">Error de conexión.</p>'; }
-        }
-
-        function irAEditar(ced) {
-            abrirBuscadorCedula();
-            document.getElementById('cedulaInput').value = ced;
-            buscarCedula();
-        }
-
-        async function cargarSelects(id) {
-            const el = document.getElementById(id);
-            el.innerHTML = '<op
+            } catch (err) { cont.innerHTML = '<p style="color:red; font-weight:bold;">Excepción de red: ' + err.message + '</p>
