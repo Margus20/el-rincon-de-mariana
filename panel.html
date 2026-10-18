@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <!-- Supabase y Lector QR -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
@@ -16,16 +13,15 @@
         .login-box p { color: #666; margin-bottom: 25px; font-size: 14px; }
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: bold; }
-        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; }
         
         .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { padding-right: 45px; width: 100%; }
-        .toggle-password { position: absolute; right: 10px; cursor: pointer; font-size: 18px; user-select: none; color: #777; background: none; border: none; }
+        .password-wrapper input { padding-right: 50px; width: 100%; }
+        .toggle-password { position: absolute; right: 8px; cursor: pointer; font-size: 18px; background: #eee; border: 1px solid #ccc; padding: 6px 10px; border-radius: 6px; user-select: none; }
 
         .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        .btn-action-sm { padding: 6px 12px; background: #E67E22; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .error-msg { color: #e74c3c; font-size: 13px; margin-top: 15px; background: #fde8e8; padding: 10px; border-radius: 5px; display: none; text-align: center; font-weight: bold; }
+        .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
         
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
         .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -49,41 +45,40 @@
         .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
 
         .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
-        .btn-whatsapp:hover { background: #1eb857; }
-
         .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
         .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
         .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
-        .action-buttons-group { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
     </style>
 </head>
 <body>
-    <!-- Login -->
+
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>El Rincón de Mariana</h1>
             <p>Panel de Control Interno</p>
+            
             <div class="input-group">
                 <label>Correo electrónico</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
             </div>
+            
             <div class="input-group">
                 <label>Contraseña</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" placeholder="••••••••">
-                    <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                    <button type="button" class="toggle-password" id="btnEye">👁️</button>
                 </div>
             </div>
-            <button class="btn-login" onclick="iniciarSesion()">Ingresar al Panel</button>
+            
+            <button type="button" class="btn-login" id="btnLogin">Ingresar al Panel</button>
             <div id="errorMsg" class="error-msg"></div>
         </div>
     </div>
     
-    <!-- Panel Principal -->
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
-            <button onclick="cerrarSesion()" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
+            <button id="btnLogout" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
         </div>
         
         <div class="main-content">
@@ -93,187 +88,103 @@
                     <p style="font-size: 13px; color: #666;">Sistema Activo</p>
                 </div>
                 
-                <button class="action-btn primary" onclick="abrirEscanerQR()">📷 Escanear Código QR</button>
-                <button class="action-btn" onclick="verListaClientes()">👥 Ver Lista de Clientes</button>
-                <button class="action-btn" onclick="verVisitas()">📋 Ver Historial de Visitas</button>
-                <button class="action-btn" onclick="verTransacciones()">💰 Ver Transacciones</button>
-                <button class="action-btn" onclick="abrirBuscadorCedula()">🔍 Buscar por Cédula / Editar</button>
+                <button class="action-btn" id="menuClientes">👥 Ver Lista de Clientes</button>
+                <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
+                <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
+                <button class="action-btn primary" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
             </div>
 
-            <!-- Vista: Clientes -->
             <div id="clientsView" class="view-section">
-                <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
+                <button class="back-btn btnVolver">← Volver</button>
                 <h3>Lista de Clientes Registrados</h3>
                 <div id="clientsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Visitas -->
             <div id="visitsView" class="view-section">
-                <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
+                <button class="back-btn btnVolver">← Volver</button>
                 <h3>Historial de Visitas</h3>
-                
-                <div class="form-box">
-                    <h4>➕ Registrar Visita Manual</h4>
-                    <div class="input-group">
-                        <label>Seleccionar Cliente</label>
-                        <select id="selectClienteVisita"><option value="">Cargando clientes...</option></select>
-                    </div>
-                    <div class="input-group">
-                        <label>Monto Consumido ($)</label>
-                        <input type="number" id="montoVisitaDirecta" placeholder="Ejemplo: 15.00" step="0.01">
-                    </div>
-                    <div class="input-group">
-                        <label>Notas / Detalle</label>
-                        <input type="text" id="notasVisitaDirecta" placeholder="Servicio realizado">
-                    </div>
-                    <button class="btn-login" onclick="guardarVisitaDirecta()">Registrar Visita (+1 Punto)</button>
-                </div>
-
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Transacciones -->
             <div id="transactionsView" class="view-section">
-                <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
+                <button class="back-btn btnVolver">← Volver</button>
                 <h3>Registro de Transacciones</h3>
-                
-                <div class="form-box">
-                    <h4>💰 Registrar Transacción / Ajustar Deuda</h4>
-                    <div class="input-group">
-                        <label>Seleccionar Cliente</label>
-                        <select id="selectClienteTransaccion"><option value="">Cargando clientes...</option></select>
-                    </div>
-                    <div class="input-group">
-                        <label>Tipo de Movimiento</label>
-                        <select id="tipoTransaccion">
-                            <option value="Abono Deuda">Abono / Pago de Deuda (- Deuda)</option>
-                            <option value="Nueva Deuda">Nueva Deuda / Fiado (+ Deuda)</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>Monto ($)</label>
-                        <input type="number" id="montoTransaccion" placeholder="Ejemplo: 10.00" step="0.01">
-                    </div>
-                    <div class="input-group">
-                        <label>Descripción</label>
-                        <input type="text" id="descTransaccion" placeholder="Ej. Pago en efectivo / Pago móvil">
-                    </div>
-                    <button class="btn-secondary" onclick="guardarTransaccionDirecta()">Registrar Movimiento</button>
-                </div>
-
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista: Búsqueda y Edición Manual -->
             <div id="searchView" class="view-section">
-                <button class="back-btn" onclick="volverAlMenu()">← Volver</button>
+                <button class="back-btn btnVolver">← Volver</button>
                 <h3>Consulta y Gestión de Cliente</h3>
                 <div class="input-group">
-                    <input type="text" id="cedulaInput" placeholder="Introduce la cédula o escanea un QR...">
+                    <input type="text" id="cedulaInput" placeholder="Ingresa número de cédula...">
                 </div>
-                <button class="btn-login" onclick="buscarCedula()" style="margin-bottom: 15px;">Buscar Cliente</button>
+                <button class="btn-login" id="btnBuscarCedula" style="margin-bottom: 15px;">Buscar Cliente</button>
                 <div id="searchResultContainer"></div>
             </div>
         </div>
     </div>
 
-    <div id="qrReader" style="display: none;"></div>
-    <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarArchivoQR(event)">
-
     <script>
-        const SUPABASE_URL = 'https://nwuqdmbqlpmiyxiqdxmc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc';
-        
-        let db = null;
-        let html5QrCode = null;
-        let clienteActual = null;
-        let mapaClientes = {};
+        const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
+        const API_KEY = "sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc";
+        let userToken = "";
 
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                if (window.supabase) {
-                    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                } else {
-                    mostrarError('No se pudo cargar la librería de autenticación.');
-                }
-            } catch (e) {
-                mostrarError('Error de inicialización: ' + e.message);
-            }
+        function mostrarError(txt) {
+            const el = document.getElementById('errorMsg');
+            if (el) { el.textContent = txt; el.style.display = 'block'; }
+        }
+
+        document.getElementById('btnEye').addEventListener('click', () => {
+            const pwd = document.getElementById('password');
+            pwd.type = pwd.type === 'password' ? 'text' : 'password';
+            document.getElementById('btnEye').textContent = pwd.type === 'password' ? '👁️' : '🙈';
         });
 
-        function mostrarError(msg) {
-            const errorDiv = document.getElementById('errorMsg');
-            if (errorDiv) {
-                errorDiv.textContent = msg;
-                errorDiv.style.display = 'block';
-            }
-        }
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const pass = document.getElementById('password').value.trim();
+            const errDiv = document.getElementById('errorMsg');
+            errDiv.style.display = 'none';
 
-        function togglePasswordVisibility() {
-            const pwdInput = document.getElementById('password');
-            pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
-        }
+            if (!email || !pass) { mostrarError('Ingresa tu correo y contraseña.'); return; }
 
-        async function iniciarSesion() {
-            const errorMsg = document.getElementById('errorMsg');
-            errorMsg.style.display = 'none';
-
-            if (!db) {
-                mostrarError('El sistema no está conectado con la base de datos.');
-                return;
-            }
-
-            const emailInput = document.getElementById('email').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('password').value.trim();
-
-            if (!emailInput || !passwordInput) {
-                mostrarError('Por favor, completa todos los campos.');
-                return;
-            }
+            const btn = document.getElementById('btnLogin');
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
 
             try {
-                const { data: authData, error: authError } = await db.auth.signInWithPassword({
-                    email: emailInput,
-                    password: passwordInput
+                const res = await fetch(`${API_URL}/auth/v1/token?grant_type=password`, {
+                    method: 'POST',
+                    headers: { 'apikey': API_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: pass })
                 });
 
-                if (authError) {
-                    mostrarError('Contraseña o correo incorrectos. Por favor, verifica e inténtalo de nuevo.');
+                const data = await res.json();
+
+                if (!res.ok) {
+                    mostrarError('Contraseña o correo incorrectos.');
+                    btn.disabled = false;
+                    btn.textContent = 'Ingresar al Panel';
                     return;
                 }
 
+                userToken = data.access_token;
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
-                document.getElementById('welcomeName').textContent = 'Hola, ' + emailInput.split('@')[0];
+                document.getElementById('welcomeName').textContent = 'Hola, ' + email.split('@')[0];
 
-                precargarClientesGlobal();
-
-            } catch (err) {
-                mostrarError('Error al iniciar sesión: ' + err.message);
+            } catch (e) {
+                mostrarError('Error de red al conectar.');
+                btn.disabled = false;
+                btn.textContent = 'Ingresar al Panel';
             }
-        }
+        });
 
-        async function precargarClientesGlobal() {
-            try {
-                const { data } = await db.from('clientes').select('*');
-                if (data) {
-                    mapaClientes = {};
-                    data.forEach(c => { mapaClientes[c.id] = c; });
-                }
-            } catch (e) {}
-        }
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            location.reload();
+        });
 
-        async function cerrarSesion() {
-            if (db) await db.auth.signOut();
-            document.getElementById('dashboardScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('errorMsg').style.display = 'none';
-            volverAlMenu();
-        }
-
-        function volverAlMenu() {
+        function volverMenu() {
             document.getElementById('homeMenu').style.display = 'flex';
             document.getElementById('clientsView').style.display = 'none';
             document.getElementById('visitsView').style.display = 'none';
@@ -281,77 +192,65 @@
             document.getElementById('searchView').style.display = 'none';
         }
 
-        function abrirEscanerQR() {
-            document.getElementById('qrFileInput').click();
-        }
+        document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
 
-        async function procesarArchivoQR(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            abrirBuscadorCedula();
-            const resultContainer = document.getElementById('searchResultContainer');
-            resultContainer.innerHTML = 'Leyendo código QR...';
-
-            try {
-                if (!html5QrCode) html5QrCode = new Html5Qrcode("qrReader");
-                const qrCodeMessage = await html5QrCode.scanFile(file, true);
-                
-                document.getElementById('cedulaInput').value = qrCodeMessage;
-                resultContainer.innerHTML = `<p style="color:green; margin-bottom: 10px;"><strong>QR Escaneado:</strong> ${qrCodeMessage}</p>`;
-                
-                buscarCedula();
-            } catch (err) {
-                resultContainer.innerHTML = '<p style="color:red;">No se pudo detectar un código QR claro en la imagen.</p>';
-            }
-        }
-
-        function generarLinkWhatsApp(telefonoRaw, nombre, deuda) {
-            if (!telefonoRaw || telefonoRaw === 'Sin teléfono' || telefonoRaw === 'No registrado') return '#';
-            let tel = telefonoRaw.replace(/\D/g, '');
+        function linkWA(telRaw, nombre, deuda) {
+            if (!telRaw || telRaw === 'Sin teléfono') return '#';
+            let tel = telRaw.replace(/\D/g, '');
             if (!tel.startsWith('58') && tel.length === 10) tel = '58' + tel;
-            
-            let mensaje = deuda > 0 
-                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente por pagar de $${deuda.toFixed(2)}. Quedamos a tu disposición. ¡Muchas gracias!`
-                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Queremos informarte que tu cuenta se encuentra totalmente al día. ¡Gracias por tu preferencia!`;
-
-            return `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+            let msg = deuda > 0 
+                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente de $${deuda.toFixed(2)}.`
+                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Tu cuenta está totalmente al día. ¡Gracias!`;
+            return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
         }
 
-        async function verListaClientes() {
+        document.getElementById('menuClientes').addEventListener('click', async () => {
+            volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('clientsView').style.display = 'block';
-            const container = document.getElementById('clientsListContainer');
-            container.innerHTML = 'Cargando clientes...';
+            const cont = document.getElementById('clientsListContainer');
+            cont.innerHTML = 'Cargando clientes...';
 
             try {
-                const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false }).limit(50);
-                if (error) { container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`; return; }
-                if (!data || data.length === 0) { container.innerHTML = '<p>No hay clientes registrados.</p>'; return; }
+                const res = await fetch(`${API_URL}/rest/v1/clientes?select=*&order=created_at.desc`, {
+                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
+                });
+                const data = await res.json();
 
-                precargarClientesGlobal();
+                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay clientes.</p>'; return; }
+
                 let html = '';
                 data.forEach(c => {
-                    const nombreCliente = c.nombre_y_apellido || c.nombre || 'Sin nombre';
-                    const telefono = c.telefono || 'Sin teléfono';
-                    const cedula = c.cedula || 'Sin cédula';
-                    const puntos = c.puntos !== undefined && c.puntos !== null ? c.puntos : 0;
-                    const deuda = c.deuda_actual !== undefined && c.deuda_actual !== null ? parseFloat(c.deuda_actual) : 0;
-                    
-                    const codigoQRTexto = c.codigo_qr || `ERM-${cedula}`;
-                    const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(codigoQRTexto)}`;
-                    const linkWA = generarLinkWhatsApp(telefono, nombreCliente, deuda);
-
-                    let promoHTML = puntos >= 5 
-                        ? `<div class="promo-badge">🎉 ¡Acreedor de Promoción! (6ta visita GRATIS)</div>`
-                        : `<div class="promo-pending">Visitas acumuladas: ${puntos}/5 (faltan ${5 - puntos} para regalía)</div>`;
+                    const nom = c.nombre_y_apellido || c.nombre || 'Sin nombre';
+                    const tel = c.telefono || 'Sin teléfono';
+                    const ced = c.cedula || 'Sin cédula';
+                    const pts = c.puntos || 0;
+                    const deu = c.deuda_actual ? parseFloat(c.deuda_actual) : 0;
+                    const code = c.codigo_qr || `ERM-${ced}`;
+                    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
+                    const wa = linkWA(tel, nom, deu);
 
                     html += `
                     <div class="client-card">
                         <div class="client-main-row">
                             <div class="client-info">
-                                <strong>${nombreCliente}</strong><br>
-                                <small><strong>Cédula:</strong> ${cedula}</small><br>
-                                <small><strong>Teléfono:</strong> ${telefono}</small><br>
-                                <small><strong>Deuda actual:</strong> $${deuda.toFixed(2)}</small><br>
-                         
+                                <strong>${nom}</strong><br>
+                                <small><strong>Cédula:</strong> ${ced}</small><br>
+                                <small><strong>Teléfono:</strong> ${tel}</small><br>
+                                <small><strong>Deuda:</strong> $${deu.toFixed(2)}</small><br>
+                                <small><strong>Visitas:</strong> ${pts}/5</small>
+                            </div>
+                            <div class="client-qr-box">
+                                <img src="${qr}" alt="QR">
+                                <div class="client-qr-code">${code}</div>
+                            </div>
+                        </div>
+                        ${tel !== 'Sin teléfono' ? `<a href="${wa}" target="_blank" class="btn-whatsapp">💬 Enviar Estado por WhatsApp</a>` : ''}
+                    </div>`;
+                });
+                cont.innerHTML = html;
+            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar datos.</p>'; }
+        });
+    </script>
+</body>
+</html>
