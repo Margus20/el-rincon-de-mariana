@@ -4,53 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
-        .login-screen { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: white; }
-        .login-box { width: 100%; max-width: 350px; text-align: center; }
-        .login-box h1 { color: #E67E22; margin-bottom: 10px; }
-        .login-box p { color: #666; margin-bottom: 25px; font-size: 14px; }
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: bold; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; }
-        
-        .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { padding-right: 50px; width: 100%; }
-        .toggle-password { position: absolute; right: 8px; cursor: pointer; font-size: 18px; background: #eee; border: 1px solid #ccc; padding: 6px 10px; border-radius: 6px; user-select: none; }
-
-        .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
-        
-        .dashboard-screen { display: none; flex: 1; flex-direction: column; }
-        .header-panel { background: #E67E22; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .welcome-card { background: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .action-btn { width: 100%; padding: 15px; background: white; border: 2px solid #E67E22; border-radius: 10px; color: #E67E22; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; }
-        .action-btn.primary { background: #E67E22; color: white; }
-        
-        .view-section { display: none; background: white; padding: 20px; border-radius: 10px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-y: auto; max-height: 80vh; }
-        .view-section h3 { color: #E67E22; margin-bottom: 15px; }
-        .back-btn { background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; margin-bottom: 15px; }
-        
-        .client-card { display: flex; flex-direction: column; padding: 15px; border: 1px solid #E67E22; background: #fdf8f2; border-radius: 10px; gap: 12px; margin-bottom: 15px; }
-        .client-main-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .client-info { flex: 1; font-size: 14px; color: #333; line-height: 1.6; }
-        .client-qr-box { text-align: center; background: #ffffff; padding: 8px; border: 2px solid #E67E22; border-radius: 8px; min-width: 95px; }
-        .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
-        .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
-
-        .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
-        .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
-        .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
-        .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
-        
-        #reader { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
-        .scanner-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
-        .scanner-buttons button { flex: 1; }
-        #scanResult { text-align: center; margin-top: 10px; font-weight: bold; min-height: 20px; }
-    </style>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://unpkg.com/html5-qrcode" defer></script>
 </head>
 <body>
 
@@ -68,7 +23,7 @@
                 <label>Contraseña</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" placeholder="••••••••">
-                    <button type="button" class="toggle-password" id="btnEye">️</button>
+                    <button type="button" class="toggle-password" id="btnEye">👁️</button>
                 </div>
             </div>
             
@@ -80,17 +35,17 @@
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
-            <button id="btnLogout" style="background:rgba(255,255,255,0.2);border:1px solid white;color:white;padding:6px 12px;border-radius:5px;cursor:pointer;">Salir</button>
+            <button id="btnLogout" class="btn-logout-style">Salir</button>
         </div>
         
         <div class="main-content">
-            <div id="homeMenu" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+            <div id="homeMenu" class="menu-container">
                 <div class="welcome-card">
                     <h3 id="welcomeName">Bienvenido</h3>
-                    <p style="font-size: 13px; color: #666;">Sistema Activo</p>
+                    <p class="system-status">Sistema Activo</p>
                 </div>
                 
-                <button class="action-btn primary" id="btnEscanearQR">📷 Escanear Código QR</button>
+                <button class="action-btn primary" id="btnEscanearQR"> Escanear Código QR</button>
                 <button class="action-btn" id="menuClientes">👥 Ver Lista de Clientes</button>
                 <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
                 <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
@@ -101,8 +56,8 @@
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Escanear Código QR</h3>
                 <div class="scanner-buttons">
-                    <button class="btn-login" id="btnStartCamera">📷 Usar Cámara</button>
-                    <button class="btn-secondary" id="btnSelectImage">🖼️ Subir Imagen</button>
+                    <button class="btn-login" id="btnStartCamera"> Usar Cámara</button>
+                    <button class="btn-secondary" id="btnSelectImage">️ Subir Imagen</button>
                 </div>
                 <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;">
                 <div id="reader" style="display:none;"></div>
@@ -180,184 +135,6 @@
         </div>
     </div>
 
-    <script>
-        const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
-        const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53dXFkbWJxbHBtaXl4aXFkeG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjIzMDksImV4cCI6MjEwNzYzODMwOX0.3LVC7SwkHkDGRzdAzMMyHbwVi4m8bUFJwUizuRG15DE";
-        let userToken = "";
-        let clientesCache = [];
-        let html5QrCode = null;
-        let qrLibLoaded = false;
-
-        function mostrarError(txt) {
-            const el = document.getElementById('errorMsg');
-            if (el) { el.textContent = txt; el.style.display = 'block'; }
-        }
-
-        document.getElementById('btnEye').addEventListener('click', () => {
-            const pwd = document.getElementById('password');
-            pwd.type = pwd.type === 'password' ? 'text' : 'password';
-            document.getElementById('btnEye').textContent = pwd.type === 'password' ? '️' : '🙈';
-        });
-
-        document.getElementById('btnLogin').addEventListener('click', async () => {
-            const email = document.getElementById('email').value.trim().toLowerCase();
-            const pass = document.getElementById('password').value.trim();
-            const errDiv = document.getElementById('errorMsg');
-            errDiv.style.display = 'none';
-
-            if (!email || !pass) { mostrarError('Ingresa tu correo y contraseña.'); return; }
-
-            const btn = document.getElementById('btnLogin');
-            btn.disabled = true;
-            btn.textContent = 'Verificando...';
-
-            try {
-                const res = await fetch(`${API_URL}/auth/v1/token?grant_type=password`, {
-                    method: 'POST',
-                    headers: { 'apikey': API_KEY, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, password: pass })
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    mostrarError('Contraseña o correo incorrectos.');
-                    btn.disabled = false;
-                    btn.textContent = 'Ingresar al Panel';
-                    return;
-                }
-
-                userToken = data.access_token;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').style.display = 'flex';
-                document.getElementById('welcomeName').textContent = 'Hola, ' + email.split('@')[0];
-                
-                await cargarClientesCache();
-
-            } catch (e) {
-                mostrarError('Error de red al conectar.');
-                btn.disabled = false;
-                btn.textContent = 'Ingresar al Panel';
-            }
-        });
-
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            location.reload();
-        });
-
-        function volverMenu() {
-            document.getElementById('homeMenu').style.display = 'flex';
-            document.getElementById('clientsView').style.display = 'none';
-            document.getElementById('visitsView').style.display = 'none';
-            document.getElementById('transactionsView').style.display = 'none';
-            document.getElementById('searchView').style.display = 'none';
-            document.getElementById('scannerView').style.display = 'none';
-            if (html5QrCode) { detenerCamara(); }
-        }
-
-        document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
-
-        function linkWA(telRaw, nombre, deuda) {
-            if (!telRaw || telRaw === 'Sin teléfono') return '#';
-            let tel = telRaw.replace(/\D/g, '');
-            if (!tel.startsWith('58') && tel.length === 10) tel = '58' + tel;
-            let msg = deuda > 0 
-                ? `Hola ${nombre}, te saludamos de El Rincón de Mariana. Te recordamos que tienes un saldo pendiente de $${deuda.toFixed(2)}.`
-                : `Hola ${nombre}, te saludamos de El Rincón de Mariana. Tu cuenta está totalmente al día. ¡Gracias!`;
-            return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
-        }
-
-        async function cargarClientesCache() {
-            try {
-                const res = await fetch(`${API_URL}/rest/v1/clientes?select=id,nombre_y_apellido,nombre,cedula`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-                clientesCache = data || [];
-            } catch (e) { console.error("Error cargando clientes", e); }
-        }
-
-        function llenarSelectores() {
-            const opts = '<option value="">Seleccione un cliente</option>' + 
-                clientesCache.map(c => `<option value="${c.id}">${c.nombre_y_apellido || c.nombre} (${c.cedula})</option>`).join('');
-            document.getElementById('selectClienteVisita').innerHTML = opts;
-            document.getElementById('selectClienteTrans').innerHTML = opts;
-        }
-
-        function generarTarjetaCliente(c) {
-            const nom = c.nombre_y_apellido || c.nombre || 'Sin nombre';
-            const tel = c.telefono || 'Sin teléfono';
-            const ced = c.cedula || 'Sin cédula';
-            const pts = c.puntos || 0;
-            const deu = c.deuda_actual ? parseFloat(c.deuda_actual) : 0;
-            const code = c.codigo_qr || `ERM-${ced}`;
-            const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
-            const wa = linkWA(tel, nom, deu);
-
-            return `
-            <div class="client-card">
-                <div class="client-main-row">
-                    <div class="client-info">
-                        <strong>${nom}</strong><br>
-                        <small><strong>Cédula:</strong> ${ced}</small><br>
-                        <small><strong>Teléfono:</strong> ${tel}</small><br>
-                        <small><strong>Deuda:</strong> $${deu.toFixed(2)}</small><br>
-                        <small><strong>Visitas:</strong> ${pts}/5</small>
-                    </div>
-                    <div class="client-qr-box">
-                        <img src="${qr}" alt="QR">
-                        <div class="client-qr-code">${code}</div>
-                    </div>
-                </div>
-                ${tel !== 'Sin teléfono' ? `<a href="${wa}" target="_blank" class="btn-whatsapp">💬 Enviar Estado por WhatsApp</a>` : ''}
-            </div>`;
-        }
-
-        async function cargarLibreriaQR() {
-            if (qrLibLoaded) return true;
-            try {
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = 'https://unpkg.com/html5-qrcode';
-                    script.onload = () => { qrLibLoaded = true; resolve(); };
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-                return true;
-            } catch (e) {
-                console.error("Error cargando librería QR", e);
-                return false;
-            }
-        }
-
-        document.getElementById('btnEscanearQR').addEventListener('click', async () => {
-            volverMenu();
-            document.getElementById('scannerView').style.display = 'block';
-            document.getElementById('scanResult').innerHTML = '';
-            document.getElementById('reader').style.display = 'none';
-        });
-
-        document.getElementById('btnStartCamera').addEventListener('click', async () => {
-            const ok = await cargarLibreriaQR();
-            if (!ok) {
-                document.getElementById('scanResult').innerHTML = '<span style="color:red">Error al cargar el escáner. Usa "Subir Imagen".</span>';
-                return;
-            }
-            
-            document.getElementById('reader').style.display = 'block';
-            document.getElementById('scanResult').innerHTML = 'Iniciando cámara...';
-            
-            try {
-                html5QrCode = new Html5Qrcode("reader");
-                await html5QrCode.start(
-                    { facingMode: "environment" }, 
-                    { fps: 10, qrbox: { width: 250, height: 250 } },
-                    (decodedText) => {
-                        detenerCamara();
-                        procesarQR(decodedText);
-                    },
-                    () => {}
-                );
-            } catch (err) {
-                document.getElementById('scanResult').innerHTML = '<span style="color:red">No se pudo acceder a la cámara. Usa "Subir Imagen".</span>';
-     
+    <script src="logica.js" defer></script>
+</body>
+</html>
