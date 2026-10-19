@@ -1,3 +1,5 @@
+alert("DIAGNÓSTICO: El JavaScript se está cargando correctamente");
+
 const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
 const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53dXFkbWJxbHBtaXl4aXFkeG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjIzMDksImV4cCI6MjEwNzYzODMwOX0.3LVC7SwkHkDGRzdAzMMyHbwVi4m8bUFJwUizuRG15DE";
 let userToken = "";
@@ -371,4 +373,4 @@ function procesarQR(codigo) {
         document.getElementById('searchView').style.display = 'block';
         document.getElementById('btnBuscarCedula').click();
     }, 1500);
-      }
+                      }
