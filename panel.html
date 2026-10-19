@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <!-- Lector QR -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
@@ -42,6 +40,9 @@
         .client-qr-box { text-align: center; background: #ffffff; padding: 8px; border: 2px solid #E67E22; border-radius: 8px; min-width: 95px; }
         .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
         .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
+
+        .promo-badge { background: #27ae60; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px; }
+        .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
 
         .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
         .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
@@ -87,35 +88,30 @@
                     <p style="font-size: 13px; color: #666;">Sistema Activo</p>
                 </div>
                 
-                <button class="action-btn primary" id="btnEscaneoQR">📷 Escanear Código QR</button>
                 <button class="action-btn" id="menuClientes">👥 Ver Lista de Clientes</button>
                 <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
                 <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
-                <button class="action-btn" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
+                <button class="action-btn primary" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
             </div>
 
-            <!-- Vista Clientes -->
             <div id="clientsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Lista de Clientes Registrados</h3>
                 <div id="clientsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista Visitas -->
             <div id="visitsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Historial de Visitas</h3>
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista Transacciones -->
             <div id="transactionsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Registro de Transacciones</h3>
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
-            <!-- Vista Buscador / Edición -->
             <div id="searchView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Consulta y Gestión de Cliente</h3>
@@ -128,15 +124,10 @@
         </div>
     </div>
 
-    <div id="qrReader" style="display: none;"></div>
-    <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;">
-
     <script>
         const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
-        const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53dXFkbWJxbHBtaXl4aXFkeG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjIzMDksImV4cCI6MjEwNzYzODMwOX0.3LVC7SwkHkDGRzdAzMMyHbwVi4m8bUFJwUizuRG15DE";
-        
+        const API_KEY = "sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc";
         let userToken = "";
-        let html5QrCode = null;
 
         function mostrarError(txt) {
             const el = document.getElementById('errorMsg');
@@ -213,7 +204,6 @@
             return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
         }
 
-        // 1. Ver Lista de Clientes
         document.getElementById('menuClientes').addEventListener('click', async () => {
             volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
@@ -261,97 +251,6 @@
                 cont.innerHTML = html;
             } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar datos.</p>'; }
         });
-
-        // 2. Ver Historial de Visitas
-        document.getElementById('menuVisitas').addEventListener('click', async () => {
-            volverMenu();
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('visitsView').style.display = 'block';
-            const cont = document.getElementById('visitsListContainer');
-            cont.innerHTML = 'Cargando visitas...';
-
-            try {
-                const res = await fetch(`${API_URL}/rest/v1/visitas?select=*&order=created_at.desc`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-
-                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay visitas registradas.</p>'; return; }
-
-                let html = '';
-                data.forEach(v => {
-                    html += `<div class="data-item">
-                        <strong>Monto:</strong> $${v.monto_consumo || 0} | <strong>Tipo:</strong> ${v.tipo || 'normal'}<br>
-                        <small>Fecha: ${v.fecha ? new Date(v.fecha).toLocaleString() : 'N/A'}</small><br>
-                        <em>Notas: ${v.notas || 'Sin notas'}</em>
-                    </div>`;
-                });
-                cont.innerHTML = html;
-            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar visitas.</p>'; }
-        });
-
-        // 3. Ver Transacciones
-        document.getElementById('menuTransacciones').addEventListener('click', async () => {
-            volverMenu();
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('transactionsView').style.display = 'block';
-            const cont = document.getElementById('transactionsListContainer');
-            cont.innerHTML = 'Cargando transacciones...';
-
-            try {
-                const res = await fetch(`${API_URL}/rest/v1/transacciones?select=*&order=created_at.desc`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-
-                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay transacciones.</p>'; return; }
-
-                let html = '';
-                data.forEach(t => {
-                    html += `<div class="data-item">
-                        <strong>Tipo:</strong> ${t.tipo || 'General'} | <strong>Monto:</strong> $${t.monto || 0} <br>
-                        <small>Fecha: ${t.fecha ? new Date(t.fecha).toLocaleString() : 'N/A'}</small><br>
-                        <em>Detalle: ${t.descripcion || 'Sin detalle'}</em>
-                    </div>`;
-                });
-                cont.innerHTML = html;
-            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar transacciones.</p>'; }
-        });
-
-        // 4. Buscar por Cédula
-        document.getElementById('menuBuscador').addEventListener('click', () => {
-            volverMenu();
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('searchView').style.display = 'block';
-            document.getElementById('cedulaInput').value = '';
-            document.getElementById('searchResultContainer').innerHTML = '';
-        });
-
-        document.getElementById('btnBuscarCedula').addEventListener('click', async () => {
-            const ced = document.getElementById('cedulaInput').value.trim();
-            const cont = document.getElementById('searchResultContainer');
-            if (!ced) { cont.innerHTML = '<p style="color:red;">Ingresa una cédula.</p>'; return; }
-
-            cont.innerHTML = 'Buscando...';
-            try {
-                const res = await fetch(`${API_URL}/rest/v1/clientes?cedula=eq.${ced}&select=*`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-
-                if (!data || data.length === 0) { cont.innerHTML = '<p>No se encontró cliente con esa cédula.</p>'; return; }
-
-                const cliente = data[0];
-                const nom = cliente.nombre_y_apellido || cliente.nombre || 'Sin nombre';
-                const code = cliente.codigo_qr || `ERM-${cliente.cedula}`;
-                const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
-                const pts = cliente.puntos || 0;
-                const deu = cliente.deuda_actual ? parseFloat(cliente.deuda_actual) : 0;
-                const wa = linkWA(cliente.telefono, nom, deu);
-
-                cont.innerHTML = `
-                    <div class="client-card">
-                        <div class="client-main-row">
-                            <div class="client-info">
-                                <p><strong>Nombre:</strong> ${nom}</p>
-        
+    </script>
+</body>
+</html>
