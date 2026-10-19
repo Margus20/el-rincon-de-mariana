@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
     <!-- Lector QR -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://unpkg.com/html5-qrcode" crossorigin="anonymous"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
@@ -23,6 +23,8 @@
 
         .btn-login { width: 100%; padding: 14px; background: #E67E22; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-secondary { width: 100%; padding: 10px; background: #5D4037; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .btn-danger { background: #c0392b; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-edit { background: #2980b9; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
         .error-msg { color: #721c24; font-size: 13px; margin-top: 15px; background: #f8d7da; padding: 12px; border-radius: 6px; display: none; text-align: center; font-weight: bold; border: 1px solid #f5c6cb; }
         
         .dashboard-screen { display: none; flex: 1; flex-direction: column; }
@@ -45,6 +47,7 @@
 
         .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
         .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
+        .item-actions { display: flex; gap: 8px; margin-top: 8px; }
         .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
         .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
     </style>
@@ -144,17 +147,57 @@
             if (el) { el.textContent = txt; el.style.display = 'block'; }
         }
 
-        document.getElementById('btnEye').addEventListener('click', () => {
-            const pwd = document.getElementById('password');
-            pwd.type = pwd.type === 'password' ? 'text' : 'password';
-            document.getElementById('btnEye').textContent = pwd.type === 'password' ? '👁️' : '🙈';
+        window.addEventListener('DOMContentLoaded', () => {
+            const btnEye = document.getElementById('btnEye');
+            if (btnEye) {
+                btnEye.addEventListener('click', () => {
+                    const pwd = document.getElementById('password');
+                    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+                    btnEye.textContent = pwd.type === 'password' ? '👁️' : '🙈';
+                });
+            }
+
+            const btnLogin = document.getElementById('btnLogin');
+            if (btnLogin) btnLogin.addEventListener('click', ejecutarLogin);
+
+            const btnLogout = document.getElementById('btnLogout');
+            if (btnLogout) btnLogout.addEventListener('click', () => location.reload());
+
+            const btnMenuCli = document.getElementById('menuClientes');
+            if (btnMenuCli) btnMenuCli.addEventListener('click', cargarListaClientes);
+
+            const btnMenuVis = document.getElementById('menuVisitas');
+            if (btnMenuVis) btnMenuVis.addEventListener('click', cargarListaVisitas);
+
+            const btnMenuTra = document.getElementById('menuTransacciones');
+            if (btnMenuTra) btnMenuTra.addEventListener('click', cargarListaTransacciones);
+
+            const btnMenuBus = document.getElementById('menuBuscador');
+            if (btnMenuBus) btnMenuBus.addEventListener('click', abrirBuscador);
+
+            const btnBuscar = document.getElementById('btnBuscarCedula');
+            if (btnBuscar) btnBuscar.addEventListener('click', buscarClientePorCedula);
+
+            const btnEscaneoQR = document.getElementById('btnEscaneoQR');
+            if (btnEscaneoQR) {
+                btnEscaneoQR.addEventListener('click', () => {
+                    const qrInput = document.getElementById('qrFileInput');
+                    if (qrInput) qrInput.click();
+                });
+            }
+
+            const qrFileInput = document.getElementById('qrFileInput');
+            if (qrFileInput) qrFileInput.addEventListener('change', procesarEscaneoQR);
+
+            document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
         });
 
-        document.getElementById('btnLogin').addEventListener('click', async () => {
+        async function ejecutarLogin() {
+            const errDiv = document.getElementById('errorMsg');
+            if (errDiv) errDiv.style.display = 'none';
+
             const email = document.getElementById('email').value.trim().toLowerCase();
             const pass = document.getElementById('password').value.trim();
-            const errDiv = document.getElementById('errorMsg');
-            errDiv.style.display = 'none';
 
             if (!email || !pass) { mostrarError('Ingresa tu correo y contraseña.'); return; }
 
@@ -184,15 +227,11 @@
                 document.getElementById('welcomeName').textContent = 'Hola, ' + email.split('@')[0];
 
             } catch (e) {
-                mostrarError('Error de red al conectar.');
+                mostrarError('Error de conexión con el servidor.');
                 btn.disabled = false;
                 btn.textContent = 'Ingresar al Panel';
             }
-        });
-
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            location.reload();
-        });
+        }
 
         function volverMenu() {
             document.getElementById('homeMenu').style.display = 'flex';
@@ -202,8 +241,6 @@
             document.getElementById('searchView').style.display = 'none';
             clienteActual = null;
         }
-
-        document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
 
         function linkWA(telRaw, nombre, deuda) {
             if (!telRaw || telRaw === 'Sin teléfono') return '#';
@@ -215,8 +252,7 @@
             return `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
         }
 
-        // 1. Ver Lista de Clientes
-        document.getElementById('menuClientes').addEventListener('click', async () => {
+        async function cargarListaClientes() {
             volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('clientsView').style.display = 'block';
@@ -261,11 +297,10 @@
                     </div>`;
                 });
                 cont.innerHTML = html;
-            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar datos.</p>'; }
-        });
+            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar datos de clientes.</p>'; }
+        }
 
-        // 2. Ver Historial de Visitas
-        document.getElementById('menuVisitas').addEventListener('click', async () => {
+        async function cargarListaVisitas() {
             volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
             document.getElementById('visitsView').style.display = 'block';
@@ -278,75 +313,39 @@
                 });
                 const data = await res.json();
 
-                if (!data || data.length === 0) { cont.innerHTML = '<p style="padding:15px; text-align:center; color:#666;">Aún no hay visitas registradas en la base de datos.</p>'; return; }
+                if (!data || data.length === 0) { cont.innerHTML = '<p style="padding:15px; text-align:center; color:#666;">Aún no hay visitas registradas.</p>'; return; }
 
                 let html = '';
                 data.forEach(v => {
                     html += `<div class="data-item">
-                        <strong>Monto:</strong> $${v.monto_consumo || 0} | <strong>Tipo:</strong> ${v.tipo || 'normal'}<br>
+                        <strong>Monto:</strong> $<span id="monto_v_${v.id}">${v.monto_consumo || 0}</span> | <strong>Tipo:</strong> ${v.tipo || 'normal'}<br>
                         <small>Fecha: ${v.fecha ? new Date(v.fecha).toLocaleString() : 'N/A'}</small><br>
-                        <em>Notas: ${v.notas || 'Sin notas'}</em>
+                        <em>Notas: <span id="notas_v_${v.id}">${v.notas || 'Sin notas'}</span></em>
+                        <div class="item-actions">
+                            <button class="btn-edit" onclick="editarVisita('${v.id}', ${v.monto_consumo || 0}, '${v.notas || ''}')">✏️ Editar</button>
+                            <button class="btn-danger" onclick="eliminarVisita('${v.id}')">🗑️ Eliminar</button>
+                        </div>
                     </div>`;
                 });
                 cont.innerHTML = html;
             } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar visitas.</p>'; }
-        });
+        }
 
-        // 3. Ver Transacciones
-        document.getElementById('menuTransacciones').addEventListener('click', async () => {
-            volverMenu();
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('transactionsView').style.display = 'block';
-            const cont = document.getElementById('transactionsListContainer');
-            cont.innerHTML = 'Cargando transacciones...';
+        async function editarVisita(id, montoActual, notasActuales) {
+            const nuevoMonto = prompt("Ingresa el nuevo monto ($):", montoActual);
+            if (nuevoMonto === null) return;
+            const nuevasNotas = prompt("Ingresa la nueva nota:", notasActuales);
+            if (nuevasNotas === null) return;
 
             try {
-                const res = await fetch(`${API_URL}/rest/v1/transacciones?select=*&order=created_at.desc`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
+                const res = await fetch(`${API_URL}/rest/v1/visitas?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ monto_consumo: parseFloat(nuevoMonto) || 0, notas: nuevasNotas })
                 });
-                const data = await res.json();
+                if (res.ok) { alert('¡Visita actualizada!'); cargarListaVisitas(); } else { alert('Error al editar visita.'); }
+            } catch (e) { alert('Error de red.'); }
+        }
 
-                if (!data || data.length === 0) { cont.innerHTML = '<p style="padding:15px; text-align:center; color:#666;">Aún no hay transacciones registradas en la base de datos.</p>'; return; }
-
-                let html = '';
-                data.forEach(t => {
-                    html += `<div class="data-item">
-                        <strong>Tipo:</strong> ${t.tipo || 'General'} | <strong>Monto:</strong> $${t.monto || 0} <br>
-                        <small>Fecha: ${t.fecha ? new Date(t.fecha).toLocaleString() : 'N/A'}</small><br>
-                        <em>Detalle: ${t.descripcion || 'Sin detalle'}</em>
-                    </div>`;
-                });
-                cont.innerHTML = html;
-            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar transacciones.</p>'; }
-        });
-
-        // 4. Buscar por Cédula / Registrar Visita / Editar
-        document.getElementById('menuBuscador').addEventListener('click', () => {
-            volverMenu();
-            document.getElementById('homeMenu').style.display = 'none';
-            document.getElementById('searchView').style.display = 'block';
-            document.getElementById('cedulaInput').value = '';
-            document.getElementById('searchResultContainer').innerHTML = '';
-        });
-
-        document.getElementById('btnBuscarCedula').addEventListener('click', async () => {
-            const ced = document.getElementById('cedulaInput').value.trim();
-            const cont = document.getElementById('searchResultContainer');
-            if (!ced) { cont.innerHTML = '<p style="color:red;">Ingresa una cédula.</p>'; return; }
-
-            cont.innerHTML = 'Buscando...';
-            try {
-                const res = await fetch(`${API_URL}/rest/v1/clientes?cedula=eq.${ced}&select=*`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-
-                if (!data || data.length === 0) { cont.innerHTML = '<p>No se encontró cliente con esa cédula.</p>'; return; }
-
-                clienteActual = data[0];
-                const nom = clienteActual.nombre_y_apellido || clienteActual.nombre || 'Sin nombre';
-                const code = clienteActual.codigo_qr || `ERM-${clienteActual.cedula}`;
-                const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
-                const pts = clienteActual.puntos || 0;
-                const deu = clienteActual.deuda_actual ? parseFloat(clienteActual.deuda_actual) : 0;
-        
+        async function eliminarVisita(id) {
+            if (!confirm("¿Seguro que deseas eliminar esta 
