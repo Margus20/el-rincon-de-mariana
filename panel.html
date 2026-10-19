@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - El Rincón de Mariana</title>
-    <!-- Librería para escanear QR -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
@@ -43,44 +41,42 @@
         .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
         .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
 
-        .promo-badge { background: #27ae60; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px; }
-        .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
-
         .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
         .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
         .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
         .form-box h4 { color: #5D4037; margin-bottom: 10px; font-size: 15px; }
         
-        /* Estilos para el escáner */
         #reader { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
-        .scanner-options { display: flex; gap: 10px; margin-bottom: 15px; }
-        .scanner-options button { flex: 1; }
+        .scanner-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
+        .scanner-buttons button { flex: 1; }
+        #scanResult { text-align: center; margin-top: 10px; font-weight: bold; min-height: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>El Rincón de Mariana</h1>
             <p>Panel de Control Interno</p>
+            
             <div class="input-group">
                 <label>Correo electrónico</label>
                 <input type="email" id="email" placeholder="ejemplo@correo.com">
             </div>
+            
             <div class="input-group">
                 <label>Contraseña</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" placeholder="••••••••">
-                    <button type="button" class="toggle-password" id="btnEye">👁️</button>
+                    <button type="button" class="toggle-password" id="btnEye">️</button>
                 </div>
             </div>
+            
             <button type="button" class="btn-login" id="btnLogin">Ingresar al Panel</button>
             <div id="errorMsg" class="error-msg"></div>
         </div>
     </div>
     
-    <!-- DASHBOARD -->
     <div id="dashboardScreen" class="dashboard-screen">
         <div class="header-panel">
             <h2>Panel de Control</h2>
@@ -88,88 +84,83 @@
         </div>
         
         <div class="main-content">
-            <!-- MENÚ PRINCIPAL -->
             <div id="homeMenu" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
                 <div class="welcome-card">
                     <h3 id="welcomeName">Bienvenido</h3>
                     <p style="font-size: 13px; color: #666;">Sistema Activo</p>
                 </div>
                 
-                <button class="action-btn primary" id="menuEscaner">📷 Escanear Código QR</button>
+                <button class="action-btn primary" id="btnEscanearQR">📷 Escanear Código QR</button>
                 <button class="action-btn" id="menuClientes">👥 Ver Lista de Clientes</button>
-                <button class="action-btn" id="menuVisitas">📋 Registrar / Ver Visitas</button>
-                <button class="action-btn" id="menuTransacciones">💰 Registrar / Ver Transacciones</button>
+                <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
+                <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
                 <button class="action-btn" id="menuBuscador">🔍 Buscar por Cédula / Editar</button>
             </div>
 
-            <!-- VISTA: ESCÁNER QR -->
             <div id="scannerView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Escanear Código QR</h3>
-                <div class="scanner-options">
-                    <button class="btn-login" id="btnStartCamera">Usar Cámara</button>
-                    <button class="btn-secondary" id="btnSelectFile">Subir Imagen</button>
+                <div class="scanner-buttons">
+                    <button class="btn-login" id="btnStartCamera">📷 Usar Cámara</button>
+                    <button class="btn-secondary" id="btnSelectImage">🖼️ Subir Imagen</button>
                 </div>
                 <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;">
-                <div id="reader"></div>
-                <div id="scanResult" style="text-align: center; margin-top: 10px; font-weight: bold;"></div>
+                <div id="reader" style="display:none;"></div>
+                <div id="scanResult"></div>
             </div>
 
-            <!-- VISTA: CLIENTES -->
             <div id="clientsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Lista de Clientes Registrados</h3>
                 <div id="clientsListContainer">Cargando...</div>
             </div>
 
-            <!-- VISTA: VISITAS -->
             <div id="visitsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
-                <h3>Gestión de Visitas</h3>
+                <h3>Historial de Visitas</h3>
                 <div class="form-box">
                     <h4>➕ Registrar Visita Manual</h4>
                     <div class="input-group">
-                        <label>Cliente</label>
-                        <select id="visitaCliente"><option value="">Cargando clientes...</option></select>
+                        <label>Seleccionar Cliente</label>
+                        <select id="selectClienteVisita"><option value="">Cargando clientes...</option></select>
                     </div>
                     <div class="input-group">
                         <label>Monto Consumido ($)</label>
-                        <input type="number" id="visitaMonto" placeholder="0.00" step="0.01">
+                        <input type="number" id="montoVisita" placeholder="0.00" step="0.01">
                     </div>
                     <div class="input-group">
                         <label>Notas</label>
-                        <input type="text" id="visitaNotas" placeholder="Ej. Corte de cabello">
+                        <input type="text" id="notasVisita" placeholder="Servicio realizado">
                     </div>
-                    <button class="btn-login" id="btnGuardarVisita">Guardar Visita</button>
+                    <button class="btn-login" id="btnGuardarVisita">Registrar Visita</button>
                 </div>
                 <h4>Últimas Visitas</h4>
                 <div id="visitsListContainer">Cargando...</div>
             </div>
 
-            <!-- VISTA: TRANSACCIONES -->
             <div id="transactionsView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
-                <h3>Gestión de Transacciones</h3>
+                <h3>Registro de Transacciones</h3>
                 <div class="form-box">
-                    <h4>➕ Registrar Movimiento</h4>
+                    <h4>💰 Registrar Movimiento</h4>
                     <div class="input-group">
-                        <label>Cliente</label>
-                        <select id="transCliente"><option value="">Cargando clientes...</option></select>
+                        <label>Seleccionar Cliente</label>
+                        <select id="selectClienteTrans"><option value="">Cargando clientes...</option></select>
                     </div>
                     <div class="input-group">
                         <label>Tipo</label>
-                        <select id="transTipo">
+                        <select id="tipoTransaccion">
                             <option value="Abono">Abono / Pago (- Deuda)</option>
                             <option value="Deuda">Nueva Deuda / Fiado (+ Deuda)</option>
                         </select>
                     </div>
                     <div class="input-group">
                         <label>Monto ($)</label>
-                        <input type="number" id="transMonto" placeholder="0.00" step="0.01">
+                        <input type="number" id="montoTrans" placeholder="0.00" step="0.01">
                     </div>
                     <div class="input-group">
                         <label>Descripción</label>
-                        <input type="text" id="transDesc" placeholder="Ej. Pago móvil, Efectivo">
+                        <input type="text" id="descTrans" placeholder="Ej. Pago móvil">
                     </div>
                     <button class="btn-secondary" id="btnGuardarTrans">Registrar Movimiento</button>
                 </div>
@@ -177,7 +168,6 @@
                 <div id="transactionsListContainer">Cargando...</div>
             </div>
 
-            <!-- VISTA: BUSCADOR -->
             <div id="searchView" class="view-section">
                 <button class="back-btn btnVolver">← Volver</button>
                 <h3>Consulta y Gestión de Cliente</h3>
@@ -192,24 +182,23 @@
 
     <script>
         const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
-        const API_KEY = "sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc";
+        const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53dXFkbWJxbHBtaXl4aXFkeG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjIzMDksImV4cCI6MjEwNzYzODMwOX0.3LVC7SwkHkDGRzdAzMMyHbwVi4m8bUFJwUizuRG15DE";
         let userToken = "";
-        let html5QrCode = null;
         let clientesCache = [];
+        let html5QrCode = null;
+        let qrLibLoaded = false;
 
         function mostrarError(txt) {
             const el = document.getElementById('errorMsg');
             if (el) { el.textContent = txt; el.style.display = 'block'; }
         }
 
-        // Ojito de contraseña (Conservado)
         document.getElementById('btnEye').addEventListener('click', () => {
             const pwd = document.getElementById('password');
             pwd.type = pwd.type === 'password' ? 'text' : 'password';
-            document.getElementById('btnEye').textContent = pwd.type === 'password' ? '👁️' : '🙈';
+            document.getElementById('btnEye').textContent = pwd.type === 'password' ? '️' : '🙈';
         });
 
-        // Login (Conservado)
         document.getElementById('btnLogin').addEventListener('click', async () => {
             const email = document.getElementById('email').value.trim().toLowerCase();
             const pass = document.getElementById('password').value.trim();
@@ -228,6 +217,7 @@
                     headers: { 'apikey': API_KEY, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email, password: pass })
                 });
+
                 const data = await res.json();
 
                 if (!res.ok) {
@@ -242,7 +232,6 @@
                 document.getElementById('dashboardScreen').style.display = 'flex';
                 document.getElementById('welcomeName').textContent = 'Hola, ' + email.split('@')[0];
                 
-                // Precargar clientes para los selectores
                 await cargarClientesCache();
 
             } catch (e) {
@@ -253,13 +242,16 @@
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => {
-            userToken = "";
             location.reload();
         });
 
         function volverMenu() {
             document.getElementById('homeMenu').style.display = 'flex';
-            document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+            document.getElementById('clientsView').style.display = 'none';
+            document.getElementById('visitsView').style.display = 'none';
+            document.getElementById('transactionsView').style.display = 'none';
+            document.getElementById('searchView').style.display = 'none';
+            document.getElementById('scannerView').style.display = 'none';
             if (html5QrCode) { detenerCamara(); }
         }
 
@@ -288,29 +280,9 @@
         function llenarSelectores() {
             const opts = '<option value="">Seleccione un cliente</option>' + 
                 clientesCache.map(c => `<option value="${c.id}">${c.nombre_y_apellido || c.nombre} (${c.cedula})</option>`).join('');
-            document.getElementById('visitaCliente').innerHTML = opts;
-            document.getElementById('transCliente').innerHTML = opts;
+            document.getElementById('selectClienteVisita').innerHTML = opts;
+            document.getElementById('selectClienteTrans').innerHTML = opts;
         }
-
-        // --- VISTA: LISTA DE CLIENTES (Conservada y mejorada) ---
-        document.getElementById('menuClientes').addEventListener('click', async () => {
-            volverMenu();
-            document.getElementById('clientsView').style.display = 'block';
-            const cont = document.getElementById('clientsListContainer');
-            cont.innerHTML = 'Cargando clientes...';
-
-            try {
-                const res = await fetch(`${API_URL}/rest/v1/clientes?select=*&order=created_at.desc`, {
-                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
-                });
-                const data = await res.json();
-                if (!data || data.length === 0) { cont.innerHTML = '<p>No hay clientes.</p>'; return; }
-
-                let html = '';
-                data.forEach(c => { html += generarTarjetaCliente(c); });
-                cont.innerHTML = html;
-            } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar datos.</p>'; }
-        });
 
         function generarTarjetaCliente(c) {
             const nom = c.nombre_y_apellido || c.nombre || 'Sin nombre';
@@ -341,18 +313,51 @@
             </div>`;
         }
 
-        // --- VISTA: ESCÁNER QR ---
-        document.getElementById('menuEscaner').addEventListener('click', () => {
+        async function cargarLibreriaQR() {
+            if (qrLibLoaded) return true;
+            try {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/html5-qrcode';
+                    script.onload = () => { qrLibLoaded = true; resolve(); };
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+                return true;
+            } catch (e) {
+                console.error("Error cargando librería QR", e);
+                return false;
+            }
+        }
+
+        document.getElementById('btnEscanearQR').addEventListener('click', async () => {
             volverMenu();
             document.getElementById('scannerView').style.display = 'block';
             document.getElementById('scanResult').innerHTML = '';
+            document.getElementById('reader').style.display = 'none';
         });
 
-        document.getElementById('btnStartCamera').addEventListener('click', () => {
+        document.getElementById('btnStartCamera').addEventListener('click', async () => {
+            const ok = await cargarLibreriaQR();
+            if (!ok) {
+                document.getElementById('scanResult').innerHTML = '<span style="color:red">Error al cargar el escáner. Usa "Subir Imagen".</span>';
+                return;
+            }
+            
+            document.getElementById('reader').style.display = 'block';
             document.getElementById('scanResult').innerHTML = 'Iniciando cámara...';
-            html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, (decodedText) => {
-                detenerCamara();
-                procesarCodigoEscaneado(decodedText);
-            }, (err) => { /* Ignorar errores de escaneo continuo */ }).catch(err => {
-                document.getEl
+            
+            try {
+                html5QrCode = new Html5Qrcode("reader");
+                await html5QrCode.start(
+                    { facingMode: "environment" }, 
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    (decodedText) => {
+                        detenerCamara();
+                        procesarQR(decodedText);
+                    },
+                    () => {}
+                );
+            } catch (err) {
+                document.getElementById('scanResult').innerHTML = '<span style="color:red">No se pudo acceder a la cámara. Usa "Subir Imagen".</span>';
+     
