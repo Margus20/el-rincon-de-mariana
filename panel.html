@@ -1,21 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Prueba CSS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel - El Rincón de Mariana</title>
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-    <div class="login-screen">
+
+    <div id="loginScreen" class="login-screen">
         <div class="login-box">
-            <h1>SI VES ESTO CON ESTILO NARANJA, EL CSS FUNCIONA</h1>
-            <p>El archivo estilos.css se cargó correctamente</p>
+            <h1>El Rincón de Mariana</h1>
+            <p>Panel de Control Interno</p>
             <div class="input-group">
                 <label>Correo electrónico</label>
-                <input type="email" placeholder="ejemplo@correo.com">
+                <input type="email" id="email" placeholder="ejemplo@correo.com">
             </div>
-            <button class="btn-login">Botón de prueba</button>
+            <div class="input-group">
+                <label>Contraseña</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="••••••••">
+                    <button type="button" class="toggle-password" id="btnEye">👁️</button>
+                </div>
+            </div>
+            <button type="button" class="btn-login" id="btnLogin">Ingresar al Panel</button>
+            <div id="errorMsg" class="error-msg"></div>
         </div>
     </div>
+    
+    <div id="dashboardScreen" class="dashboard-screen">
+        <div class="header-panel">
+            <h2>Panel de Control</h2>
+            <button id="btnLogout" class="btn-logout-style">Salir</button>
+        </div>
+        <div class="main-content">
+            <div id="homeMenu" class="menu-container">
+                <div class="welcome-card">
+                    <h3 id="welcomeName">Bienvenido</h3>
+                    <p class="system-status">Sistema Activo</p>
+                </div>
+                <button class="action-btn primary" id="btnEscanearQR">📷 Escanear Código QR</button>
+                <button class="action-btn" id="menuClientes"> Ver Lista de Clientes</button>
+                <button class="action-btn" id="menuVisitas">📋 Ver Historial de Visitas</button>
+                <button class="action-btn" id="menuTransacciones">💰 Ver Transacciones</button>
+                <button class="action-btn" id="menuBuscador">🔍 Buscar por Cédula</button>
+            </div>
+
+            <div id="scannerView" class="view-section">
+                <button class="back-btn btnVolver">← Volver</button>
+                <h3>Escanear Código QR</h3>
+                <div class="scanner-buttons">
+                    <button class="btn-login" id="btnStartCamera">📷 Usar Cámara</button>
+                    <button class="btn-secondary" id="btnSelectImage">🖼️ Subir Imagen</button>
+                </div>
+                <input type="file" id="qrFileInput" accept="image/*" capture="environment" style="display: none;">
+                <div id="reader" style="display:none;"></div>
+                <div id="scanResult"></div>
+            </div>
+
+            <div id="clientsView" class="view-section">
+                <button class="back-btn btnVolver">← Volver</button>
+                <h3>Lista de Clientes</h3>
+                <div id="clientsListContainer">Cargando...</div>
+            </div>
+
+            <div id="visitsView" class="view-section">
+                <button class="back-btn btnVolver">← Volver</button>
+                <h3>Historial de Visitas</h3>
+                <div class="form-box">
+                    <h4>➕ Registrar Visita Manual</h4>
+                    <div class="input-group">
+                        <label>Seleccionar Cliente</label>
+                        <select id="selectClienteVisita"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto ($)</label>
+                        <input type="number" id="montoVisita" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Notas</label>
+                        <input type="text" id="notasVisita" placeholder="Servicio">
+                    </div>
+                    <button class="btn-login" id="btnGuardarVisita">Registrar Visita</button>
+                </div>
+                <h4>Últimas Visitas</h4>
+                <div id="visitsListContainer">Cargando...</div>
+            </div>
+
+            <div id="transactionsView" class="view-section">
+                <button class="back-btn btnVolver">← Volver</button>
+                <h3>Transacciones</h3>
+                <div class="form-box">
+                    <h4>💰 Registrar Movimiento</h4>
+                    <div class="input-group">
+                        <label>Cliente</label>
+                        <select id="selectClienteTrans"><option value="">Cargando...</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo</label>
+                        <select id="tipoTransaccion">
+                            <option value="Abono">Abono (- Deuda)</option>
+                            <option value="Deuda">Nueva Deuda (+ Deuda)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monto ($)</label>
+                        <input type="number" id="montoTrans" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Descripción</label>
+                        <input type="text" id="descTrans" placeholder="Ej. Pago móvil">
+                    </div>
+                    <button class="btn-secondary" id="btnGuardarTrans">Registrar</button>
+                </div>
+                <h4>Últimos Movimientos</h4>
+                <div id="transactionsListContainer">Cargando...</div>
+            </div>
+
+            <div id="searchView" class="view-section">
+                <button class="back-btn btnVolver">← Volver</button>
+                <h3>Buscar Cliente</h3>
+                <div class="input-group">
+                    <input type="text" id="cedulaInput" placeholder="Cédula...">
+                </div>
+                <button class="btn-login" id="btnBuscarCedula" style="margin-bottom: 15px;">Buscar</button>
+                <div id="searchResultContainer"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="logica.js"></script>
 </body>
 </html>
