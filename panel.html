@@ -137,7 +137,6 @@
         
         let userToken = "";
         let html5QrCode = null;
-        let clienteActual = null;
 
         function mostrarError(txt) {
             const el = document.getElementById('errorMsg');
@@ -200,7 +199,6 @@
             document.getElementById('visitsView').style.display = 'none';
             document.getElementById('transactionsView').style.display = 'none';
             document.getElementById('searchView').style.display = 'none';
-            clienteActual = null;
         }
 
         document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
@@ -320,7 +318,7 @@
             } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar transacciones.</p>'; }
         });
 
-        // 4. Buscar por Cédula / Editar / Registrar Visita / Ajustar Deuda
+        // 4. Buscar por Cédula
         document.getElementById('menuBuscador').addEventListener('click', () => {
             volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
@@ -343,14 +341,17 @@
 
                 if (!data || data.length === 0) { cont.innerHTML = '<p>No se encontró cliente con esa cédula.</p>'; return; }
 
-                clienteActual = data[0];
-                const nom = clienteActual.nombre_y_apellido || clienteActual.nombre || 'Sin nombre';
-                const code = clienteActual.codigo_qr || `ERM-${clienteActual.cedula}`;
+                const cliente = data[0];
+                const nom = cliente.nombre_y_apellido || cliente.nombre || 'Sin nombre';
+                const code = cliente.codigo_qr || `ERM-${cliente.cedula}`;
                 const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
-                const pts = clienteActual.puntos || 0;
-                const deu = clienteActual.deuda_actual ? parseFloat(clienteActual.deuda_actual) : 0;
-                const wa = linkWA(clienteActual.telefono, nom, deu);
+                const pts = cliente.puntos || 0;
+                const deu = cliente.deuda_actual ? parseFloat(cliente.deuda_actual) : 0;
+                const wa = linkWA(cliente.telefono, nom, deu);
 
                 cont.innerHTML = `
                     <div class="client-card">
-                   
+                        <div class="client-main-row">
+                            <div class="client-info">
+                                <p><strong>Nombre:</strong> ${nom}</p>
+        
