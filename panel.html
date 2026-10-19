@@ -43,9 +43,6 @@
         .client-qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto 4px auto; }
         .client-qr-code { font-size: 10px; font-family: monospace; color: #E67E22; font-weight: bold; word-break: break-all; }
 
-        .promo-badge { background: #27ae60; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px; }
-        .promo-pending { background: #f39c12; color: white; padding: 3px 8px; border-radius: 15px; font-size: 11px; display: inline-block; margin-top: 5px; }
-
         .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 6px; background: #25D366; color: white; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; width: 100%; text-align: center; margin-top: 8px; }
         .data-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; line-height: 1.5; background: #fafafa; border-radius: 8px; margin-bottom: 10px; }
         .form-box { background: #fdf8f2; padding: 15px; border-radius: 10px; border: 1px solid #E67E22; margin-top: 15px; margin-bottom: 15px; }
@@ -136,9 +133,11 @@
 
     <script>
         const API_URL = "https://nwuqdmbqlpmiyxiqdxmc.supabase.co";
-        const API_KEY = "sb_publishable_yxX1XgJScGe_kIA8IucS0w_Viy6Q0bc";
+        const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53dXFkbWJxbHBtaXl4aXFkeG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjIzMDksImV4cCI6MjEwNzYzODMwOX0.3LVC7SwkHkDGRzdAzMMyHbwVi4m8bUFJwUizuRG15DE";
+        
         let userToken = "";
         let html5QrCode = null;
+        let clienteActual = null;
 
         function mostrarError(txt) {
             const el = document.getElementById('errorMsg');
@@ -201,6 +200,7 @@
             document.getElementById('visitsView').style.display = 'none';
             document.getElementById('transactionsView').style.display = 'none';
             document.getElementById('searchView').style.display = 'none';
+            clienteActual = null;
         }
 
         document.querySelectorAll('.btnVolver').forEach(b => b.addEventListener('click', volverMenu));
@@ -273,7 +273,7 @@
             cont.innerHTML = 'Cargando visitas...';
 
             try {
-                const res = await fetch(`${API_URL}/rest/v1/visitas?select=*,clientes(nombre_y_apellido,nombre,telefono,deuda_actual)&order=created_at.desc`, {
+                const res = await fetch(`${API_URL}/rest/v1/visitas?select=*&order=created_at.desc`, {
                     headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
                 });
                 const data = await res.json();
@@ -282,18 +282,10 @@
 
                 let html = '';
                 data.forEach(v => {
-                    const cli = v.clientes || {};
-                    const nom = cli.nombre_y_apellido || cli.nombre || 'Cliente';
-                    const tel = cli.telefono || '';
-                    const deu = cli.deuda_actual ? parseFloat(cli.deuda_actual) : 0;
-                    const wa = linkWA(tel, nom, deu);
-
                     html += `<div class="data-item">
-                        <strong>Cliente:</strong> ${nom} <br>
                         <strong>Monto:</strong> $${v.monto_consumo || 0} | <strong>Tipo:</strong> ${v.tipo || 'normal'}<br>
                         <small>Fecha: ${v.fecha ? new Date(v.fecha).toLocaleString() : 'N/A'}</small><br>
                         <em>Notas: ${v.notas || 'Sin notas'}</em>
-                        ${tel ? `<a href="${wa}" target="_blank" class="btn-whatsapp" style="margin-top:8px;">💬 Enviar WhatsApp</a>` : ''}
                     </div>`;
                 });
                 cont.innerHTML = html;
@@ -309,7 +301,7 @@
             cont.innerHTML = 'Cargando transacciones...';
 
             try {
-                const res = await fetch(`${API_URL}/rest/v1/transacciones?select=*,clientes(nombre_y_apellido,nombre,telefono,deuda_actual)&order=created_at.desc`, {
+                const res = await fetch(`${API_URL}/rest/v1/transacciones?select=*&order=created_at.desc`, {
                     headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
                 });
                 const data = await res.json();
@@ -318,25 +310,17 @@
 
                 let html = '';
                 data.forEach(t => {
-                    const cli = t.clientes || {};
-                    const nom = cli.nombre_y_apellido || cli.nombre || 'Cliente';
-                    const tel = cli.telefono || '';
-                    const deu = cli.deuda_actual ? parseFloat(cli.deuda_actual) : 0;
-                    const wa = linkWA(tel, nom, deu);
-
                     html += `<div class="data-item">
-                        <strong>Cliente:</strong> ${nom} <br>
                         <strong>Tipo:</strong> ${t.tipo || 'General'} | <strong>Monto:</strong> $${t.monto || 0} <br>
                         <small>Fecha: ${t.fecha ? new Date(t.fecha).toLocaleString() : 'N/A'}</small><br>
                         <em>Detalle: ${t.descripcion || 'Sin detalle'}</em>
-                        ${tel ? `<a href="${wa}" target="_blank" class="btn-whatsapp" style="margin-top:8px;">💬 Enviar WhatsApp</a>` : ''}
                     </div>`;
                 });
                 cont.innerHTML = html;
             } catch (e) { cont.innerHTML = '<p style="color:red;">Error al cargar transacciones.</p>'; }
         });
 
-        // 4. Buscar por Cédula / Editar
+        // 4. Buscar por Cédula / Editar / Registrar Visita / Ajustar Deuda
         document.getElementById('menuBuscador').addEventListener('click', () => {
             volverMenu();
             document.getElementById('homeMenu').style.display = 'none';
@@ -347,4 +331,26 @@
 
         document.getElementById('btnBuscarCedula').addEventListener('click', async () => {
             const ced = document.getElementById('cedulaInput').value.trim();
-            const cont = document.getElementById('searchResultContainer
+            const cont = document.getElementById('searchResultContainer');
+            if (!ced) { cont.innerHTML = '<p style="color:red;">Ingresa una cédula.</p>'; return; }
+
+            cont.innerHTML = 'Buscando...';
+            try {
+                const res = await fetch(`${API_URL}/rest/v1/clientes?cedula=eq.${ced}&select=*`, {
+                    headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${userToken}` }
+                });
+                const data = await res.json();
+
+                if (!data || data.length === 0) { cont.innerHTML = '<p>No se encontró cliente con esa cédula.</p>'; return; }
+
+                clienteActual = data[0];
+                const nom = clienteActual.nombre_y_apellido || clienteActual.nombre || 'Sin nombre';
+                const code = clienteActual.codigo_qr || `ERM-${clienteActual.cedula}`;
+                const qr = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(code)}`;
+                const pts = clienteActual.puntos || 0;
+                const deu = clienteActual.deuda_actual ? parseFloat(clienteActual.deuda_actual) : 0;
+                const wa = linkWA(clienteActual.telefono, nom, deu);
+
+                cont.innerHTML = `
+                    <div class="client-card">
+                   
